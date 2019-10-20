@@ -9,10 +9,10 @@
     "url": "git+https://github.com/thetarnav/glitched-writer.git"
   },
   "homepage": "https://github.com/thetarnav/glitched-writer#readme",
-  "main": "glitchedWriter-min.js",
+  "main": "glitchedWriter.min.js",
   "scripts": {
     "dev": "parcel test/index.pug --out-dir dev",
-    "build": "parcel build glitchedWriter.js --no-cache --out-dir . --out-file glitchedWriter-min.js",
+    "build": "parcel build glitchedWriter.js --no-cache --out-dir . --out-file glitchedWriter.min.js",
     "test": "parcel index.html"
   },
   "keywords": [

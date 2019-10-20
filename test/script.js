@@ -2,7 +2,7 @@ const { wait } = require('./utility.js')
 const _ = {
 	debounce: require('lodash.debounce'),
 }
-const { setGlitchedWriter, glitchWrite } = require('../glitchedWriter')
+const { setGlitchedWriter, glitchWrite } = require('../glitchedWriter-min')
 
 const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input'),
