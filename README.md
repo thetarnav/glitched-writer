@@ -12,16 +12,20 @@
 ------------
 
 ### Code Examples:
-- Standalone function call with .then
+- Standalone function call with .then:
+
 `glitchWrite( htmlElement, 'text to write' ).then(console.log)`
 
-- Creating GlitchedWriter class instance for later use
+- Creating GlitchedWriter class instance for later use:
+
 `const writerObject = new GlitchedWriter( htmlElement )`
 
-- Writing using instance
+- Writing using instance:
+
 `writerObject.write( 'message' )`
 
-- Adding event listener *(**e.detail** holds Object with usefull **text** property)*
+- Adding event listener *(**e.detail** holds Object with usefull **text** property)*:
+
 `htmlElement.addEventListener('glitchWrote', e => console.log( e.detail.text ))`
 
 ------------
