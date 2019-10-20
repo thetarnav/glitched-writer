@@ -1,6 +1,8 @@
 # Glitched Writer
 [![](https://data.jsdelivr.com/v1/package/npm/glitched-writer/badge)](https://www.jsdelivr.com/package/npm/glitched-writer)
 
+![glitched-writer-preview](https://user-images.githubusercontent.com/24491503/67164275-06ab6900-f379-11e9-81ac-cab76dbc8dcd.gif)
+
 ### What it does:
 
 - Edits **textContent** of chosen html element with a (custom or not) set of "glitched" characters until it writes wanted text.
