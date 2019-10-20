@@ -18,13 +18,13 @@
 
 - Creating GlitchedWriter class instance for later use:
 
-`const writerObject = new GlitchedWriter( htmlElement )`
+`const writerObject = setGlitchedWriter( htmlElement, 'cUsToM gLiTcH cHaRs', {stepsMax: 10} )`
 
-- Writing using instance:
+- Writing using instance: ('' <- means that glitched characters will be taken from the inputed text characters)
 
-`writerObject.write( 'message' )`
+`writerObject.write( 'message', '' )`
 
-- Adding event listener *(**e.detail** holds Object with usefull **text** property)*:
+- Adding event listener (**e.detail** holds Object with usefull **text** property):
 
 `htmlElement.addEventListener('glitchWrote', e => console.log( e.detail.text ))`
 

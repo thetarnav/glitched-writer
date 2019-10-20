@@ -1,0 +1,70 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": ["eslint:recommended", "airbnb-base"],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "rules": {
+        "no-tabs": 0,
+        "no-trailing-spaces": "off",
+        "lines-between-class-members": "off",
+        "consistent-return": "off",
+        "no-unused-vars": "warn",
+        "camelcase":"warn",
+        "operator-linebreak":"off",
+        "eol-last":"off",
+        "no-use-before-define":"off",
+        "no-undef":"error",
+        "arrow-parens":"off",
+        "no-param-reassign":"off",
+        "one-var":"off",
+        "no-return-assign":"off",
+        "prefer-const":"warn",
+        "eqeqeq":"warn",
+        "curly":"off",
+        "nonblock-statement-body-position": "off",
+        "implicit-arrow-linebreak":"off",
+        "no-plusplus":"off",
+        "no-var":"warn",
+        "arrow-body-style":"warn",
+        "no-confusing-arrow":"off",
+        "prefer-destructuring":"warn",
+        "no-restricted-globals":"off",
+        "no-else-return":"warn",
+        "guard-for-in":"off",
+        "comma-dangle":"warn",
+        "no-extra-semi":"off",
+        "import/newline-after-import": "off",
+        "import/no-extraneous-dependencies":"warn",
+        "global-require":"warn",
+        "object-curly-spacing":"warn",
+        "prefer-promise-reject-errors":"warn",
+        "no-unused-expressions":"off",
+        "function-paren-newline":"off",
+        "indent": [
+            "off",
+            "tab"
+        ],
+        "linebreak-style": [
+            "error",
+            "windows"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "off",
+            "never"
+        ]
+    }
+}

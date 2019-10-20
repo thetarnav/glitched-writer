@@ -1,0 +1,200 @@
+*
+	-webkit-font-smoothing: antialiased
+	-moz-osx-font-smoothing: grayscale
+
+*, *::before, *::after
+	margin: 0
+	padding: 0
+	box-sizing: border-box
+
+$light-blue: #A5E5D4
+$blue: #42C3C8
+$pink: #D93DA5
+$black: #1D1E22
+
+=text-shadow($color)
+	text-shadow: 2px 4px 10px rgba($color, .5)
+
+=text-shadow-small($color)
+	text-shadow: 1px 3px 6px rgba($color, .5)
+
+=font-family
+	font-family: 'M PLUS 1p', 'Open Sans', sans-serif
+
+body
+	height: 100vh
+	overflow: hidden
+	display: flex
+	justify-content: center
+	align-items: center
+	background-color: $black
+	background-image: radial-gradient(rgba($blue, .2), $black 120%)
+
+	&::after
+		content: ''
+		position: absolute
+
+		// z-index: -1;
+		top: 0
+		left: 0
+		width: 100%
+		height: 100%
+		background: repeating-linear-gradient(0deg, rgba($black, .5), rgba($black, .5) 1px, transparent 1px, transparent 2px)
+		pointer-events: none
+
+\::selection
+	background: $light-blue
+	color: $black
+	text-shadow: none
+
+.input
+	position: absolute
+	bottom: 30px
+	width: 240px
+	height: 35px
+	padding: 0 8px
+	background: transparent
+	outline: none
+	border: 1px solid $light-blue
+	caret-color: $blue
+	color: $light-blue
+	font-weight: 300
+
+	+text-shadow-small($light-blue)
+	+font-family
+
+	@keyframes an
+		0%, 50%
+			--ph: visible
+
+		51%, 100%
+			--ph: hidden
+
+	animation: an .9s infinite alternate
+	transition: border-color .1s, color .1s, text-shadow .1s, transform .3s 1.2s
+
+	&::placeholder
+		color: $light-blue
+		transition: opacity .1s, color .1s
+		visibility: var(--ph)
+
+		+text-shadow-small($light-blue)
+
+	&:focus, &:hover
+		border-color: $blue
+		color: $blue
+
+		+text-shadow-small($blue)
+
+		&::placeholder
+			color: $blue
+
+		&::selection
+			background: $blue
+
+		& ~ .input--shadow
+			border-color: $blue
+
+	&:focus::placeholder
+		opacity: 0
+
+	&:disabled
+		transform: translatey(70px)
+
+		& ~ .input--shadow
+			transform: translatey(70px)
+
+	&--shadow
+		position: absolute
+		bottom: calc(30px - 4px)
+		transform: translatex(2px)
+		filter: blur(4px)
+		opacity: .5
+		width: 240px
+		height: 35px
+		border: 2px solid $light-blue
+		pointer-events: none
+		transition: transform .3s 1.2s
+
+.text
+	position: relative
+	padding: 30px
+	font-size: 35px
+	color: $light-blue
+
+	+font-family
+	+text-shadow($light-blue)
+
+	&::after, &::before
+		content: attr(data-decrypted-text)
+		position: absolute
+		opacity: 0
+		left: 0
+		top: 0
+		width: 100%
+		height: 100%
+		padding: 30px
+		overflow: hidden
+		color: $blue
+
+	&::before
+		z-index: -1
+		color: $pink
+
+	&.glitch-writing
+		animation: glitch-skew 1s steps(10, end) infinite alternate-reverse
+
+		&::after, &::before
+			opacity: 1
+
+		&::after
+			animation: glitch-animation-1 1.5s steps(20, end) infinite alternate-reverse
+
+		&::before
+			animation: glitch-animation-2 2s steps(20, end) infinite alternate-reverse
+
+	@keyframes glitch-skew
+		$steps: 10
+
+		@for $i from 0 through $steps
+			#{percentage($i * 1 / $steps)}
+				transform: skew(random(10) - 5 + deg)
+
+	@keyframes glitch-animation-1
+		$steps: 20
+
+		@for $i from 0 through $steps
+			#{percentage($i * 1 / $steps)}
+				clip: rect(random(100) + px, 1000px, random(100) + px, 0)
+				transform: skew(random(16) - 8 + deg) translatex(random(30) - 15 + px)
+
+	@keyframes glitch-animation-2
+		$steps: 20
+
+		@for $i from 0 through $steps
+			#{percentage($i * 1 / $steps)}
+				clip: rect(random(100) + px, 1000px, random(100) + px, 0)
+				transform: skew(random(10) - 5 + deg) translatex(random(20) - 10 + px)
+
+.log
+	position: absolute
+	top: 4vh
+	left: 30px
+	color: $light-blue
+	font-weight: 300
+	font-size: 13px
+	line-height: 20px
+	display: flex
+	flex-direction: column-reverse
+
+	+font-family
+	+text-shadow-small($light-blue)
+
+	&::after
+		content: ''
+		position: absolute
+		top: -2px
+		left: -7px
+		width: 1px
+		height: 100%
+		background: $light-blue

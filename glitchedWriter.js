@@ -1,7 +1,11 @@
+const regeneratorRuntime = require('regenerator-runtime')
+
 const random = (min, max, mathFunc = null) => {
 	const w = Math.random() * (max - min) + min
 	return mathFunc == null ? w : Math[mathFunc](w)
 }
+
+const isNull = string => string === '' || string === null
 
 class GlitchedWriter {
 	static defaults = {
@@ -22,7 +26,7 @@ class GlitchedWriter {
 			'ABCDĐEFGHIJKLMNOPQRSTUVWXYZabcdđefghijklmnopqrstuvwxyzĄąĆćŻżŹźŃńóŁłАБВГҐДЂЕЁЄЖЗЅИІЇЙЈКЛЉМНЊОПРСТЋУЎФХЦЧЏШЩЪЫЬЭЮЯабвгґдђеёєжзѕиіїйјклљмнњопрстћуўфхцчџшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωάΆέΈέΉίϊΐΊόΌύΰϋΎΫΏĂÂÊÔƠƯăâêôơư一二三四五六七八九十百千上下左右中大小月日年早木林山川土空田天生花草虫犬人名女男子目耳口手足見音力気円入出立休先夕本文字学校村町森正水火玉王石竹糸貝車金雨赤青白数多少万半形太細広長点丸交光角計直線矢弱強高同親母父姉兄弟妹自友体毛頭顔首心時曜朝昼夜分週春夏秋冬今新古間方北南東西遠近前後内外場地国園谷野原里市京風雪雲池海岩星室戸家寺通門道話言答声聞語読書記紙画絵図工教晴思考知才理算作元食肉馬牛魚鳥羽鳴麦米茶色黄黒来行帰歩走止活店買売午汽弓回会組船明社切電毎合当台楽公引科歌刀番用何ĂÂÊÔƠƯăâêôơư1234567890‘?’“!”(%)[#]{@}/&<-+÷×=>$€£¥¢:;,.* •°·…±†‡æ«»¦¯—–~˜¨_øÞ¿▬▭▮▯┐└╛╟╚╔╘╒╓┘┌░▒▓○‼',
 	}
 
-	constructor(htmlElement, string, glitchCharacters, settings) {
+	constructor(htmlElement, glitchCharacters, settings) {
 		const {
 			state: defState,
 			settings: defSettings,
@@ -30,19 +34,22 @@ class GlitchedWriter {
 		} = GlitchedWriter.defaults
 
 		this.state = defState
-		this.glitches = glitchCharacters || defGlitches
-		this.settings = settings || defSettings
+		this.glitches =
+			glitchCharacters || (glitchCharacters === '' ? '' : defGlitches)
+		this.settings = {
+			...defSettings,
+			...settings,
+		}
+		this.prevWrongSettings()
 		this.el = htmlElement
-		this.text = string
+		this.text = ''
 		this.endEvent = new CustomEvent('glitchWrote', { detail: this })
-
-		string !== undefined && this.write(string)
 	}
 
-	write(text, glitches = this.glitches, settings = this.settings) {
+	write(text, glitches, settings) {
 		this.text = text
 		if (this.state.typing) {
-			this.stop(true)			
+			this.stop(true)
 			return Promise.resolve({
 				finished: false,
 				restarting: this.state.restart,
@@ -53,7 +60,23 @@ class GlitchedWriter {
 			})
 		}
 		this.state.stop = false
+		settings = {
+			...this.settings,
+			...settings,
+		}
+		glitches =
+			glitches || (glitches === '' || this.glitches === '')
+				? this.text
+				: this.glitches
+		glitches =
+			glitches || (this.text === '' ? ' ' : GlitchedWriter.defaults.glitches)
+		this.prevWrongSettings(settings)
 		return this.accualWrite(glitches, settings)
+	}
+
+	prevWrongSettings = (settings = this.settings) => {
+		settings.stepsMax = Math.max(settings.stepsMax, settings.stepsMin)
+		settings.delayMax = Math.max(settings.delayMax, settings.delayMin)
 	}
 
 	stop(restart) {
@@ -97,8 +120,11 @@ class GlitchedWriter {
 		textTable.forEach((char, i) => (textTable[i].steps = randomSteps()))
 
 		const getTextToRender = () =>
-			textTable.reduce((total, { l, ghosts }) => (total += l + ghosts), ''),
-		renderText = () => {
+				textTable.reduce(
+					(total, { l, ghosts }) => (total += l + ghosts),
+					'',
+				),
+			renderText = () => {
 				const output = getTextToRender()
 				el.textContent = output
 				el.setAttribute('data-decrypted-text', output)
@@ -127,7 +153,7 @@ class GlitchedWriter {
 
 		const promiseList = after.map((l, i) => handleLetter(i, l))
 
-		const results = (await Promise.all(promiseList))
+		const results = await Promise.all(promiseList)
 
 		let result = results.every(r => r)
 
@@ -187,14 +213,10 @@ class GlitchedWriter {
 	}
 }
 
-const glitchWrite = (htmlElement, string, glitchCharacters, settings) => {
-	const writer = new GlitchedWriter(
-		htmlElement,
-		glitchCharacters,
-		settings,
-	)
-	return writer.write(string)
-}
-	
+const glitchWrite = (htmlElement, string, glitchCharacters, settings) =>
+	new GlitchedWriter(htmlElement, glitchCharacters, settings).write(string)
 
-module.exports = { GlitchedWriter, glitchWrite }
+const setGlitchedWriter = (htmlElement, glitchCharacters, settings) =>
+	new GlitchedWriter(htmlElement, glitchCharacters, settings)
+
+module.exports = { setGlitchedWriter, glitchWrite }

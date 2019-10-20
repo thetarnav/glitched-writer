@@ -9,9 +9,11 @@
     "url": "git+https://github.com/thetarnav/glitched-writer.git"
   },
   "homepage": "https://github.com/thetarnav/glitched-writer#readme",
-  "main": "index.js",
+  "main": "glitchedWriter-min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "parcel test/index.pug --out-dir dev",
+    "build": "parcel build glitchedWriter.js --no-cache --out-dir . --out-file glitchedWriter-min.js",
+    "test": "parcel index.html"
   },
   "keywords": [
     "glitch",
@@ -20,5 +22,35 @@
     "textContent",
     "decrypt",
     "async"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.6.3",
+    "babel-eslint": "^10.0.3",
+    "browserslist": "^4.7.1",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^2.1.2",
+    "parcel-bundler": "^1.12.4",
+    "pug": "^2.0.4",
+    "sass": "^1.23.0"
+  },
+  "dependencies": {
+    "lodash.debounce": "^4.0.8"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-class-properties"
+    ]
+  },
+  "browserslist": [
+    "defaults"
   ]
 }
