@@ -1,0 +1,14 @@
+{
+  "name": "glitched-writer",
+  "version": "1.0.0",
+  "description": "It's a glitched writer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "glitch"
+  ],
+  "author": "Damian Tarnawski @thetarnav <gthetarnav@gmail.com>",
+  "license": "MIT"
+}
