@@ -1,14 +1,24 @@
 {
   "name": "glitched-writer",
   "version": "1.0.0",
-  "description": "It's a glitched writer",
+  "description": "glitched text writer module",
+  "author": "Damian Tarnawski @thetarnav <gthetarnav@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thetarnav/glitched-writer.git"
+  },
+  "homepage": "https://github.com/thetarnav/glitched-writer#readme",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "glitch"
-  ],
-  "author": "Damian Tarnawski @thetarnav <gthetarnav@gmail.com>",
-  "license": "MIT"
+    "glitch",
+    "text",
+    "html",
+    "textContent",
+    "decrypt",
+    "async"
+  ]
 }

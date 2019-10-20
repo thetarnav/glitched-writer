@@ -92,7 +92,7 @@ class GlitchedWriter {
 		const { textTable } = this
 
 		state.typing = true
-		el.classList.add('decrypting')
+		el.classList.add('glitch-writing')
 
 		textTable.forEach((char, i) => (textTable[i].steps = randomSteps()))
 
@@ -134,7 +134,7 @@ class GlitchedWriter {
 		const restarting = state.restart
 		state.restart = false
 		state.typing = false
-		el.classList.remove('decrypting')
+		el.classList.remove('glitch-writing')
 
 		result = {
 			finished: result,
