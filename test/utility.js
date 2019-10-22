@@ -31,6 +31,9 @@ const random = (min, max, mathFunc = null) => {
 	return mathFunc == null ? w : Math[mathFunc](w)
 }
 
+const stringWithoutRepeat = string =>
+	[...new Set([...string])].reduce((set, l) => set + l)
+
 const setCssProperties = (el, ...pairs) =>
 	pairs.forEach(pair => el.style.setProperty(pair[0], pair[1]))
 
@@ -198,6 +201,7 @@ module.exports = {
 	valToPwMid,
 	pToVal,
 	random,
+	stringWithoutRepeat,
 	setCssProperties,
 	wait,
 	promiseWhile,

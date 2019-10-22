@@ -5,39 +5,31 @@ const random = (min, max, mathFunc = null) => {
 	return mathFunc == null ? w : Math[mathFunc](w)
 }
 
-const isNull = string => string === '' || string === null
+const stringWithoutRepeat = string =>
+	[...new Set([...string])].reduce((set, l) => set + l)
 
 class GlitchedWriter {
-	static defaults = {
-		state: {
-			stop: false,
-			typing: false,
-			restart: false,
-		},
-		settings: {
-			stepsMin: 0,
-			stepsMax: 6,
-			delayMin: 140,
-			delayMax: 400,
-			ghostLettersProbability: 0.1,
-			maxGhostLetters: 7,
-		},
+	static state = {
+		stop: false,
+		typing: false,
+		restart: false,
+	}
+	static settings = {
+		stepsMin: 0,
+		stepsMax: 6,
+		delayMin: 140,
+		delayMax: 400,
+		ghostsProbability: 0.1,
+		maxGhosts: 7,
 		glitches:
 			'ABCDĐEFGHIJKLMNOPQRSTUVWXYZabcdđefghijklmnopqrstuvwxyzĄąĆćŻżŹźŃńóŁłАБВГҐДЂЕЁЄЖЗЅИІЇЙЈКЛЉМНЊОПРСТЋУЎФХЦЧЏШЩЪЫЬЭЮЯабвгґдђеёєжзѕиіїйјклљмнњопрстћуўфхцчџшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωάΆέΈέΉίϊΐΊόΌύΰϋΎΫΏĂÂÊÔƠƯăâêôơư一二三四五六七八九十百千上下左右中大小月日年早木林山川土空田天生花草虫犬人名女男子目耳口手足見音力気円入出立休先夕本文字学校村町森正水火玉王石竹糸貝車金雨赤青白数多少万半形太細広長点丸交光角計直線矢弱強高同親母父姉兄弟妹自友体毛頭顔首心時曜朝昼夜分週春夏秋冬今新古間方北南東西遠近前後内外場地国園谷野原里市京風雪雲池海岩星室戸家寺通門道話言答声聞語読書記紙画絵図工教晴思考知才理算作元食肉馬牛魚鳥羽鳴麦米茶色黄黒来行帰歩走止活店買売午汽弓回会組船明社切電毎合当台楽公引科歌刀番用何ĂÂÊÔƠƯăâêôơư1234567890‘?’“!”(%)[#]{@}/&<-+÷×=>$€£¥¢:;,.* •°·…±†‡æ«»¦¯—–~˜¨_øÞ¿▬▭▮▯┐└╛╟╚╔╘╒╓┘┌░▒▓○‼',
+		glitchesFromString: false,
 	}
 
-	constructor(htmlElement, glitchCharacters, settings) {
-		const {
-			state: defState,
-			settings: defSettings,
-			glitches: defGlitches,
-		} = GlitchedWriter.defaults
-
-		this.state = defState
-		this.glitches =
-			glitchCharacters || (glitchCharacters === '' ? '' : defGlitches)
+	constructor(htmlElement, settings) {
+		this.state = GlitchedWriter.state
 		this.settings = {
-			...defSettings,
+			...GlitchedWriter.settings,
 			...settings,
 		}
 		this.prevWrongSettings()
@@ -46,7 +38,7 @@ class GlitchedWriter {
 		this.endEvent = new CustomEvent('glitchWrote', { detail: this })
 	}
 
-	write(text, glitches, settings) {
+	write(text, settings) {
 		this.text = text
 		if (this.state.typing) {
 			this.stop(true)
@@ -64,14 +56,8 @@ class GlitchedWriter {
 			...this.settings,
 			...settings,
 		}
-		glitches =
-			glitches || (glitches === '' || this.glitches === '')
-				? this.text
-				: this.glitches
-		glitches =
-			glitches || (this.text === '' ? ' ' : GlitchedWriter.defaults.glitches)
 		this.prevWrongSettings(settings)
-		return this.accualWrite(glitches, settings)
+		return this.accualWrite(settings)
 	}
 
 	prevWrongSettings = (settings = this.settings) => {
@@ -85,7 +71,7 @@ class GlitchedWriter {
 		this.state.stop = true
 	}
 
-	async accualWrite(glitches, settings) {
+	async accualWrite(settings) {
 		const { text, el, state } = this,
 			after = [...text] || [' '],
 			{
@@ -93,11 +79,14 @@ class GlitchedWriter {
 				stepsMax,
 				delayMin,
 				delayMax,
-				ghostLettersProbability: ghostProb,
+				ghostsProbability: ghostProb,
 			} = settings,
-			randomSteps = () => random(stepsMin, stepsMax, 'floor')
+			randomSteps = () => random(stepsMin, stepsMax, 'floor'),
+			glitches = settings.glitchesFromString
+				? stringWithoutRepeat(text + el.textContent)
+				: settings.glitches
 
-		let { maxGhostLetters: maxGhosts } = settings
+		let { maxGhosts } = settings
 
 		this.textTable = (
 			this.textTable ||
@@ -129,7 +118,8 @@ class GlitchedWriter {
 				el.textContent = output
 				el.setAttribute('data-decrypted-text', output)
 			},
-			getClitchChar = () => glitches[random(0, glitches.length, 'floor')],
+			getClitchChar = l =>
+				glitches ? glitches[random(0, glitches.length, 'floor')] : l || '',
 			lastMatching = after.reduce((last, l, i) => {
 				if (i >= textTable.length) return last
 				return last === i - 1 &&
@@ -190,7 +180,9 @@ class GlitchedWriter {
 						char.steps--
 
 						char.l =
-							char.steps <= 0 || char.l === newL ? newL : getClitchChar()
+							char.steps <= 0 || char.l === newL
+								? newL
+								: getClitchChar(char.l)
 
 						if (char.l === newL && char.ghosts !== '')
 							char.ghosts = char.ghosts.slice(0, -1)
@@ -213,10 +205,10 @@ class GlitchedWriter {
 	}
 }
 
-const glitchWrite = (htmlElement, string, glitchCharacters, settings) =>
-	new GlitchedWriter(htmlElement, glitchCharacters, settings).write(string)
+const glitchWrite = (htmlElement, string, settings) =>
+	new GlitchedWriter(htmlElement, settings).write(string)
 
-const setGlitchedWriter = (htmlElement, glitchCharacters, settings) =>
-	new GlitchedWriter(htmlElement, glitchCharacters, settings)
+const setGlitchedWriter = (htmlElement, settings) =>
+	new GlitchedWriter(htmlElement, settings)
 
 module.exports = { setGlitchedWriter, glitchWrite }

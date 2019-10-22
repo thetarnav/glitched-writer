@@ -2,7 +2,7 @@ const { wait } = require('./utility.js')
 const _ = {
 	debounce: require('lodash.debounce'),
 }
-const { setGlitchedWriter, glitchWrite } = require('../glitchedWriter-min')
+const { setGlitchedWriter, glitchWrite } = require('../glitchedWriter')
 
 const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input'),
@@ -10,20 +10,25 @@ const textEl = document.getElementById('glitch_this'),
 
 wait(1200)
 	.then(() =>
-		glitchWrite(textEl, 'my old friend.', '', {
+		glitchWrite(textEl, 'my old friend.', {
 			stepsMin: 7,
 			stepsMax: 10,
+			glitches: '',
+			glitchesFromString: true,
 		}),
 	)
 	.then(() => wait(1200))
-	.then(() => glitchWrite(textEl, 'This is only the beginning'))
+	.then(() =>
+		glitchWrite(textEl, 'This is only the beginning', { glitches: null }),
+	)
 	.then(() => wait(1500))
 	.then(() => glitchWrite(textEl, 'Please, say something...'))
 	.then(() => inputEl.removeAttribute('disabled'))
 
-const displayWriter = setGlitchedWriter(textEl, null, {
+const displayWriter = setGlitchedWriter(textEl, {
 	ghostLettersProbability: 0,
 	maxGhostLetters: 0,
+	glitches: '',
 })
 
 inputEl.addEventListener(
