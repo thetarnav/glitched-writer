@@ -46,7 +46,7 @@
 | glitchesFromString  |  false |
 | oneAtATime  |  false |
 | clearStart  |  false |
-
+| addGlitches  |  false |
 
 ------------
 

@@ -26,6 +26,7 @@ class GlitchedWriter {
 		glitchesFromString: false,
 		oneAtATime: false,
 		clearStart: false,
+		addGlitches: false,
 	}
 
 	constructor(htmlElement, settings) {
@@ -85,8 +86,13 @@ class GlitchedWriter {
 			} = settings,
 			randomSteps = () => random(stepsMin, stepsMax, 'floor'),
 			glitches = settings.glitchesFromString
-				? stringWithoutRepeat(text + el.textContent)
-				: settings.glitches
+				? stringWithoutRepeat(
+						text +
+							el.textContent +
+							(settings.addGlitches ? settings.glitches : ''),
+				  )
+				: settings.glitches +
+				  (settings.addGlitches ? this.settings.glitches : '')
 
 		let { maxGhosts } = settings
 
@@ -134,7 +140,8 @@ class GlitchedWriter {
 				? textTable.length - 1
 				: after.reduce(
 						(last, l, i) =>
-							i < textTable.length && last === i - 1 &&
+							i < textTable.length &&
+							last === i - 1 &&
 							l.toLowerCase() === textTable[i].l.toLowerCase()
 								? i
 								: last,
