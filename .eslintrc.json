@@ -50,6 +50,8 @@
         "prefer-promise-reject-errors":"warn",
         "no-unused-expressions":"off",
         "function-paren-newline":"off",
+        "no-await-in-loop": "warn",
+        "no-mixed-spaces-and-tabs":"warn",
         "indent": [
             "off",
             "tab"

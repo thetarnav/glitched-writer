@@ -40,7 +40,8 @@
     "sass": "^1.23.0"
   },
   "dependencies": {
-    "lodash.debounce": "^4.0.8"
+    "lodash.debounce": "^4.0.8",
+    "regenerator-runtime": "^0.13.3"
   },
   "babel": {
     "presets": [

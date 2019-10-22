@@ -8,15 +8,10 @@ const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input'),
 	logsEl = document.getElementById('logs')
 
+const displayWriter = setGlitchedWriter(textEl)
+
 wait(1200)
-	.then(() =>
-		glitchWrite(textEl, 'my old friend.', {
-			stepsMin: 7,
-			stepsMax: 10,
-			glitches: '',
-			glitchesFromString: true,
-		}),
-	)
+	.then(() => displayWriter.write('my old friend.'))
 	.then(() => wait(1200))
 	.then(() =>
 		glitchWrite(textEl, 'This is only the beginning', { glitches: null }),
@@ -24,12 +19,6 @@ wait(1200)
 	.then(() => wait(1500))
 	.then(() => glitchWrite(textEl, 'Please, say something...'))
 	.then(() => inputEl.removeAttribute('disabled'))
-
-const displayWriter = setGlitchedWriter(textEl, {
-	ghostLettersProbability: 0,
-	maxGhostLetters: 0,
-	glitches: '',
-})
 
 inputEl.addEventListener(
 	'input',
