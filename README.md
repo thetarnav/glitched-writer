@@ -1,7 +1,7 @@
 # Glitched Writer
 [![](https://data.jsdelivr.com/v1/package/npm/glitched-writer/badge)](https://www.jsdelivr.com/package/npm/glitched-writer)
 
-![glitched-writer-preview](https://user-images.githubusercontent.com/24491503/67164275-06ab6900-f379-11e9-81ac-cab76dbc8dcd.gif)
+[![glitched-writer-preview](https://user-images.githubusercontent.com/24491503/67164275-06ab6900-f379-11e9-81ac-cab76dbc8dcd.gif)](https://codepen.io/thetarnav/pen/MWWyPzY)
 
 ### What it does:
 
@@ -32,8 +32,7 @@
 
 ------------
 
-#### settings:
-###### defaults:
+#### settings */w defaults*:
 |  setting  | default  |
 | ------------ | ------------ |
 |  stepsMin  |  0  |
