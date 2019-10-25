@@ -52,6 +52,7 @@
         "function-paren-newline":"off",
         "no-await-in-loop": "warn",
         "no-mixed-spaces-and-tabs":"warn",
+        "class-methods-use-this": "off",
         "indent": [
             "off",
             "tab"

@@ -13,23 +13,46 @@ class GlitchedWriter {
 		restart: false,
 	}
 	static settings = {
-		stepsMin: 0,
-		stepsMax: 6,
-		delayMin: 140,
-		delayMax: 400,
+		steps: [0, 6],
+		delay: [140, 400],
 		ghostsProbability: 0.1,
 		maxGhosts: 7,
 		glitches:
 			'ABCDĐEFGHIJKLMNOPQRSTUVWXYZabcdđefghijklmnopqrstuvwxyzĄąĆćŻżŹźŃńóŁłАБВГҐДЂЕЁЄЖЗЅИІЇЙЈКЛЉМНЊОПРСТЋУЎФХЦЧЏШЩЪЫЬЭЮЯабвгґдђеёєжзѕиіїйјклљмнњопрстћуўфхцчџшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωάΆέΈέΉίϊΐΊόΌύΰϋΎΫΏĂÂÊÔƠƯăâêôơư一二三四五六七八九十百千上下左右中大小月日年早木林山川土空田天生花草虫犬人名女男子目耳口手足見音力気円入出立休先夕本文字学校村町森正水火玉王石竹糸貝車金雨赤青白数多少万半形太細広長点丸交光角計直線矢弱強高同親母父姉兄弟妹自友体毛頭顔首心時曜朝昼夜分週春夏秋冬今新古間方北南東西遠近前後内外場地国園谷野原里市京風雪雲池海岩星室戸家寺通門道話言答声聞語読書記紙画絵図工教晴思考知才理算作元食肉馬牛魚鳥羽鳴麦米茶色黄黒来行帰歩走止活店買売午汽弓回会組船明社切電毎合当台楽公引科歌刀番用何ĂÂÊÔƠƯăâêôơư1234567890‘?’“!”(%)[#]{@}/&<-+÷×=>$€£¥¢:;,.* •°·…±†‡æ«»¦¯—–~˜¨_øÞ¿▬▭▮▯┐└╛╟╚╔╘╒╓┘┌░▒▓○‼',
 		glitchesFromString: false,
 		oneAtATime: false,
-		clearStart: false,
+		startText: 'previous',
+		combineGlitches: false,
+		className: 'glitch-writing',
+	}
+	static presets = {
+		default: { ...this.settings },
+		nier: {
+			delay: [20, 80],
+			steps: [4, 8],
+			maxGhosts: 0,
+			glitches:
+				'一二三四五六七八九十百千上下左右中大小月日年早木林山川土空田天生花草虫犬人名女男子目耳口手足見音力気円入出立休先夕本文字学校村町森正水火玉王石竹糸貝車金雨赤青白数多少万半形太細広長点丸交光角計直線矢弱強高同親母父姉兄弟妹自友体毛頭顔首心時曜朝昼夜分週春夏秋冬今新古間方北南東西遠近前後内外場地国園谷野原里市京風雪雲池海岩星室戸家寺通門道話言答声聞語読書記紙画絵図工教晴思考知才理算作元食肉馬牛魚鳥羽鳴麦米茶色黄黒来行帰歩走止活店買売午汽弓回会組船明社切電毎合当台楽公引科歌刀番用何',
+			oneAtATime: true,
+			startText: 'eraseWhole',
+			combineGlitches: true,
+			glitchesFromString: true,
+		},
+		normal: {
+			delay: [80, 230],
+			oneAtATime: true,
+			maxGhosts: 0,
+			startText: 'matchingOnly',
+			steps: [0, 0],
+		},
 	}
 
 	constructor(htmlElement, settings) {
 		this.state = GlitchedWriter.state
+
 		this.settings = {
 			...GlitchedWriter.settings,
+			...this.getPreset(settings),
 			...settings,
 		}
 		this.prevWrongSettings()
@@ -54,15 +77,35 @@ class GlitchedWriter {
 		this.state.stop = false
 		settings = {
 			...this.settings,
+			...this.getPreset(settings),
 			...settings,
 		}
 		this.prevWrongSettings(settings)
 		return this.accualWrite(settings)
 	}
 
+	getPreset(settings) {
+		if (!settings) return {}
+		let preset = {}
+		switch (settings.preset) {
+			case 'default':
+				preset = GlitchedWriter.presets.default
+				break
+			case 'nier':
+				preset = GlitchedWriter.presets.nier
+				break
+			case 'normal':
+				preset = GlitchedWriter.presets.normal
+				break
+			default:
+				break
+		}
+		return preset
+	}
+
 	prevWrongSettings = (settings = this.settings) => {
-		settings.stepsMax = Math.max(settings.stepsMax, settings.stepsMin)
-		settings.delayMax = Math.max(settings.delayMax, settings.delayMin)
+		settings.steps[0] = Math.min(settings.steps[0], settings.steps[1])
+		settings.delay[0] = Math.min(settings.delay[0], settings.delay[1])
 	}
 
 	stop(restart) {
@@ -74,17 +117,16 @@ class GlitchedWriter {
 	async accualWrite(settings) {
 		const { text, el, state } = this,
 			after = [...text] || [' '],
-			{
-				stepsMin,
-				stepsMax,
-				delayMin,
-				delayMax,
-				ghostsProbability: ghostProb,
-			} = settings,
-			randomSteps = () => random(stepsMin, stepsMax, 'floor'),
+			{ steps, delay, ghostsProbability: ghostProb, className } = settings,
+			randomSteps = () => random(steps[0], steps[1], 'floor'),
 			glitches = settings.glitchesFromString
-				? stringWithoutRepeat(text + el.textContent)
-				: settings.glitches
+				? stringWithoutRepeat(
+						text +
+							el.textContent +
+							(settings.combineGlitches ? settings.glitches : ''),
+				  )
+				: settings.glitches +
+				  (settings.combineGlitches ? this.settings.glitches : '')
 
 		let { maxGhosts } = settings
 
@@ -101,18 +143,10 @@ class GlitchedWriter {
 			steps: randomSteps(),
 		}))
 
-		if (settings.clearStart) {
-			this.textTable = this.textTable.map(char => ({
-				...char,
-				l: '',
-			}))
-			el.textContent = ''
-		}
-
 		const { textTable } = this
 
 		state.typing = true
-		el.classList.add('glitch-writing')
+		el.classList.add(className)
 
 		textTable.forEach((char, i) => (textTable[i].steps = randomSteps()))
 
@@ -128,30 +162,35 @@ class GlitchedWriter {
 			},
 			getClitchChar = l =>
 				glitches ? glitches[random(0, glitches.length, 'floor')] : l || '',
-			lastMatching = settings.oneAtATime
-				? textTable.length - 1
-				: after.reduce(
-						(last, l, i) =>
-							i < textTable.length &&
-							last === i - 1 &&
-							l.toLowerCase() === textTable[i].l.toLowerCase()
-								? i
-								: last,
-						-1,
-				  )
+			lastMatching = after.reduce(
+				(last, l, i) =>
+					i < textTable.length &&
+					last === i - 1 &&
+					l.toLowerCase() === textTable[i].l.toLowerCase()
+						? i
+						: last,
+				-1,
+			),
+			beginSplice = settings.oneAtATime ? textTable.length : lastMatching + 1
+
+		if (
+			settings.startText === 'matchingOnly' ||
+			settings.startText === 'eraseWhole'
+		) {
+			const startIndex =
+				settings.startText === 'eraseWhole' ? 0 : lastMatching + 1
+			for (let i = startIndex; i < textTable.length; i++) textTable[i].l = ''
+			renderText()
+		}
 
 		while (textTable.length < after.length)
-			textTable.splice(
-				random(lastMatching + 1, textTable.length, 'floor'),
-				0,
-				{
-					l: '',
-					steps: randomSteps(),
-					ghosts: '',
-				},
-			)
+			textTable.splice(random(beginSplice, textTable.length, 'floor'), 0, {
+				l: '',
+				steps: randomSteps(),
+				ghosts: '',
+			})
 		while (textTable.length > after.length)
-			after.splice(random(lastMatching + 1, after.length, 'floor'), 0, '')
+			after.splice(random(beginSplice, after.length, 'floor'), 0, '')
 
 		let results = []
 
@@ -171,7 +210,7 @@ class GlitchedWriter {
 		const restarting = state.restart
 		state.restart = false
 		state.typing = false
-		el.classList.remove('glitch-writing')
+		el.classList.remove(className)
 
 		result = {
 			finished: result,
@@ -185,7 +224,7 @@ class GlitchedWriter {
 		result.finished && el.dispatchEvent(this.endEvent)
 		return (result.finished || !restarting) && this.text === getTextToRender()
 			? result
-			: this.write(this.text, glitches, settings)
+			: this.write(this.text, settings)
 
 		function handleLetter(i, newL) {
 			return new Promise(resolve => {
@@ -193,6 +232,11 @@ class GlitchedWriter {
 				loop()
 
 				function loop() {
+					if (char.l === newL && char.ghosts === '') {
+						char.steps = 0
+						resolve(true)
+						return
+					}
 					if (state.stop) {
 						resolve(false)
 						return
@@ -213,13 +257,9 @@ class GlitchedWriter {
 						}
 
 						renderText()
-						if (char.l === newL && char.ghosts === '') {
-							char.steps = 0
-							resolve(true)
-							return
-						}
+
 						loop()
-					}, random(delayMin, delayMax))
+					}, random(delay[0], delay[1]))
 				}
 			})
 		}
