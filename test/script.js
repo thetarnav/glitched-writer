@@ -10,7 +10,7 @@ const textEl = document.getElementById('glitch_this'),
 
 const displayWriter = setGlitchedWriter(textEl, {
 	preset: 'normal',
-	className: 'other'
+	className: 'other',
 })
 
 wait(1200)

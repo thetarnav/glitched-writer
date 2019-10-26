@@ -46,6 +46,7 @@
 | combineGlitches  |  false |
 | preset | 'default', 'nier', 'normal' |
 | className | 'glitch-writing' |
+| leadingChar | { char: '', onTyping: false } |
 
 ------------
 

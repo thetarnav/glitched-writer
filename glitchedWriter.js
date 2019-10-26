@@ -26,6 +26,10 @@ class GlitchedWriter {
 		startText: 'previous',
 		combineGlitches: false,
 		className: 'glitch-writing',
+		leadingChar: {
+			char: '',
+			onTyping: false,
+		},
 	}
 	static presets = {
 		default: { ...this.settings },
@@ -39,6 +43,7 @@ class GlitchedWriter {
 			startText: 'eraseWhole',
 			combineGlitches: true,
 			glitchesFromString: true,
+			leadingChar: false,
 		},
 		normal: {
 			delay: [80, 230],
@@ -46,6 +51,10 @@ class GlitchedWriter {
 			maxGhosts: 0,
 			startText: 'matchingOnly',
 			steps: [0, 0],
+			leadingChar: {
+				char: '_',
+				onTyping: true,
+			},
 		},
 	}
 
@@ -119,7 +128,13 @@ class GlitchedWriter {
 	async accualWrite(settings) {
 		const { text, el, state } = this,
 			after = [...text] || [' '],
-			{ steps, delay, ghostsProbability: ghostProb, className } = settings,
+			{
+				steps,
+				delay,
+				ghostsProbability: ghostProb,
+				className,
+				leadingChar,
+			} = settings,
 			randomSteps = () => random(steps[0], steps[1], 'floor'),
 			glitches = settings.glitchesFromString
 				? stringWithoutRepeat(
@@ -152,11 +167,18 @@ class GlitchedWriter {
 
 		textTable.forEach((char, i) => (textTable[i].steps = randomSteps()))
 
-		const getTextToRender = () =>
-				textTable.reduce(
+		const getTextToRender = () => {
+				const charAtTheEnd = (leadingChar.onTyping
+				? state.typing
+				: true)
+					? leadingChar.char
+					: ''
+				const stringFromTextTable = textTable.reduce(
 					(total, { l, ghosts }) => (total += l + ghosts),
 					'',
-				),
+				)
+				return stringFromTextTable + (leadingChar ? charAtTheEnd : '')
+			},
 			renderText = () => {
 				const output = getTextToRender()
 				el.textContent = output
@@ -213,20 +235,21 @@ class GlitchedWriter {
 		state.restart = false
 		state.typing = false
 		el.classList.remove(className)
-
-		result = {
-			finished: result,
-			restarting,
-			element: this.el,
-			text,
-			description: `${this.el.outerHTML} types: "${text}"`,
-			textTable: this.textTable,
+		renderText()
+		// && this.text === getTextToRender()
+		if (result && !restarting) {
+			result = {
+				finished: result,
+				restarting,
+				element: this.el,
+				text,
+				description: `${this.el.outerHTML} types: "${text}"`,
+				textTable: this.textTable,
+			}
+			el.dispatchEvent(this.endEvent)
+			return result
 		}
-
-		result.finished && el.dispatchEvent(this.endEvent)
-		return (result.finished || !restarting) && this.text === getTextToRender()
-			? result
-			: this.write(this.text, settings)
+		return this.write(this.text, settings)
 
 		function handleLetter(i, newL) {
 			return new Promise(resolve => {

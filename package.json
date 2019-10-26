@@ -15,14 +15,6 @@
     "build": "parcel build glitchedWriter.js --no-cache --out-dir . --out-file glitchedWriter.min.js",
     "test": "parcel index.html"
   },
-  "keywords": [
-    "glitch",
-    "text",
-    "html",
-    "textContent",
-    "decrypt",
-    "async"
-  ],
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
@@ -53,5 +45,16 @@
   },
   "browserslist": [
     "defaults"
+  ],
+  "keywords": [
+    "glitch",
+    "text",
+    "glitch",
+    "content",
+    "decrypt",
+    "async",
+    "front-end",
+    "web",
+    "html"
   ]
 }
