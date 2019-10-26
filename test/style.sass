@@ -198,3 +198,18 @@ body
 		width: 1px
 		height: 100%
 		background: $light-blue
+
+.links
+	position: absolute
+	bottom: 30px
+	right: 30px
+	display: flex
+	svg
+		height: 16px
+		path
+			fill: $light-blue
+			stroke: none
+			transition: fill .1s
+		&:hover
+			path
+				fill: $blue
