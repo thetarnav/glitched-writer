@@ -1,7 +1,11 @@
 const regeneratorRuntime = require('regenerator-runtime')
 
-const random = (min, max, mathFunc = null) => {
-	const w = Math.random() * (max - min) + min
+const putEasing = p => p * p * p
+
+const random = (min, max, mathFunc = null, easing = false) => {
+	let p = Math.random()
+	p = easing ? putEasing(p) : p
+	const w = p * (max - min) + min
 	return mathFunc == null ? w : Math[mathFunc](w)
 }
 
@@ -17,6 +21,7 @@ class GlitchedWriter {
 	static settings = {
 		steps: [0, 6],
 		delay: [140, 400],
+		firstDelay: [0, 1700],
 		ghostsProbability: 0.1,
 		maxGhosts: 7,
 		glitches:
@@ -24,6 +29,7 @@ class GlitchedWriter {
 		glitchesFromString: false,
 		oneAtATime: false,
 		startText: 'previous',
+		instantErase: false,
 		combineGlitches: false,
 		className: 'glitch-writing',
 		leadingChar: {
@@ -34,22 +40,26 @@ class GlitchedWriter {
 	static presets = {
 		default: { ...this.settings },
 		nier: {
-			delay: [20, 80],
-			steps: [4, 8],
+			delay: [40, 80],
+			firstDelay: [0, 0],
+			steps: [3, 7],
 			maxGhosts: 0,
 			glitches:
 				'一二三四五六七八九十百千上下左右中大小月日年早木林山川土空田天生花草虫犬人名女男子目耳口手足見音力気円入出立休先夕本文字学校村町森正水火玉王石竹糸貝車金雨赤青白数多少万半形太細広長点丸交光角計直線矢弱強高同親母父姉兄弟妹自友体毛頭顔首心時曜朝昼夜分週春夏秋冬今新古間方北南東西遠近前後内外場地国園谷野原里市京風雪雲池海岩星室戸家寺通門道話言答声聞語読書記紙画絵図工教晴思考知才理算作元食肉馬牛魚鳥羽鳴麦米茶色黄黒来行帰歩走止活店買売午汽弓回会組船明社切電毎合当台楽公引科歌刀番用何',
 			oneAtATime: true,
 			startText: 'eraseWhole',
+			instantErase: false,
 			combineGlitches: true,
 			glitchesFromString: true,
 			leadingChar: false,
 		},
 		normal: {
 			delay: [80, 230],
+			firstDelay: [0, 0],
 			oneAtATime: true,
 			maxGhosts: 0,
 			startText: 'matchingOnly',
+			instantErase: false,
 			steps: [0, 0],
 			leadingChar: {
 				char: '_',
@@ -134,6 +144,8 @@ class GlitchedWriter {
 				ghostsProbability: ghostProb,
 				className,
 				leadingChar,
+				instantErase,
+				startText,
 			} = settings,
 			randomSteps = () => random(steps[0], steps[1], 'floor'),
 			glitches = settings.glitchesFromString
@@ -198,11 +210,10 @@ class GlitchedWriter {
 			beginSplice = settings.oneAtATime ? textTable.length : lastMatching + 1
 
 		if (
-			settings.startText === 'matchingOnly' ||
-			settings.startText === 'eraseWhole'
+			instantErase &&
+			(startText === 'matchingOnly' || startText === 'eraseWhole')
 		) {
-			const startIndex =
-				settings.startText === 'eraseWhole' ? 0 : lastMatching + 1
+			const startIndex = startText === 'eraseWhole' ? 0 : lastMatching + 1
 			for (let i = startIndex; i < textTable.length; i++) textTable[i].l = ''
 			renderText()
 		}
@@ -216,17 +227,32 @@ class GlitchedWriter {
 		while (textTable.length > after.length)
 			after.splice(random(beginSplice, after.length, 'floor'), 0, '')
 
-		let results = []
+		const results = []
 
+		if (
+			!instantErase &&
+			(startText === 'matchingOnly' || startText === 'eraseWhole')
+		) {
+			const from = startText === 'matchingOnly' ? lastMatching : -1
+			if (settings.oneAtATime) {
+				for (let i = after.length - 1; i > from; i--) {
+					results.push(await handleLetter(i, ''))
+					textTable[i].steps = randomSteps()
+				}
+			} else {
+				const promiseList = after
+					.slice(from + 1)
+					.map((l, i) => handleLetter(i, ''))
+				results.push(...(await Promise.all(promiseList)))
+				textTable.forEach((c, i) => (textTable[i].steps = randomSteps()))
+			}
+		}
 		if (settings.oneAtATime) {
 			// eslint-disable-next-line
-			for (let i in after) {
-				const promise = await handleLetter(i, after[i])
-				results.push(promise)
-			}
+			for (let i in after) results.push(await handleLetter(i, after[i]))
 		} else {
 			const promiseList = after.map((l, i) => handleLetter(i, l))
-			results = await Promise.all(promiseList)
+			results.push(...(await Promise.all(promiseList)))
 		}
 
 		let result = results.every(r => r)
@@ -244,19 +270,35 @@ class GlitchedWriter {
 				element: this.el,
 				text,
 				description: `${this.el.outerHTML} types: "${text}"`,
-				textTable: this.textTable,
+				textTable,
 			}
+			this.textTable = null
 			el.dispatchEvent(this.endEvent)
 			return result
 		}
 		return this.write(this.text, settings)
 
 		function handleLetter(i, newL) {
+			let [dMin, dMax] = [...delay]
+			let [dFirstMin, dFirstMax] = [...settings.firstDelay]
+			let isFirst = 1
+			if (newL === '') {
+				dMin /= 1.5
+				dMax /= 1.5
+				dFirstMin /= 2
+				dFirstMax /= 2
+			}
+
 			return new Promise(resolve => {
 				const char = textTable[i]
 				loop()
 
 				function loop() {
+					const timeout =
+						random(dMin, dMax) +
+						random(dFirstMin, dFirstMax, null, true) * isFirst
+					isFirst = 0
+
 					if (char.l === newL && char.ghosts === '') {
 						char.steps = 0
 						resolve(true)
@@ -284,7 +326,7 @@ class GlitchedWriter {
 						renderText()
 
 						loop()
-					}, random(delay[0], delay[1]))
+					}, timeout)
 				}
 			})
 		}

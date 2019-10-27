@@ -10,14 +10,16 @@ const textEl = document.getElementById('glitch_this'),
 
 const displayWriter = setGlitchedWriter(textEl, {
 	preset: 'normal',
-	className: 'other',
+	// combineGlitches: false,
+	// className: 'other',
+	// startText: 'matchingOnly',
+	// instantErase: false,
 })
 
 wait(1200)
 	.then(() =>
 		displayWriter.write('my old friend.', {
-			preset: 'nier',
-			startText: false,
+			// preset: 'nier',
 		}),
 	)
 	.then(() => wait(1200))
