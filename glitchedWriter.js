@@ -19,8 +19,8 @@ class GlitchedWriter {
 		restart: false,
 	}
 	static settings = {
-		steps: [0, 6],
-		delay: [140, 400],
+		steps: [1, 7],
+		delay: [100, 320],
 		firstDelay: [0, 1700],
 		ghostsProbability: 0.1,
 		maxGhosts: 7,
@@ -127,6 +127,10 @@ class GlitchedWriter {
 	prevWrongSettings = (settings = this.settings) => {
 		settings.steps[0] = Math.min(settings.steps[0], settings.steps[1])
 		settings.delay[0] = Math.min(settings.delay[0], settings.delay[1])
+		settings.firstDelay[0] = Math.min(
+			settings.firstDelay[0],
+			settings.firstDelay[1],
+		)
 	}
 
 	stop(restart) {

@@ -9,7 +9,9 @@ const textEl = document.getElementById('glitch_this'),
 	logsEl = document.getElementById('logs')
 
 const displayWriter = setGlitchedWriter(textEl, {
-	preset: 'normal',
+	// delay: [40, 150],
+	// steps: [6, 15]
+	// preset: 'normal',
 	// combineGlitches: false,
 	// className: 'other',
 	// startText: 'matchingOnly',
