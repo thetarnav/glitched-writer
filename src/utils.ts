@@ -1,23 +1,33 @@
 /* eslint-disable no-unused-vars */
-export function random(min: number, max: number): number
-export function random(range: [number, number], max?: undefined): number
-export function random(first: [number, number] | number, max?: number): number {
-	let from: number, to: number
-	if (typeof first === 'object') [from, to] = first
-	else [from, to] = [first, max || first]
-
-	return Math.random() * (to - from) + from
+export function random(
+	min: number,
+	max: number,
+	math?: 'floor' | 'round' | 'ceil',
+): number {
+	const result = Math.random() * (max - min) + min
+	if (math) {
+		// eslint-disable-next-line default-case
+		switch (math) {
+			case 'floor':
+				return Math.floor(result)
+			case 'round':
+				return Math.round(result)
+			case 'ceil':
+				return Math.ceil(result)
+		}
+	}
+	return result
 }
 
 export function randomChild<T>(array: Array<T>): T
 export function randomChild(array: string): string
-export function randomChild(array: any): any {
-	return array[Math.floor(random(0, array.length))]
+export function randomChild(array: any[] | string): any {
+	return array[random(0, array.length, 'floor')]
 }
 
 export function filterDuplicates(iterable: string): string
 export function filterDuplicates<T>(iterable: Array<T>): Array<T>
-export function filterDuplicates(iterable: any): any {
+export function filterDuplicates(iterable: any[] | string): any {
 	const isString = typeof iterable === 'string',
 		result: any[] = []
 	new Set(iterable).forEach(x => result.push(x))

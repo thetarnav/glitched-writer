@@ -45,7 +45,7 @@ export default class Options {
 		}
 	}
 
-	get genStep(): number {
+	get genSteps(): number {
 		return getRandomFromRange(this.steps)
 	}
 	get genInterval(): number {
@@ -66,5 +66,5 @@ export default class Options {
 }
 
 function getRandomFromRange(range: RangeOrNumber): number {
-	return typeof range === 'number' ? range : random(range)
+	return typeof range === 'number' ? range : random(...range, 'round')
 }
