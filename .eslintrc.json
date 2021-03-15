@@ -6,10 +6,6 @@
 	},
 	"extends": ["eslint:recommended", "airbnb-base", "plugin:import/typescript"],
 	"parser": "@typescript-eslint/parser",
-	"parserOptions": {
-		"project": ["tsconfig.json", "tsconfig.dev.json"],
-		"sourceType": "module"
-	},
 	"plugins": ["@typescript-eslint", "import"],
 	"rules": {
 		"no-console": "warn",
@@ -37,7 +33,7 @@
 		"no-plusplus": "off",
 		"no-var": "warn",
 		"vars-on-top": "warn",
-		"one-var-declaration-per-line": "warn",
+		"one-var-declaration-per-line": "off",
 		"arrow-body-style": "warn",
 		"no-confusing-arrow": "off",
 		"prefer-destructuring": "warn",

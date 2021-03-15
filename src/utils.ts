@@ -1,7 +1,19 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-redeclare */
-export const random = (min: number, max: number): number =>
-	Math.random() * (max - min) + min
+export function random(min: number, max: number): number
+export function random(range: [number, number], max?: undefined): number
+export function random(first: [number, number] | number, max?: number): number {
+	let from: number, to: number
+	if (typeof first === 'object') [from, to] = first
+	else [from, to] = [first, max || first]
+
+	return Math.random() * (to - from) + from
+}
+
+export function randomChild<T>(array: Array<T>): T
+export function randomChild(array: string): string
+export function randomChild(array: any): any {
+	return array[Math.floor(random(0, array.length))]
+}
 
 export function filterDuplicates(iterable: string): string
 export function filterDuplicates<T>(iterable: Array<T>): Array<T>

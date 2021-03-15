@@ -1,5 +1,3 @@
-const regeneratorRuntime = require('regenerator-runtime')
-
 const putEasing = p => p * p * p
 
 const random = (min, max, mathFunc = null, easing = false) => {
