@@ -184,9 +184,7 @@ class GlitchedWriter {
 		textTable.forEach((char, i) => (textTable[i].steps = randomSteps()))
 
 		const getTextToRender = () => {
-				const charAtTheEnd = (leadingChar.onTyping
-				? state.typing
-				: true)
+				const charAtTheEnd = (leadingChar.onTyping ? state.typing : true)
 					? leadingChar.char
 					: ''
 				const stringFromTextTable = textTable.reduce(

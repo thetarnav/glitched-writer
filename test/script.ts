@@ -1,7 +1,6 @@
-const { wait } = require('./utility.js')
-const _ = {
-	debounce: require('lodash.debounce'),
-}
+import { wait } from './utility.js'
+import debounce from 'lodash.debounce'
+
 const { setGlitchedWriter, glitchWrite } = require('../glitchedWriter')
 
 const textEl = document.getElementById('glitch_this'),
@@ -34,7 +33,7 @@ wait(1200)
 
 inputEl.addEventListener(
 	'input',
-	_.debounce(() => displayWriter.write(inputEl.value), 500, {
+	debounce(() => displayWriter.write(inputEl.value), 500, {
 		maxWait: 1000,
 	}),
 )

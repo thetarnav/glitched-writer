@@ -12,40 +12,20 @@
   "main": "glitchedWriter.min.js",
   "scripts": {
     "dev": "parcel test/index.pug --out-dir dev",
-    "build": "parcel build glitchedWriter.js --no-cache --out-dir . --out-file glitchedWriter.min.js",
-    "test": "parcel index.html"
+    "build": "tsc"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/preset-env": "^7.6.3",
-    "babel-eslint": "^10.0.3",
-    "browserslist": "^4.7.1",
-    "eslint": "^6.5.1",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.16.0",
-    "eslint-plugin-react-hooks": "^2.1.2",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "lodash.debounce": "^4.0.8",
     "parcel-bundler": "^1.12.4",
     "pug": "^2.0.4",
-    "sass": "^1.23.0"
+    "sass": "^1.32.8",
+    "typescript": "^4.2.3"
   },
-  "dependencies": {
-    "lodash.debounce": "^4.0.8",
-    "regenerator-runtime": "^0.13.3"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ],
-    "plugins": [
-      "@babel/plugin-proposal-class-properties"
-    ]
-  },
-  "browserslist": [
-    "defaults"
-  ],
   "keywords": [
     "glitch",
     "text",
