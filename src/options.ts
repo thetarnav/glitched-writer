@@ -18,7 +18,7 @@ interface AppendedText {
 }
 
 export default class Options {
-	steps: RangeOrNumber = [1, 7]
+	steps: RangeOrNumber = [5, 15]
 	interval: RangeOrNumber = [100, 320]
 	initialDelay: RangeOrNumber = [0, 1700]
 	changeChance: RangeOrNumber = 0.5

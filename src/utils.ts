@@ -50,3 +50,15 @@ export function deleteRandom(array: any[]): void {
 	const { length } = array
 	array.splice(random(0, length, 'floor'), 1)
 }
+
+export const wait = (time: number): Promise<number> =>
+	new Promise(resolve => setTimeout(() => resolve(time), time))
+
+export function promiseWhile(
+	conditionFunc: () => boolean,
+	actionPromise: () => Promise<any>,
+) {
+	const whilst = (): Promise<void> =>
+		conditionFunc() ? actionPromise().then(whilst) : Promise.resolve()
+	return whilst()
+}

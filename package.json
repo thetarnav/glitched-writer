@@ -9,7 +9,10 @@
     "url": "git+https://github.com/thetarnav/glitched-writer.git"
   },
   "homepage": "https://github.com/thetarnav/glitched-writer#readme",
-  "main": "glitchedWriter.min.js",
+  "main": "src/index.ts",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "dev": "parcel test/index.pug --out-dir dev",
     "build": "tsc"

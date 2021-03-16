@@ -4,11 +4,10 @@
 		"lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
-		"outDir": "dist",
-		"sourceMap": true,
+		"outDir": "./lib",
+		"declaration": true,
 		"strict": true,
-		"target": "es2017",
-		"declaration": true
+		"target": "es2017"
 	},
 	"compileOnSave": true,
 	"include": ["src"],

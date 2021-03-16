@@ -12,8 +12,11 @@ class GlitchedWriter {
 	}
 }
 
-// const example = new Char('l', 'G', new Options())
+const example = new Char('l', 'G', new Options(), (string: string) => {
+	console.log(string)
+})
 
+example.play().then(() => console.log('finished in index'))
 // while (!example.finished) {
 // 	example.proceed()
 // 	console.log(example.string)
