@@ -1,7 +1,7 @@
 {
   "name": "glitched-writer",
   "version": "1.3.0",
-  "description": "glitched text writer module",
+  "description": "Glitched text-writer module, with highly customizable settings to get the effect You're looking for. Generally for web as a client dependency, but can be also used elswere.",
   "author": "Damian Tarnawski @thetarnav <gthetarnav@gmail.com>",
   "license": "MIT",
   "repository": {
@@ -9,15 +9,17 @@
     "url": "git+https://github.com/thetarnav/glitched-writer.git"
   },
   "homepage": "https://github.com/thetarnav/glitched-writer#readme",
-  "main": "src/index.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "lib/**/*"
   ],
   "scripts": {
-    "dev": "parcel test/index.pug --out-dir dev",
+    "dev": "parcel test/index.pug --dist-dir dev",
     "build": "tsc"
   },
   "devDependencies": {
+    "@parcel/transformer-typescript-types": "^2.0.0-beta.2",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "eslint": "^6.8.0",
@@ -25,7 +27,7 @@
     "eslint-plugin-import": "^2.22.1",
     "lodash.debounce": "^4.0.8",
     "nodemon": "^2.0.7",
-    "parcel-bundler": "^1.12.4",
+    "parcel": "^2.0.0-beta.2",
     "pug": "^2.0.4",
     "sass": "^1.32.8",
     "ts-node": "^9.1.1",
@@ -35,11 +37,12 @@
     "glitch",
     "text",
     "glitch",
-    "content",
+    "header",
     "decrypt",
-    "async",
-    "front-end",
+    "content",
+    "frontend",
     "web",
-    "html"
+    "html",
+    "typewriter"
   ]
 }
