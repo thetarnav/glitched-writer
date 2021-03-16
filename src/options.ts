@@ -10,6 +10,13 @@ import GlitchedWriter from '.'
 
 type PresetName = 'default' | 'nier' | 'typewriter'
 
+const glyphs = {
+	basic:
+		'ABCĆDEFGHIJKLMNOPQRSŠTUVWXYZŽabcćdefghijklmnopqrsštuvwxyzž1234567890‘?’“!”(%)[#]{@}/&\\<-+÷×=>$€£¥¢:;,.* ',
+	full:
+		'ABCDĐEFGHIJKLMNOPQRSTUVWXYZabcdđefghijklmnopqrstuvwxyzĄąĆćŻżŹźŃńóŁłАБВГҐДЂЕЁЄЖЗЅИІЇЙЈКЛЉМНЊОПРСТЋУЎФХЦЧЏШЩЪЫЬЭЮЯабвгґдђеёєжзѕиіїйјклљмнњопрстћуўфхцчџшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωάΆέΈέΉίϊΐΊόΌύΰϋΎΫΏĂÂÊÔƠƯăâêôơư一二三四五六七八九十百千上下左右中大小月日年早木林山川土空田天生花草虫犬人名女男子目耳口手足見音力気円入出立休先夕本文字学校村町森正水火玉王石竹糸貝車金雨赤青白数多少万半形太細広長点丸交光角計直線矢弱強高同親母父姉兄弟妹自友体毛頭顔首心時曜朝昼夜分週春夏秋冬今新古間方北南東西遠近前後内外場地国園谷野原里市京風雪雲池海岩星室戸家寺通門道話言答声聞語読書記紙画絵図工教晴思考知才理算作元食肉馬牛魚鳥羽鳴麦米茶色黄黒来行帰歩走止活店買売午汽弓回会組船明社切電毎合当台楽公引科歌刀番用何ĂÂÊÔƠƯăâêôơư1234567890‘?’“!”(%)[#]{@}/\\&<-+÷×=>$€£¥¢:;,.*•°·…±†‡æ«»¦¯—–~˜¨_øÞ¿▬▭▮▯┐└╛╟╚╔╘╒╓┘┌░▒▓○‼          ',
+}
+
 const preset: { [key: string]: ConstructorOptions } = {
 	nier: {
 		interval: [40, 80],
@@ -34,13 +41,12 @@ export default class Options implements OptionsFields {
 	changeChance: RangeOrNumber = 0.5
 	ghostChance: RangeOrNumber = 0.15
 	maxGhosts: number | 'relative' = 7
-	ghostCharset: string =
-		'ABCDĐEFGHIJKLMNOPQRSTUVWXYZabcdđefghijklmnopqrstuvwxyzĄąĆćŻżŹźŃńóŁłАБВГҐДЂЕЁЄЖЗЅИІЇЙЈКЛЉМНЊОПРСТЋУЎФХЦЧЏШЩЪЫЬЭЮЯабвгґдђеёєжзѕиіїйјклљмнњопрстћуўфхцчџшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωάΆέΈέΉίϊΐΊόΌύΰϋΎΫΏĂÂÊÔƠƯăâêôơư一二三四五六七八九十百千上下左右中大小月日年早木林山川土空田天生花草虫犬人名女男子目耳口手足見音力気円入出立休先夕本文字学校村町森正水火玉王石竹糸貝車金雨赤青白数多少万半形太細広長点丸交光角計直線矢弱強高同親母父姉兄弟妹自友体毛頭顔首心時曜朝昼夜分週春夏秋冬今新古間方北南東西遠近前後内外場地国園谷野原里市京風雪雲池海岩星室戸家寺通門道話言答声聞語読書記紙画絵図工教晴思考知才理算作元食肉馬牛魚鳥羽鳴麦米茶色黄黒来行帰歩走止活店買売午汽弓回会組船明社切電毎合当台楽公引科歌刀番用何ĂÂÊÔƠƯăâêôơư1234567890‘?’“!”(%)[#]{@}/\\&<-+÷×=>$€£¥¢:;,.* •°·…±†‡æ«»¦¯—–~˜¨_øÞ¿▬▭▮▯┐└╛╟╚╔╘╒╓┘┌░▒▓○‼'
+	ghostCharset: string = glyphs.full
 	ghostsFromString: 'start' | 'end' | 'both' | false = false
 	oneAtATime: boolean = false
-	startingText: 'matching' | 'previous' | false = 'matching'
-	leadingText: AppendedText | false = false
-	trailingText: AppendedText | false = false
+	startingText: 'matching' | 'previous' | 'none' = 'previous'
+	leadingText: AppendedText | undefined = undefined
+	trailingText: AppendedText | undefined = undefined
 	writer: GlitchedWriter
 
 	constructor(
@@ -90,8 +96,18 @@ export default class Options implements OptionsFields {
 		return max
 	}
 	get genGhost(): string {
-		if (this.writer.state.nGhosts < this.genMaxGhosts)
-			return randomChild(this.ghostCharset)
+		return randomChild(this.ghostCharset)
+	}
+
+	getAppendedText(witch: 'trailing' | 'leading'): string {
+		const text = witch === 'trailing' ? this.trailingText : this.leadingText
+		if (!text) return ''
+		if (
+			text.display === 'always' ||
+			(text.display === 'when-typing' && this.writer.state.isTyping) ||
+			(text.display === 'when-not-typing' && !this.writer.state.isTyping)
+		)
+			return text.value
 		return ''
 	}
 }

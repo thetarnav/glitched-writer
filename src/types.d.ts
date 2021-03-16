@@ -3,7 +3,7 @@ export type ModifyInterface<T, R> = Omit<T, keyof R> & R
 export type RangeOrNumber = [number, number] | number
 
 export interface AppendedText {
-	text: string
+	value: string
 	display: 'always' | 'when-typing' | 'when-not-typing'
 }
 export interface OptionsFields {
@@ -16,9 +16,9 @@ export interface OptionsFields {
 	ghostCharset: string
 	ghostsFromString: 'start' | 'end' | 'both' | false
 	oneAtATime: boolean
-	startingText: 'matching' | 'previous' | false
-	leadingText: AppendedText | false
-	trailingText: AppendedText | false
+	startingText: 'matching' | 'previous' | 'none'
+	leadingText: AppendedText | undefined
+	trailingText: AppendedText | undefined
 }
 
 export type ConstructorOptions = ModifyInterface<

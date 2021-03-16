@@ -1,11 +1,11 @@
 // eslint-disable-next-line import/no-cycle
 import GlitchedWriter from './index'
 import { random, deleteRandom, wait, promiseWhile } from './utils'
+
 export default class Char {
 	char: string
 	goal: string
 	stepsLeft: number
-	maxGhosts: number
 	ghostsBefore: string[] = []
 	ghostsAfter: string[] = []
 	writer: GlitchedWriter
@@ -21,8 +21,7 @@ export default class Char {
 		this.goal = goal
 		this.writer = writer
 		this.stepsLeft = writer.options.genSteps
-		this.maxGhosts = writer.options.genMaxGhosts
-		if (initialGhosts) this.ghostsAfter = [...initialGhosts]
+		if (initialGhosts) this.ghostsBefore = [...initialGhosts]
 	}
 
 	get string(): string {
@@ -60,13 +59,9 @@ export default class Char {
 		return this.finished
 	}
 
-	forceStop() {
-		this.stop = true
-	}
-
 	nextStep(): boolean {
 		const areStepsLeft = this.stepsLeft > 0
-		if (areStepsLeft) {
+		if (areStepsLeft && this.char !== this.goal) {
 			/**
 			 * IS GROWING
 			 */
@@ -76,13 +71,12 @@ export default class Char {
 			} = this.writer.options
 
 			if (Math.random() <= ghostChance) {
-				const newGhost = this.writer.options.genGhost
-				if (newGhost) {
+				if (this.writer.state.nGhosts < this.writer.options.genMaxGhosts) {
+					const newGhost = this.writer.options.genGhost
+
 					this.writer.state.nGhosts++
-					Math.random() < 0.5
-						? insertGhost(this.ghostsBefore, newGhost)
-						: insertGhost(this.ghostsAfter, newGhost)
-				}
+					this.addGhost(newGhost)
+				} else this.removeGhost()
 			}
 			if (Math.random() <= changeChance)
 				this.char = this.writer.options.genGhost
@@ -91,11 +85,7 @@ export default class Char {
 			 * IS SHRINKING
 			 */
 			if (this.char !== this.goal) this.char = this.goal
-			else {
-				Math.random() < 0.5 && this.ghostsBefore.length > 0
-					? deleteRandom(this.ghostsBefore)
-					: deleteRandom(this.ghostsAfter)
-			}
+			this.removeGhost()
 		} else {
 			/**
 			 * IS DONE
@@ -105,6 +95,18 @@ export default class Char {
 
 		this.stepsLeft--
 		return false
+	}
+
+	addGhost(l: string) {
+		Math.random() < 0.5
+			? insertGhost(this.ghostsBefore, l)
+			: insertGhost(this.ghostsAfter, l)
+	}
+
+	removeGhost() {
+		Math.random() < 0.5 && this.ghostsBefore.length > 0
+			? deleteRandom(this.ghostsBefore)
+			: deleteRandom(this.ghostsAfter)
 	}
 }
 

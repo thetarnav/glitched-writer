@@ -26,7 +26,13 @@ export default class GlitchedWriter {
 	}
 
 	get string(): string {
-		return this.charTable.map(char => char.string).join('')
+		const charTableMap = this.charTable.map(char => char.string)
+
+		return [
+			this.options.getAppendedText('leading'),
+			charTableMap.join(''),
+			this.options.getAppendedText('trailing'),
+		].join('')
 	}
 
 	emitStep(): void {
@@ -35,11 +41,32 @@ export default class GlitchedWriter {
 	}
 
 	async write(string: string) {
+		const previous = this.string
 		this.goalString = string
-		this.charTable.forEach(char => char.forceStop())
+		this.charTable.forEach(char => (char.stop = true))
 		this.charTable = []
 		this.state.nGhosts = 0
-		;[...string].forEach(l => this.charTable.push(new Char(' ', l, this)))
+
+		if (this.options.startingText === 'matching') {
+			let ji = -1
+			Array.from(string).forEach((l, i) => {
+				const found = previous.indexOf(l, ji)
+
+				if (found !== -1) {
+					const appendedText = previous.substring(ji + 1, found)
+					this.charTable.push(new Char(l, l, this, appendedText))
+					ji = found
+					this.state.nGhosts += appendedText.length
+				} else this.charTable.push(new Char('', l, this))
+			})
+		} else
+			Array.from(string).forEach((l, i) => {
+				const statringLetter =
+					this.options.startingText === 'previous' && previous[i]
+						? previous[i]
+						: ' '
+				this.charTable.push(new Char(statringLetter, l, this))
+			})
 
 		this.pause()
 		return this.play()
@@ -70,7 +97,9 @@ export default class GlitchedWriter {
 	}
 }
 
-const exampleWriter = new GlitchedWriter()
+const exampleWriter = new GlitchedWriter({
+	trailingText: { value: ' ▓', display: 'when-typing' },
+})
 
 exampleWriter.write('Time To Die').then(res => console.log('Time to die', res))
 
