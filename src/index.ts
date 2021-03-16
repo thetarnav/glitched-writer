@@ -1,4 +1,5 @@
 // import { random, filterDuplicates } from './utils'
+// eslint-disable-next-line import/no-cycle
 import Options from './options'
 import State from './state'
 // @ts-ignore
@@ -12,14 +13,14 @@ type StepCallback = (string: string) => void
 
 // @ts-ignore
 export default class GlitchedWriter {
-	options: Options = new Options()
+	options: Options
 	state: State
 	charTable: Char[] = []
 	goalString: string | null = null
 	stepCallback: StepCallback | null = null
 
 	constructor(options?: ConstructorOptions, stepCallback?: StepCallback) {
-		if (options) this.options = new Options(options)
+		this.options = new Options(this, options)
 		if (stepCallback) this.stepCallback = stepCallback
 		this.state = new State()
 	}
@@ -35,8 +36,10 @@ export default class GlitchedWriter {
 
 	async write(string: string) {
 		this.goalString = string
+		this.charTable.forEach(char => char.forceStop())
 		this.charTable = []
-		;[...string].forEach(l => this.charTable.push(new Char('', l, this)))
+		this.state.nGhosts = 0
+		;[...string].forEach(l => this.charTable.push(new Char(' ', l, this)))
 
 		this.pause()
 		return this.play()
@@ -78,3 +81,9 @@ setTimeout(() => {
 setTimeout(() => {
 	exampleWriter.play().then(res => console.log('play', res))
 }, 2300)
+
+setTimeout(() => {
+	exampleWriter
+		.write('Something')
+		.then(res => console.log('another write', res))
+}, 4000)

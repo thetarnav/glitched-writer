@@ -12,7 +12,7 @@ export interface OptionsFields {
 	initialDelay: RangeOrNumber
 	changeChance: RangeOrNumber
 	ghostChance: RangeOrNumber
-	maxGhosts: RangeOrNumber
+	maxGhosts: number | 'relative'
 	ghostCharset: string
 	ghostsFromString: 'start' | 'end' | 'both' | false
 	oneAtATime: boolean

@@ -9,6 +9,7 @@ export default class Char {
 	ghostsBefore: string[] = []
 	ghostsAfter: string[] = []
 	writer: GlitchedWriter
+	stop: boolean = false
 
 	constructor(
 		char: string,
@@ -52,11 +53,15 @@ export default class Char {
 		await wait(this.writer.options.genInitDelay)
 
 		await promiseWhile(
-			() => !this.finished && !this.writer.state.isPaused,
+			() => !this.finished && !this.writer.state.isPaused && !this.stop,
 			loop,
 		)
 
 		return this.finished
+	}
+
+	forceStop() {
+		this.stop = true
 	}
 
 	nextStep(): boolean {
@@ -72,9 +77,12 @@ export default class Char {
 
 			if (Math.random() <= ghostChance) {
 				const newGhost = this.writer.options.genGhost
-				Math.random() < 0.5
-					? insertGhost(this.ghostsBefore, newGhost)
-					: insertGhost(this.ghostsAfter, newGhost)
+				if (newGhost) {
+					this.writer.state.nGhosts++
+					Math.random() < 0.5
+						? insertGhost(this.ghostsBefore, newGhost)
+						: insertGhost(this.ghostsAfter, newGhost)
+				}
 			}
 			if (Math.random() <= changeChance)
 				this.char = this.writer.options.genGhost
