@@ -39,19 +39,24 @@ export default class Char {
 		)
 	}
 
-	async play() {
+	async type() {
 		const loop = async () => {
 			await wait(this.writer.options.genInterval)
 
 			this.nextStep()
-			this.writer.displayStep()
+			this.writer.emitStep()
 
 			return true
 		}
 
 		await wait(this.writer.options.genInitDelay)
 
-		await promiseWhile(() => !this.finished, loop)
+		await promiseWhile(
+			() => !this.finished && !this.writer.state.isPaused,
+			loop,
+		)
+
+		return this.finished
 	}
 
 	nextStep(): boolean {
