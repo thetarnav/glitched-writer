@@ -1,23 +1,38 @@
 import { parseCharset, random, randomChild } from './utils'
-import { ModifyInterface } from './types'
+// import { ModifyInterface } from './types'
 
 type RangeOrNumber = [number, number] | number
 
 type PresetName = 'nier' | 'typewriter'
 
-type ConstructorOptions = ModifyInterface<
-	Options,
-	{
-		ghostCharset: string | string[] | Set<string>
-	}
->
+// type ConstructorOptions = ModifyInterface<
+// 	Options,
+// 	{
+// 		ghostCharset: string | string[] | Set<string>
+// 	}
+// >
+
+interface ConstructorOptions {
+	steps: RangeOrNumber
+	interval: RangeOrNumber
+	initialDelay: RangeOrNumber
+	changeChance: RangeOrNumber
+	ghostChance: RangeOrNumber
+	maxGhosts: RangeOrNumber
+	ghostCharset: string
+	ghostsFromString: 'start' | 'end' | 'both' | false
+	oneAtATime: boolean
+	startingText: 'matching' | 'previous' | false
+	leadingText: AppendedText | false
+	trailingText: AppendedText | false
+}
 
 interface AppendedText {
 	text: string
 	display: 'always' | 'when-typing' | 'when-not-typing'
 }
 
-export default class Options {
+export default class Options implements ConstructorOptions {
 	steps: RangeOrNumber = [5, 15]
 	interval: RangeOrNumber = [100, 320]
 	initialDelay: RangeOrNumber = [0, 1700]
