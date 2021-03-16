@@ -45,3 +45,8 @@ export function parseCharset(input: string | string[] | Set<string>): string {
 
 	return result
 }
+
+export function deleteRandom(array: any[]): void {
+	const { length } = array
+	array.splice(random(0, length, 'floor'), 1)
+}

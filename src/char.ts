@@ -1,13 +1,13 @@
 import Options from './options'
-import { random } from './utils'
+import { random, deleteRandom } from './utils'
 
 export default class Char {
 	char: string
 	goal: string
 	stepsLeft: number
 	maxGhosts: number
-	ghostsBefore: string = ''
-	ghostsAfter: string = ''
+	ghostsBefore: string[] = []
+	ghostsAfter: string[] = []
 	writerOptions: Options
 
 	constructor(
@@ -21,31 +21,66 @@ export default class Char {
 		this.writerOptions = options
 		this.stepsLeft = options.genSteps
 		this.maxGhosts = options.genMaxGhosts
-		if (initialGhosts) this.ghostsAfter = initialGhosts
+		if (initialGhosts) this.ghostsAfter = [...initialGhosts]
 	}
 
 	get string(): string {
 		const { char, ghostsAfter, ghostsBefore } = this
-		return [ghostsBefore, char, ghostsAfter].join('')
+		return [ghostsBefore.join(''), char, ghostsAfter.join('')].join('')
 	}
 
-	proceed() {
-		if (this.stepsLeft === 0) return
+	get finished(): boolean {
+		const { stepsLeft, char, goal, ghostsBefore, ghostsAfter } = this
+		return (
+			stepsLeft <= 0 &&
+			char === goal &&
+			ghostsBefore.length === 0 &&
+			ghostsAfter.length === 0
+		)
+	}
 
-		const { genGhostChance: ghostChance } = this.writerOptions,
-			newGhost =
-				Math.random() <= ghostChance ? this.writerOptions.genGhost : ''
+	proceed(): boolean {
+		const areStepsLeft = this.stepsLeft > 0
+		if (areStepsLeft) {
+			/**
+			 * IS GROWING
+			 */
+			const {
+					genGhostChance: ghostChance,
+					genChangeChance: changeChance,
+				} = this.writerOptions,
+				newGhost =
+					Math.random() <= ghostChance ? this.writerOptions.genGhost : ''
 
-		if (newGhost)
-			Math.random() < 0.5
-				? (this.ghostsBefore = insertGhost(this.ghostsBefore, newGhost))
-				: (this.ghostsAfter = insertGhost(this.ghostsAfter, newGhost))
+			if (newGhost)
+				Math.random() < 0.5
+					? insertGhost(this.ghostsBefore, newGhost)
+					: insertGhost(this.ghostsAfter, newGhost)
+			else if (Math.random() <= changeChance)
+				this.char = this.writerOptions.genGhost
+		} else if (!this.finished) {
+			/**
+			 * IS SHRINKING
+			 */
+			if (this.char !== this.goal) this.char = this.goal
+			else {
+				Math.random() < 0.5 && this.ghostsBefore.length > 0
+					? deleteRandom(this.ghostsBefore)
+					: deleteRandom(this.ghostsAfter)
+			}
+		} else {
+			/**
+			 * IS DONE
+			 */
+			return true
+		}
+
+		this.stepsLeft--
+		return false
 	}
 }
 
-function insertGhost(ghostsString: string, ghost: string): string {
-	const { length } = ghostsString,
-		array = [...ghostsString]
-	array.splice(random(0, length, 'floor'), 0, ghost)
-	return array.join('')
+function insertGhost(ghostsArray: string[], ghost: string) {
+	const { length } = ghostsArray
+	ghostsArray.splice(random(0, length, 'floor'), 0, ghost)
 }
