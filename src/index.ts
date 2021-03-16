@@ -1,24 +1,50 @@
 // import { random, filterDuplicates } from './utils'
 import Options from './options'
 // @ts-ignore
+// eslint-disable-next-line import/no-cycle
 import Char from './char'
 
-// @ts-ignore
-class GlitchedWriter {
-	options: Options = new Options()
+import { ConstructorOptions } from './types'
 
-	constructor(options?: Options) {
+// eslint-disable-next-line no-unused-vars
+type StepCallback = (string: string) => void
+
+// @ts-ignore
+export default class GlitchedWriter {
+	options: Options = new Options()
+	goalString: string | null = null
+	charTable: Char[] = []
+	stepCallback: StepCallback | null = null
+
+	constructor(options?: ConstructorOptions, stepCallback?: StepCallback) {
 		if (options) this.options = new Options(options)
+		if (stepCallback) this.stepCallback = stepCallback
+	}
+
+	get string(): string {
+		return this.charTable.map(char => char.string).join('')
+	}
+
+	displayStep(): void {
+		console.log('string:', this.string)
+		// if (this.stepCallback) this.stepCallback(this.string)
+	}
+
+	async write(string: string) {
+		this.goalString = string
+
+		const playList: Promise<void>[] = []
+
+		;[...string].forEach(l => {
+			const char = new Char('', l, this)
+			this.charTable.push(char)
+			playList.push(char.play())
+		})
+
+		return Promise.all(playList)
 	}
 }
 
-const example = new Char('l', 'G', new Options(), (string: string) => {
-	console.log(string)
-})
+const exampleWriter = new GlitchedWriter()
 
-example.play().then(() => console.log('finished in index'))
-// while (!example.finished) {
-// 	example.proceed()
-// 	console.log(example.string)
-// }
-// console.log('Finished')
+exampleWriter.write('Time To Die')

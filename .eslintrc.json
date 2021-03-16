@@ -97,6 +97,7 @@
 		"import/extensions": "off",
 		"max-classes-per-file": "warn",
 		"no-useless-constructor": "warn",
-		"no-empty-function": "warn"
+		"no-empty-function": "warn",
+		"no-multi-spaces": "warn"
 	}
 }

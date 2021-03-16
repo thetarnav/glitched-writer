@@ -1,7 +1,6 @@
-import Options from './options'
+// eslint-disable-next-line import/no-cycle
+import GlitchedWriter from './index'
 import { random, deleteRandom, wait, promiseWhile } from './utils'
-
-type StepCallback = (string: string) => void
 export default class Char {
 	char: string
 	goal: string
@@ -9,22 +8,19 @@ export default class Char {
 	maxGhosts: number
 	ghostsBefore: string[] = []
 	ghostsAfter: string[] = []
-	writerOptions: Options
-	stepCallback: StepCallback
+	writer: GlitchedWriter
 
 	constructor(
 		char: string,
 		goal: string,
-		options: Options,
-		stepCallback: StepCallback,
+		writer: GlitchedWriter,
 		initialGhosts?: string,
 	) {
 		this.char = char
 		this.goal = goal
-		this.writerOptions = options
-		this.stepCallback = stepCallback
-		this.stepsLeft = options.genSteps
-		this.maxGhosts = options.genMaxGhosts
+		this.writer = writer
+		this.stepsLeft = writer.options.genSteps
+		this.maxGhosts = writer.options.genMaxGhosts
 		if (initialGhosts) this.ghostsAfter = [...initialGhosts]
 	}
 
@@ -45,15 +41,15 @@ export default class Char {
 
 	async play() {
 		const loop = async () => {
-			await wait(this.writerOptions.genInterval)
+			await wait(this.writer.options.genInterval)
 
 			this.nextStep()
-			this.stepCallback(this.string)
+			this.writer.displayStep()
 
 			return true
 		}
 
-		await wait(this.writerOptions.genInitDelay)
+		await wait(this.writer.options.genInitDelay)
 
 		await promiseWhile(() => !this.finished, loop)
 	}
@@ -67,16 +63,16 @@ export default class Char {
 			const {
 				genGhostChance: ghostChance,
 				genChangeChance: changeChance,
-			} = this.writerOptions
+			} = this.writer.options
 
 			if (Math.random() <= ghostChance) {
-				const newGhost = this.writerOptions.genGhost
+				const newGhost = this.writer.options.genGhost
 				Math.random() < 0.5
 					? insertGhost(this.ghostsBefore, newGhost)
 					: insertGhost(this.ghostsAfter, newGhost)
 			}
 			if (Math.random() <= changeChance)
-				this.char = this.writerOptions.genGhost
+				this.char = this.writer.options.genGhost
 		} else if (!this.finished) {
 			/**
 			 * IS SHRINKING
