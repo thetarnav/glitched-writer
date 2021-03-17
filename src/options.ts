@@ -44,7 +44,7 @@ export default class Options implements OptionsFields {
 	ghostCharset: string = glyphs.full
 	ghostsFromString: 'start' | 'end' | 'both' | false = false
 	oneAtATime: boolean = false
-	startingText: 'matching' | 'previous' | 'none' = 'matching'
+	startFrom: 'matching' | 'previous' | 'erase' = 'matching'
 	leadingText: AppendedText | undefined = undefined
 	trailingText: AppendedText | undefined = undefined
 	writer: GlitchedWriter
@@ -66,7 +66,7 @@ export default class Options implements OptionsFields {
 			this.ghostCharset = parseCharset(options.ghostCharset)
 		this.ghostsFromString = options.ghostsFromString ?? this.ghostsFromString
 		this.oneAtATime = options.oneAtATime ?? this.oneAtATime
-		this.startingText = options.startingText ?? this.startingText
+		this.startFrom = options.startFrom ?? this.startFrom
 		this.leadingText = options.leadingText ?? this.leadingText
 		this.trailingText = options.trailingText ?? this.trailingText
 		this.writer = writer

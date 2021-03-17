@@ -30,12 +30,9 @@ export default class Char {
 	}
 
 	get finished(): boolean {
-		const { stepsLeft, char, goal, ghostsBefore, ghostsAfter } = this
+		const { char, goal, ghostsBefore, ghostsAfter } = this
 		return (
-			stepsLeft <= 0 &&
-			char === goal &&
-			ghostsBefore.length === 0 &&
-			ghostsAfter.length === 0
+			char === goal && ghostsBefore.length === 0 && ghostsAfter.length === 0
 		)
 	}
 

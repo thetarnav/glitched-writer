@@ -62,3 +62,6 @@ export function promiseWhile(
 		conditionFunc() ? actionPromise().then(whilst) : Promise.resolve()
 	return whilst()
 }
+
+export const arrayOfTheSame = <T>(value: T, length: number): Array<T> =>
+	new Array(length).fill(value)

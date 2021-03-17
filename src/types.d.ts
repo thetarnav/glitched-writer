@@ -16,7 +16,7 @@ export interface OptionsFields {
 	ghostCharset: string
 	ghostsFromString: 'start' | 'end' | 'both' | false
 	oneAtATime: boolean
-	startingText: 'matching' | 'previous' | 'none'
+	startFrom: 'matching' | 'previous' | 'erase'
 	leadingText: AppendedText | undefined
 	trailingText: AppendedText | undefined
 }
