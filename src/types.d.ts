@@ -15,7 +15,7 @@ export interface OptionsFields {
 	maxGhosts: number | 'relative'
 	ghostCharset: string
 	ghostsFromString: 'start' | 'end' | 'both' | false
-	oneAtATime: boolean
+	oneAtATime: boolean | 'reverse'
 	startFrom: 'matching' | 'previous' | 'erase'
 	leadingText: AppendedText | undefined
 	trailingText: AppendedText | undefined

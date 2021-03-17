@@ -7,13 +7,18 @@ import State from './state'
 import Char from './char'
 
 import { ConstructorOptions } from './types'
-import { wait } from './utils'
+// @ts-ignore
+import { wait, promiseWhile, isInRange } from './utils'
 
 // eslint-disable-next-line no-unused-vars
 type StepCallback = (string: string) => void
 
 interface WriteOptions {
-	erase: boolean
+	erase?: boolean
+}
+
+interface PlayOptions {
+	reverse?: boolean
 }
 
 // @ts-ignore
@@ -60,7 +65,9 @@ export default class GlitchedWriter {
 		else this.createPreviousCharTable()
 
 		this.pause()
-		return this.play()
+		return this.play({
+			reverse: this.options.oneAtATime && writeOptions?.erase,
+		})
 	}
 
 	// private eraseThenWrite
@@ -93,14 +100,32 @@ export default class GlitchedWriter {
 		)
 	}
 
-	async play() {
+	async play(playOptions?: PlayOptions) {
 		const playList: Promise<boolean>[] = [],
-			{ charTable } = this
+			{ charTable } = this,
+			{ length } = charTable
 
 		if (this.state.isTyping) return false
 
 		this.state.play()
 
+		if (this.options.oneAtATime) {
+			const reverse = playOptions?.reverse ?? false
+
+			let i = reverse ? length - 1 : 0,
+				lastResult: boolean = true
+
+			const loop = async (): Promise<void> => {
+				lastResult = await charTable[i].type()
+				reverse ? i-- : i++
+			}
+			await promiseWhile(
+				() => isInRange(0, i, length) && lastResult && !this.state.isPaused,
+				loop,
+			)
+
+			return lastResult
+		}
 		charTable.forEach(char => playList.push(char.type()))
 
 		try {
@@ -127,13 +152,25 @@ function makeGoalArray(previous: string, goal: string): string[] {
 	return goalArray
 }
 
-const exampleWriter = new GlitchedWriter({ startFrom: 'erase' })
+const exampleWriter = new GlitchedWriter({
+	startFrom: 'erase',
+	oneAtATime: true,
+	initialDelay: 0,
+	interval: [20, 50],
+	steps: [2, 10],
+	maxGhosts: 2,
+	changeChance: 0.8,
+})
 
 // eslint-disable-next-line func-names
 ;(async function () {
 	await exampleWriter.write('Time To Die')
-	await wait(200)
+	await wait(1000)
 	await exampleWriter.write('Some weird string')
-	await wait(200)
+	await wait(1000)
 	await exampleWriter.write('Number two!')
 })()
+
+// exampleWriter.write('Time To Die').then(console.log)
+
+// setTimeout(() => exampleWriter.pause(), 2000)

@@ -65,3 +65,7 @@ export function promiseWhile(
 
 export const arrayOfTheSame = <T>(value: T, length: number): Array<T> =>
 	new Array(length).fill(value)
+
+export const isInRange = (min: number, value: number, max: number): boolean => {
+	return value >= min && value < max
+}

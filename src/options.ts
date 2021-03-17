@@ -43,7 +43,7 @@ export default class Options implements OptionsFields {
 	maxGhosts: number | 'relative' = 7
 	ghostCharset: string = glyphs.full
 	ghostsFromString: 'start' | 'end' | 'both' | false = false
-	oneAtATime: boolean = false
+	oneAtATime: boolean | 'reverse' = false
 	startFrom: 'matching' | 'previous' | 'erase' = 'matching'
 	leadingText: AppendedText | undefined = undefined
 	trailingText: AppendedText | undefined = undefined
