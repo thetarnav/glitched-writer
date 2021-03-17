@@ -98,6 +98,7 @@
 		"max-classes-per-file": "warn",
 		"no-useless-constructor": "warn",
 		"no-empty-function": "warn",
-		"no-multi-spaces": "warn"
+		"no-multi-spaces": "warn",
+		"wrap-iife": "off"
 	}
 }

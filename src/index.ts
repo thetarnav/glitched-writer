@@ -7,6 +7,7 @@ import State from './state'
 import Char from './char'
 
 import { ConstructorOptions } from './types'
+import { wait } from './utils'
 
 // eslint-disable-next-line no-unused-vars
 type StepCallback = (string: string) => void
@@ -47,26 +48,32 @@ export default class GlitchedWriter {
 		this.charTable = []
 		this.state.nGhosts = 0
 
-		if (this.options.startingText === 'matching') {
-			let ji = -1
-			Array.from(string).forEach((l, i) => {
-				const found = previous.indexOf(l, ji)
+		const goalStringArray = makeGoalArray(previous, string)
 
-				if (found !== -1) {
-					const appendedText = previous.substring(ji + 1, found)
+		if (this.options.startingText === 'matching') {
+			let pi = -1
+			goalStringArray.forEach((l, gi) => {
+				pi++
+				if (l === '' && !previous[pi]) return
+				const fi = l !== '' ? previous.indexOf(l, pi) : -1
+
+				if (fi !== -1) {
+					const appendedText = previous.substring(pi, fi)
 					this.charTable.push(new Char(l, l, this, appendedText))
-					ji = found
+					pi = fi
 					this.state.nGhosts += appendedText.length
-				} else this.charTable.push(new Char('', l, this))
+				} else this.charTable.push(new Char(previous[pi] || '', l, this))
 			})
 		} else
-			Array.from(string).forEach((l, i) => {
+			goalStringArray.forEach((l, i) => {
 				const statringLetter =
 					this.options.startingText === 'previous' && previous[i]
 						? previous[i]
 						: ' '
 				this.charTable.push(new Char(statringLetter, l, this))
 			})
+
+		// console.log(this.charTable.map(({ char, goal }) => `${char}->${goal}`))
 
 		this.pause()
 		return this.play()
@@ -97,22 +104,40 @@ export default class GlitchedWriter {
 	}
 }
 
-const exampleWriter = new GlitchedWriter({
-	trailingText: { value: ' ▓', display: 'when-typing' },
-})
+function makeGoalArray(previous: string, goal: string): string[] {
+	const goalArray = Array.from(goal),
+		prevGtGoal = Math.max(previous.length - goal.length, 0)
 
-exampleWriter.write('Time To Die').then(res => console.log('Time to die', res))
+	for (let i = 0; i < prevGtGoal; i++) {
+		goalArray.push('')
+	}
 
-setTimeout(() => {
-	exampleWriter.pause()
-}, 1000)
+	return goalArray
+}
 
-setTimeout(() => {
-	exampleWriter.play().then(res => console.log('play', res))
-}, 2300)
+const exampleWriter = new GlitchedWriter()
 
-setTimeout(() => {
-	exampleWriter
-		.write('Something')
-		.then(res => console.log('another write', res))
-}, 4000)
+// eslint-disable-next-line wrap-iife
+;(async function name() {
+	await exampleWriter.write('Time To Die')
+	await wait(200)
+	await exampleWriter.write('Some weird string!')
+	await wait(200)
+	await exampleWriter.write('Number two!')
+})()
+
+// exampleWriter.write('Time To Die').then(res => console.log('Time to die', res))
+
+// setTimeout(() => {
+// 	exampleWriter.pause()
+// }, 1000)
+
+// setTimeout(() => {
+// 	exampleWriter.play().then(res => console.log('play', res))
+// }, 2300)
+
+// setTimeout(() => {
+// 	exampleWriter
+// 		.write('Awkward testing!')
+// 		.then(res => console.log('another write', res))
+// }, 4000)
