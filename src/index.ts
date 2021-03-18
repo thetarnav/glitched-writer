@@ -12,7 +12,7 @@ import { promiseWhile, isInRange } from './utils'
 // eslint-disable-next-line no-unused-vars
 type StepCallback = (string: string, writerData?: WriterDataResponse) => any
 
-interface WriterDataResponse {
+export interface WriterDataResponse {
 	string: string
 	writer: GlitchedWriter
 	options: Options
@@ -24,6 +24,7 @@ interface WriterDataResponse {
 
 // @ts-ignore
 export default class GlitchedWriter {
+	htmlElement?: HTMLElement
 	options: Options
 	state: State
 	charTable: Char[] = []
@@ -31,10 +32,15 @@ export default class GlitchedWriter {
 	goalString: string = ''
 	onStepCallback?: StepCallback
 
-	constructor(options?: ConstructorOptions, onStepCallback?: StepCallback) {
+	constructor(
+		options?: ConstructorOptions,
+		htmlElement?: HTMLElement,
+		onStepCallback?: StepCallback,
+	) {
 		this.options = new Options(this, options)
 		if (onStepCallback) this.onStepCallback = onStepCallback
 		this.state = new State()
+		this.htmlElement = htmlElement
 	}
 
 	get string(): string {
@@ -59,16 +65,21 @@ export default class GlitchedWriter {
 		}
 	}
 
+	get genPreviousString(): string {
+		return this.htmlElement?.textContent?.trim() ?? this.previousString
+	}
+
 	emitStep(): void {
+		if (this.htmlElement) this.htmlElement.textContent = this.string
 		if (this.onStepCallback)
 			this.onStepCallback(this.string, this.getWriterData())
 	}
 
 	async write(string: string, writeOptions?: WriteOptions) {
 		if (this.options.startFrom === 'erase' && !writeOptions?.erase)
-			await this.write(''.padEnd(string.length, ' '), { erase: true })
+			await this.write(this.genEraseGoalString(string), { erase: true })
 
-		this.previousString = this.string
+		this.previousString = this.htmlElement?.textContent ?? this.string
 		this.goalString = string
 		this.charTable.forEach(char => (char.stop = true))
 		this.charTable = []
@@ -137,21 +148,23 @@ export default class GlitchedWriter {
 	}
 
 	private createMatchingCharTable(): void {
-		const { previousString: previous, goalString: goal } = this,
-			goalStringArray = makeGoalArray(previous, goal)
+		const { genPreviousString: previous, goalString: goal } = this,
+			goalStringArray = makeGoalArray(previous, goal),
+			maxDist = Math.ceil(this.options.genMaxGhosts / 2)
 
 		let pi = -1
-		goalStringArray.forEach(l => {
+		goalStringArray.forEach(gl => {
+			const pl = previous[pi]
 			pi++
-			if (l === '' && !previous[pi]) return
-			const fi = l !== '' ? previous.indexOf(l, pi) : -1
+			if (gl === '' && !pl) return
+			const fi = gl !== '' ? previous.indexOf(gl, pi) : -1
 
-			if (fi !== -1) {
+			if (fi !== -1 && fi - pi <= maxDist) {
 				const appendedText = previous.substring(pi, fi)
-				this.charTable.push(new Char(l, l, this, appendedText))
+				this.charTable.push(new Char(gl, gl, this, appendedText))
 				pi = fi
 				this.state.nGhosts += appendedText.length
-			} else this.charTable.push(new Char(previous[pi] || ' ', l, this))
+			} else this.charTable.push(new Char(pl || ' ', gl, this))
 		})
 	}
 
@@ -177,6 +190,24 @@ export default class GlitchedWriter {
 			error,
 		}
 	}
+
+	private genEraseGoalString(goal: string): string {
+		const { genPreviousString: previous } = this
+		let result = ''
+
+		for (let i = 0; i < goal.length; i++) {
+			const gl = goal[i],
+				pl = previous[i] ?? ''
+
+			if (gl === pl) result += pl
+			else break
+		}
+
+		const diff = Math.max(goal.length - result.length, 0)
+		if (diff > 0) result = result.padEnd(diff, ' ')
+
+		return result
+	}
 }
 
 function makeGoalArray(previous: string, goal: string): string[] {
@@ -190,14 +221,16 @@ function makeGoalArray(previous: string, goal: string): string[] {
 
 export const createGlitchedWriter = (
 	options?: ConstructorOptions,
+	htmlElement?: HTMLElement,
 	onStepCallback?: StepCallback,
-): GlitchedWriter => new GlitchedWriter(options, onStepCallback)
+): GlitchedWriter => new GlitchedWriter(options, htmlElement, onStepCallback)
 
 export async function glitchWrite(
 	string: string,
+	htmlElement?: HTMLElement,
 	options?: ConstructorOptions,
 	onStepCallback?: StepCallback,
 ): Promise<WriterDataResponse> {
-	const writer = new GlitchedWriter(options, onStepCallback)
+	const writer = new GlitchedWriter(options, htmlElement, onStepCallback)
 	return writer.write(string)
 }

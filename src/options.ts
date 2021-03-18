@@ -36,9 +36,9 @@ const preset: { [key: string]: ConstructorOptions } = {
 
 export default class Options implements OptionsFields {
 	steps: RangeOrNumber = [1, 7]
-	interval: RangeOrNumber = [100, 320]
+	interval: RangeOrNumber = [50, 200]
 	initialDelay: RangeOrNumber = [0, 1700]
-	changeChance: RangeOrNumber = 0.5
+	changeChance: RangeOrNumber = 0.6
 	ghostChance: RangeOrNumber = 0.15
 	maxGhosts: number | 'relative' = 7
 	glyphs: string = glyphs.full
