@@ -19,6 +19,7 @@ export interface OptionsFields {
 	startFrom: 'matching' | 'previous' | 'erase'
 	leadingText: AppendedText | undefined
 	trailingText: AppendedText | undefined
+	reverseOutput: boolean
 }
 
 export type ConstructorOptions = ModifyInterface<

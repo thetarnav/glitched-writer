@@ -1,27 +1,13 @@
 import debounce from 'lodash.debounce'
 
-import { wait } from './utility.js'
-import GlitchedWriter, { WriterDataResponse } from '../src'
+import { wait } from '../src/utils'
+import GlitchedWriter, { WriterDataResponse, presets, glyphs } from '../src'
 
 const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input') as HTMLInputElement,
 	logsEl = document.getElementById('logs')
 
-const writer = new GlitchedWriter(
-	{
-		// startFrom: 'previous',
-		// startFrom: 'erase',
-		// oneAtATime: true,
-		// initialDelay: 0,
-		// interval: [10, 30],
-		// steps: [1, 7],
-		// maxGhosts: 1,
-		// changeChance: 0.8,
-		// glyphs: '',
-		// glyphsFromString: 'both',
-	},
-	textEl,
-)
+const writer = new GlitchedWriter(undefined, textEl)
 
 // eslint-disable-next-line func-names
 ;(async function () {

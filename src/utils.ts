@@ -69,3 +69,16 @@ export const arrayOfTheSame = <T>(value: T, length: number): Array<T> =>
 export const isInRange = (min: number, value: number, max: number): boolean => {
 	return value >= min && value < max
 }
+
+export const animateWithClass = (
+	element: HTMLElement,
+	className: string,
+): void => {
+	element.classList.remove(className)
+	// eslint-disable-next-line no-void
+	void element.offsetWidth
+	element.classList.add(className)
+}
+
+export const reverseString = (str: string): string =>
+	str.split('').reverse().join('')

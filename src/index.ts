@@ -7,7 +7,16 @@ import Char from './char'
 
 import { ConstructorOptions, WriteOptions, PlayOptions } from './types'
 // @ts-ignore
-import { promiseWhile, isInRange } from './utils'
+import {
+	promiseWhile,
+	isInRange,
+	animateWithClass,
+	reverseString,
+} from './utils'
+
+import { presets, glyphs } from './presets'
+
+export { presets, glyphs }
 
 // eslint-disable-next-line no-unused-vars
 type StepCallback = (string: string, writerData?: WriterDataResponse) => any
@@ -66,13 +75,21 @@ export default class GlitchedWriter {
 	}
 
 	get genPreviousString(): string {
-		return this.htmlElement?.textContent?.trim() ?? this.previousString
+		let elTextContent = this.htmlElement?.textContent
+		if (this.options.reverseOutput)
+			elTextContent &&= reverseString(elTextContent)
+		return (elTextContent ?? this.previousString).trim()
 	}
 
 	emitStep(): void {
-		if (this.htmlElement) this.htmlElement.textContent = this.string
-		if (this.onStepCallback)
-			this.onStepCallback(this.string, this.getWriterData())
+		const { htmlElement } = this
+		let { string } = this
+
+		if (this.options.reverseOutput) string = reverseString(string)
+
+		if (htmlElement) htmlElement.textContent = string
+		if (htmlElement) htmlElement.setAttribute('data-string', string)
+		if (this.onStepCallback) this.onStepCallback(string, this.getWriterData())
 	}
 
 	async write(string: string, writeOptions?: WriteOptions) {
@@ -106,6 +123,7 @@ export default class GlitchedWriter {
 			)
 
 		this.state.play()
+		this.toggleClass(true)
 
 		if (this.options.oneAtATime) {
 			const reverse = playOptions?.reverse ?? false
@@ -122,18 +140,13 @@ export default class GlitchedWriter {
 				loop,
 			)
 
-			return lastResult
-				? this.getWriterData('SUCCESS', `The writer finished typing.`)
-				: this.getWriterData('ERROR', `Writer failed to finish typing.`)
+			return this.returnResult(lastResult)
 		}
 		charTable.forEach(char => playList.push(char.type()))
 
 		try {
 			const finished = (await Promise.all(playList)).every(result => result)
-			finished && this.state.finish()
-			return finished
-				? this.getWriterData('SUCCESS', `The writer finished typing.`)
-				: this.getWriterData('ERROR', `Writer failed to finish typing.`)
+			return this.returnResult(finished)
 		} catch (error) {
 			this.getWriterData('ERROR', 'Writer encountered an error.', error)
 		}
@@ -144,7 +157,25 @@ export default class GlitchedWriter {
 	}
 
 	pause() {
+		this.toggleClass(false)
 		this.state.pause()
+	}
+
+	private returnResult(finished: boolean): WriterDataResponse {
+		finished && this.state.finish()
+		this.emitStep()
+		this.toggleClass(false)
+		return finished
+			? this.getWriterData('SUCCESS', `The writer finished typing.`)
+			: this.getWriterData('ERROR', `Writer failed to finish typing.`)
+	}
+
+	private toggleClass(enable: boolean): void {
+		const el = this.htmlElement,
+			className = 'glitched-writer--writing'
+		if (!el) return
+
+		enable ? animateWithClass(el, className) : el.classList.remove(className)
 	}
 
 	private createMatchingCharTable(): void {
