@@ -13,8 +13,8 @@ export interface OptionsFields {
 	changeChance: RangeOrNumber
 	ghostChance: RangeOrNumber
 	maxGhosts: number | 'relative'
-	ghostCharset: string
-	ghostsFromString: 'start' | 'end' | 'both' | false
+	glyphs: string
+	glyphsFromString: 'previous' | 'goal' | 'both' | 'none'
 	oneAtATime: boolean | 'reverse'
 	startFrom: 'matching' | 'previous' | 'erase'
 	leadingText: AppendedText | undefined
@@ -24,6 +24,14 @@ export interface OptionsFields {
 export type ConstructorOptions = ModifyInterface<
 	Partial<OptionsFields>,
 	{
-		ghostCharset?: string | string[] | Set<string>
+		glyphs?: string | string[] | Set<string>
 	}
 >
+
+export interface WriteOptions {
+	erase?: boolean
+}
+
+export interface PlayOptions {
+	reverse?: boolean
+}

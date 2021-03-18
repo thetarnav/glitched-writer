@@ -1,4 +1,3 @@
-// import { random, filterDuplicates } from './utils'
 // eslint-disable-next-line import/no-cycle
 import Options from './options'
 import State from './state'
@@ -6,20 +5,12 @@ import State from './state'
 // eslint-disable-next-line import/no-cycle
 import Char from './char'
 
-import { ConstructorOptions } from './types'
+import { ConstructorOptions, WriteOptions, PlayOptions } from './types'
 // @ts-ignore
 import { wait, promiseWhile, isInRange } from './utils'
 
 // eslint-disable-next-line no-unused-vars
 type StepCallback = (string: string) => void
-
-interface WriteOptions {
-	erase?: boolean
-}
-
-interface PlayOptions {
-	reverse?: boolean
-}
 
 // @ts-ignore
 export default class GlitchedWriter {
@@ -156,10 +147,12 @@ const exampleWriter = new GlitchedWriter({
 	startFrom: 'erase',
 	oneAtATime: true,
 	initialDelay: 0,
-	interval: [20, 50],
-	steps: [2, 10],
-	maxGhosts: 2,
+	interval: [10, 30],
+	steps: [1, 7],
+	maxGhosts: 1,
 	changeChance: 0.8,
+	glyphs: '',
+	glyphsFromString: 'both',
 })
 
 // eslint-disable-next-line func-names
