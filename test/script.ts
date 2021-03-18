@@ -1,5 +1,5 @@
-import { wait } from './utility.js'
 import debounce from 'lodash.debounce'
+import { wait } from './utility.js'
 
 const { setGlitchedWriter, glitchWrite } = require('../glitchedWriter')
 

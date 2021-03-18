@@ -181,6 +181,20 @@ function makeGoalArray(previous: string, goal: string): string[] {
 	return goalArray
 }
 
+export const createGlitchedWriter = (
+	options?: ConstructorOptions,
+	onStepCallback?: StepCallback,
+): GlitchedWriter => new GlitchedWriter(options, onStepCallback)
+
+export async function glitchWrite(
+	string: string,
+	options?: ConstructorOptions,
+	onStepCallback?: StepCallback,
+): Promise<WriterDataResponse> {
+	const writer = new GlitchedWriter(options, onStepCallback)
+	return writer.write(string)
+}
+
 // const exampleWriter = new GlitchedWriter({
 // 	startFrom: 'erase',
 // 	oneAtATime: true,
