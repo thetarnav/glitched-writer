@@ -10,7 +10,16 @@ import { ConstructorOptions, WriteOptions, PlayOptions } from './types'
 import { wait, promiseWhile, isInRange } from './utils'
 
 // eslint-disable-next-line no-unused-vars
-type StepCallback = (string: string) => void
+type StepCallback = (string: string, writerData?: WriterDataResponse) => any
+
+interface WriterDataResponse {
+	writer: GlitchedWriter
+	options: Options
+	state: State
+	status?: 'ERROR' | 'SUCCESS'
+	message?: string
+	error?: any
+}
 
 // @ts-ignore
 export default class GlitchedWriter {
@@ -19,11 +28,11 @@ export default class GlitchedWriter {
 	charTable: Char[] = []
 	previousString: string = ''
 	goalString: string = ''
-	stepCallback: StepCallback | null = null
+	onStepCallback?: StepCallback
 
-	constructor(options?: ConstructorOptions, stepCallback?: StepCallback) {
+	constructor(options?: ConstructorOptions, onStepCallback?: StepCallback) {
 		this.options = new Options(this, options)
-		if (stepCallback) this.stepCallback = stepCallback
+		if (onStepCallback) this.onStepCallback = onStepCallback
 		this.state = new State()
 	}
 
@@ -39,7 +48,8 @@ export default class GlitchedWriter {
 
 	emitStep(): void {
 		console.log('string:', this.string)
-		if (this.stepCallback) this.stepCallback(this.string)
+		if (this.onStepCallback)
+			this.onStepCallback(this.string, this.getWriterData())
 	}
 
 	async write(string: string, writeOptions?: WriteOptions) {
@@ -91,12 +101,16 @@ export default class GlitchedWriter {
 		)
 	}
 
-	async play(playOptions?: PlayOptions) {
+	async play(playOptions?: PlayOptions): Promise<WriterDataResponse> {
 		const playList: Promise<boolean>[] = [],
 			{ charTable } = this,
 			{ length } = charTable
 
-		if (this.state.isTyping) return false
+		if (this.state.isTyping)
+			return this.getWriterData(
+				'ERROR',
+				`The writer is already typing "${this.goalString}".`,
+			)
 
 		this.state.play()
 
@@ -116,6 +130,8 @@ export default class GlitchedWriter {
 			)
 
 			return lastResult
+				? this.getWriterData('SUCCESS', `The writer finished typing.`)
+				: this.getWriterData('ERROR', `Writer failed to finish typing.`)
 		}
 		charTable.forEach(char => playList.push(char.type()))
 
@@ -123,14 +139,36 @@ export default class GlitchedWriter {
 			const finished = (await Promise.all(playList)).every(result => result)
 			finished && this.state.finish()
 			return finished
+				? this.getWriterData('SUCCESS', `The writer finished typing.`)
+				: this.getWriterData('ERROR', `Writer failed to finish typing.`)
 		} catch (error) {
-			console.error(error)
-			return false
+			this.getWriterData('ERROR', 'Writer encountered an error.', error)
 		}
+
+		return this.state.finished
+			? this.getWriterData('SUCCESS', `The writer finished typing.`)
+			: this.getWriterData('ERROR', `Writer failed to finish typing.`)
 	}
 
 	pause() {
 		this.state.pause()
+	}
+
+	getWriterData(
+		status?: WriterDataResponse['status'],
+		message?: WriterDataResponse['message'],
+		error?: WriterDataResponse['error'],
+	): WriterDataResponse {
+		const writer: GlitchedWriter = this,
+			{ options, state } = this
+		return {
+			writer,
+			options,
+			state,
+			status,
+			message,
+			error,
+		}
 	}
 }
 
@@ -143,21 +181,33 @@ function makeGoalArray(previous: string, goal: string): string[] {
 	return goalArray
 }
 
+// const exampleWriter = new GlitchedWriter({
+// 	startFrom: 'erase',
+// 	oneAtATime: true,
+// 	initialDelay: 0,
+// 	interval: [10, 30],
+// 	steps: [1, 7],
+// 	maxGhosts: 1,
+// 	changeChance: 0.8,
+// 	glyphs: '',
+// 	glyphsFromString: 'both',
+// })
+
 const exampleWriter = new GlitchedWriter({
 	startFrom: 'erase',
 	oneAtATime: true,
 	initialDelay: 0,
-	interval: [10, 30],
-	steps: [1, 7],
+	interval: [150, 350],
+	steps: [0, 1],
 	maxGhosts: 1,
-	changeChance: 0.8,
-	glyphs: '',
-	glyphsFromString: 'both',
+	changeChance: 0,
+	glyphs: '@',
 })
 
 // eslint-disable-next-line func-names
 ;(async function () {
 	await exampleWriter.write('Time To Die')
+
 	await wait(1000)
 	await exampleWriter.write('Some weird string')
 	await wait(1000)
