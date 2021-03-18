@@ -1,4 +1,3 @@
-import regeneratorRuntime from 'regeneratorRuntime'
 import debounce from 'lodash.debounce'
 
 import { wait } from './utility.js'
@@ -28,7 +27,8 @@ const writer = new GlitchedWriter(
 // eslint-disable-next-line func-names
 ;(async function () {
 	await wait(1200)
-	await writer.write('Hello, my old friend.')
+	let { string } = await writer.write('Hello, my old friend.')
+	logsEl.innerHTML += `<p>${string}</p>`
 })()
 
 // const displayWriter = setGlitchedWriter(textEl, {

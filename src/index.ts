@@ -13,6 +13,7 @@ import { promiseWhile, isInRange } from './utils'
 type StepCallback = (string: string, writerData?: WriterDataResponse) => any
 
 interface WriterDataResponse {
+	string: string
 	writer: GlitchedWriter
 	options: Options
 	state: State
@@ -48,9 +49,10 @@ export default class GlitchedWriter {
 
 	get writerData(): WriterDataResponse {
 		const writer: GlitchedWriter = this,
-			{ options, state } = this
+			{ options, state, string } = this
 
 		return {
+			string,
 			writer,
 			options,
 			state,

@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"module": "commonjs",
-		"lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
+		"lib": ["ESNext", "ESNext.AsyncIterable", "DOM", "es2017"],
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
 		"outDir": "./lib",
