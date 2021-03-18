@@ -18,7 +18,7 @@ export default class Options implements OptionsFields {
 	maxGhosts: number | 'relative' = 'relative'
 	glyphs: string = glyphs.full
 	glyphsFromString: 'previous' | 'goal' | 'both' | 'none' = 'none'
-	oneAtATime: boolean | 'reverse' = false
+	oneAtATime: boolean = false
 	startFrom: 'matching' | 'previous' | 'erase' = 'matching'
 	leadingText: AppendedText | undefined = undefined
 	trailingText: AppendedText | undefined = undefined

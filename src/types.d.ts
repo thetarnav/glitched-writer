@@ -15,7 +15,7 @@ export interface OptionsFields {
 	maxGhosts: number | 'relative'
 	glyphs: string
 	glyphsFromString: 'previous' | 'goal' | 'both' | 'none'
-	oneAtATime: boolean | 'reverse'
+	oneAtATime: boolean
 	startFrom: 'matching' | 'previous' | 'erase'
 	leadingText: AppendedText | undefined
 	trailingText: AppendedText | undefined

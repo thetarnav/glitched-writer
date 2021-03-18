@@ -22,9 +22,7 @@ Glitched, text-writing npm module, with highly customizable settings to get the 
 
 ---
 
-## Usage:
-
-### Installation
+## Installation
 
 Download package through npm.
 
@@ -44,145 +42,159 @@ Or use the CDN and attach this script link to your html document.
 <script src="https://cdn.jsdelivr.net/npm/glitched-writer@1.3.0/glitchedWriter.min.js"></script>
 ```
 
--  Standalone function call with .then:
+## Usage:
 
-`glitchWrite( htmlElement, 'text to write' ).then(console.log)`
+### Creating Class Instance
 
--  Creating GlitchedWriter class instance for later use:
+Creating writer class instance:
 
-`const writerObject = setGlitchedWriter( htmlElement, { glitches: 'cUsToM gLiTcH cHaRs', stepsMax: 10} )`
+```js
+// Default config and some attaching HTML Element:
+const Writer = new GlitchedWriter(htmlElement)
 
--  Writing using instance: (glitchesFromString <- means that glitched characters will be taken from the inputed text characters)
+// Same, but with custom options:
+const Writer = new GlitchedWriter(htmlElement, {
+   interval: [10, 70],
+   oneAtATime: true
+})
 
-`writerObject.write( 'message', {glitchesFromString: true} )`
+// Same, but with on-step-callback added:
+const Writer = new GlitchedWriter(htmlElement, undefined, (string, writerData) => {
+   console.log(`Current string: ${string}`)
+   console.log('All the class data:' writerData)
+})
 
--  Adding event listener (**e.detail** holds Object with usefull **text** property):
+// Or by using alternative class-creating function:
+import { createGlitchedWriter } from 'glitched-writer'
 
-`htmlElement.addEventListener('glitchWrote', e => console.log( e.detail.text ))`
+const Writer = createGlitchedWriter(htmlElement, ...)
+```
 
----
+### Writing
 
-#### settings _/w defaults_:
+Writing stuff with async / await.
 
-| setting | default |
+```js
+import { wait } from 'glitched-writer'
 
-| ------------ | ------------ |
+const res = await Writer.write('Welcome')
 
-| steps | [0, 6] _(min & max)_ |
+console.log(`Current string: ${res.string}`)
+console.log('All the class data:' res.data)
 
-| delay | [140, 400] _(min & max)_ |
+await wait(1200) // additional simple promise to wait some time
 
-| firstDelay | [0, 1700] |
+await Writer.write('...to Glitch City!')
+```
 
-| ghostsProbability | 0.1 |
+### Pausing & Playing
 
-| maxGhosts | 7 |
+```js
+Writer.write('Some very cool header.').then(({ status, message }) => {
+	// this will run when the writing stops.
+	console.log(`${status}: ${message}`)
+})
 
-| glitches | 'ABCDĐEFGHIJKLMNOPQRSTUVWXYZabcdđefghijklmnopqrstuvwxyzĄąĆćŻżŹźŃńóŁłАБВГҐДЂЕЁЄЖЗЅИІЇЙЈКЛЉМНЊОПРСТЋУЎФХЦЧЏШЩЪЫЬЭЮЯабвгґдђеёєжзѕиіїйјклљмнњопрстћуўфхцчџшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωάΆέΈέΉίϊΐΊόΌύΰϋΎΫΏĂÂÊÔƠƯăâêôơư 一二三四五六七八九十百千上下左右中大小月日年早木林山川土空田天生花草虫犬人名女男子目耳口手足見音力気円入出立休先夕本文字学校村町森正水火玉王石竹糸貝車金雨赤青白数多少万半形太細広長点丸交光角計直線矢弱強高同親母父姉兄弟妹自友体毛頭顔首心時曜朝昼夜分週春夏秋冬今新古間方北南東西遠近前後内外場地国園谷野原里市京風雪雲池海岩星室戸家寺通門道話言答声聞語読書記紙画絵図工教晴思考知才理算作元食肉馬牛魚鳥羽鳴麦米茶色黄黒来行帰歩走止活店買売午汽弓回会組船明社切電毎合当台楽公引科歌刀番用何 ĂÂÊÔƠƯăâêôơư1234567890‘?’“!”(%)[#]{@}/&<-+÷×=>$€£¥¢:;,.\* •°·…±†‡æ«»¦¯—–~˜¨_øÞ¿▬▭▮▯┐└╛╟╚╔╘╒╓┘┌░▒▓○‼' |
+setTimeout(() => {
+	Writer.pause() // will stop writing
+}, 1000)
 
-| glitchesFromString | false |
+setTimeout(async () => {
+	await Writer.play() // continue writing
 
-| oneAtATime | false |
+	console.log(Writer.string) // will log after finished writing
+}, 2000)
+```
 
-| startText | **'previous'** _(or anything rly)_, 'matchingOnly', 'eraseWhole' |
+### One-Time-Use
 
-| instantErase | false |
+```js
+import { glitchWrite } from 'glitched-writer'
 
-| combineGlitches | false |
+glitchWrite('Write this and DISAPER!', htmlElement, options, onStepCallback)
+```
 
-| preset | 'default', 'nier', 'normal' |
+## Presets
 
-| className | 'glitch-writing' |
+To use one of the available presets, You can simply write it's name when creating writer, in the place of options.
+Available presets as for now:
 
-| leadingChar | { char: '', onTyping: false } |
+-  **default** - _It is loaded automatically, ant it is the one from the GIF on top._
+-  **nier** - _Imitating the way text was appearing in the NieR: Automata's UI._
+-  **typewriter** - _One letter at a time, only slightly glitched._
+-  **terminal** - _Imitating being typed by a machine._
 
----
+```js
+new GlitchedWriter(htmlElement, 'nier')
+```
 
-#### Links:
+### Importing objects
 
--  [GitHub](https://github.com/thetarnav/glitched-writer 'GitHub')
+You can import the option object of mentioned presets and tweak them, as well as some glyph sets.
 
--  [npm](https://www.npmjs.com/package/glitched-writer 'npm')
+```js
+import { presets, glyphs } from 'glitched-writer'
 
--  [JSDelivr](https://www.jsdelivr.com/package/npm/glitched-writer 'JSDelivr')
+new GlitchedWriter(htmlElement, presets.typewriter)
+```
 
--  [Codepen DEMO](https://codepen.io/thetarnav/pen/MWWyPzY 'Codepen DEMO')# Glitched Writer
+## Customizing options
 
-[![](https://data.jsdelivr.com/v1/package/npm/glitched-writer/badge)](https://www.jsdelivr.com/package/npm/glitched-writer)
+### Types and defaults:
 
-[![glitched-writer-preview](https://user-images.githubusercontent.com/24491503/67164275-06ab6900-f379-11e9-81ac-cab76dbc8dcd.gif)](https://codepen.io/thetarnav/pen/MWWyPzY)
-
-### What it does:
-
--  Edits **textContent** of chosen html element with a (custom or not) set of "glitched" characters until it writes wanted text.
-
--  Can be used as an object (instance of **GlitchedWriter** class) so that on multiple write function calls the writing process will be automatically reset and write the lastest inputed message.
-
--  The write function is an asynchronous so .then can be used.
-
--  Finished writing will cause CustomEvent **glitchWrote** dispatch on html element.
-
--  The html element gets **glitch-writing** class for the process of writing.
-
----
-
-### Code Examples:
-
--  Standalone function call with .then:
-
-`glitchWrite( htmlElement, 'text to write' ).then(console.log)`
-
--  Creating GlitchedWriter class instance for later use:
-
-`const writerObject = setGlitchedWriter( htmlElement, { glitches: 'cUsToM gLiTcH cHaRs', stepsMax: 10} )`
-
--  Writing using instance: (glitchesFromString <- means that glitched characters will be taken from the inputed text characters)
-
-`writerObject.write( 'message', {glitchesFromString: true} )`
-
--  Adding event listener (**e.detail** holds Object with usefull **text** property):
-
-`htmlElement.addEventListener('glitchWrote', e => console.log( e.detail.text ))`
-
----
-
-#### settings _/w defaults_:
-
-| setting | default |
-
-| ------------ | ------------ |
-
-| steps | [0, 6] _(min & max)_ |
-
-| delay | [140, 400] _(min & max)_ |
-
-| firstDelay | [0, 1700] |
-
-| ghostsProbability | 0.1 |
-
-| maxGhosts | 7 |
-
-| glitches | 'ABCDĐEFGHIJKLMNOPQRSTUVWXYZabcdđefghijklmnopqrstuvwxyzĄąĆćŻżŹźŃńóŁłАБВГҐДЂЕЁЄЖЗЅИІЇЙЈКЛЉМНЊОПРСТЋУЎФХЦЧЏШЩЪЫЬЭЮЯабвгґдђеёєжзѕиіїйјклљмнњопрстћуўфхцчџшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωάΆέΈέΉίϊΐΊόΌύΰϋΎΫΏĂÂÊÔƠƯăâêôơư 一二三四五六七八九十百千上下左右中大小月日年早木林山川土空田天生花草虫犬人名女男子目耳口手足見音力気円入出立休先夕本文字学校村町森正水火玉王石竹糸貝車金雨赤青白数多少万半形太細広長点丸交光角計直線矢弱強高同親母父姉兄弟妹自友体毛頭顔首心時曜朝昼夜分週春夏秋冬今新古間方北南東西遠近前後内外場地国園谷野原里市京風雪雲池海岩星室戸家寺通門道話言答声聞語読書記紙画絵図工教晴思考知才理算作元食肉馬牛魚鳥羽鳴麦米茶色黄黒来行帰歩走止活店買売午汽弓回会組船明社切電毎合当台楽公引科歌刀番用何 ĂÂÊÔƠƯăâêôơư1234567890‘?’“!”(%)[#]{@}/&<-+÷×=>$€£¥¢:;,.\* •°·…±†‡æ«»¦¯—–~˜¨_øÞ¿▬▭▮▯┐└╛╟╚╔╘╒╓┘┌░▒▓○‼' |
-
-| glitchesFromString | false |
-
-| oneAtATime | false |
-
-| startText | **'previous'** _(or anything rly)_, 'matchingOnly', 'eraseWhole' |
-
-| instantErase | false |
-
-| combineGlitches | false |
-
-| preset | 'default', 'nier', 'normal' |
-
-| className | 'glitch-writing' |
-
-| leadingChar | { char: '', onTyping: false } |
-
----
-
-#### Links:
+```ts
+{
+steps: RangeOrNumber // [1, 6]
+interval: RangeOrNumber // [50, 150]
+initialDelay: RangeOrNumber // [0, 1500]
+changeChance: RangeOrNumber // 0.6
+ghostChance: RangeOrNumber // 0.15
+maxGhosts: number | 'relative' // 'relative'
+glyphs: string | string[] | Set<string> // glyphs.full
+glyphsFromString: 'previous' | 'goal' | 'both' | 'none' // 'none'
+oneAtATime: boolean // false
+startFrom: 'matching' | 'previous' | 'erase' // 'matching'
+leadingText: AppendedText | undefined // undefined
+trailingText: AppendedText | undefined // undefined
+reverseOutput: boolean // false
+}
+
+interface AppendedText {
+	value: string
+	display: 'always' | 'when-typing' | 'when-not-typing'
+}
+type RangeOrNumber = [number, number] | number
+```
+
+### Description
+
+**Range** values will result in random values for each step for every letter.
+
+**Ghost** are letters that gets rendered in the time of writing, but are removed to reach goal string.
+
+-  **steps** - _Number of **minimum** steps it takes one letter to reach it's goal one. Set to 0 if you want them to change to right letter in one step._
+-  **interval** - _Interval between each step, for every letter._
+-  **initialDelay** - _first delay each letter must wait before it starts working_
+-  **changeChance** - _Percentage Chance for letter to change to something else (from glyph charset)_
+-  **ghostChance** - _Percentage Chance for ghost letter to appear_
+-  **maxGhosts** - _Max number of ghosts for entire string_
+-  **glyphs** - _A set of characters that can appear as ghosts or letters can change into them_
+-  **glyphsFromString** - _If you want to add letters from string to the glyph charset_
+   -  'previous' - appends leters from starting string
+   -  'goal' - appends leters from goal string
+   -  'both' - appends leters both of them
+   -  'none' - leaves the glyph charset be
+-  **oneAtATime** - _If writing should take place from left-to-right, letter-by-letter or normally: all-at-once._
+-  **startFrom** - _Decides on witch algorithm to use._
+   -  'matching' - Will scan starting and goal string for matching characters and will try to build character map from that.
+   -  'previous' - Wont do any matching, just converts starting string into character map.
+   -  'erase' - First Erases entire string and then writes from blank space.
+-  **leadingText** and **trailingText** - _Former adds stuff to the begining and latter to the end._
+   -  value - _Whats gets added_
+   -  display - _When_: 'always' or 'when-typing' or 'when-not-typing'
+-  **reverseOutput** - _should the string output be reversed or not. It's usefull for using the ::first-letter css selector for... well... the last letter_
+
+## Links:
 
 -  [GitHub](https://github.com/thetarnav/glitched-writer 'GitHub')
 

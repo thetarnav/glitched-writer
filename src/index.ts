@@ -8,6 +8,7 @@ import Char from './char'
 import { ConstructorOptions, WriteOptions, PlayOptions } from './types'
 // @ts-ignore
 import {
+	wait,
 	promiseWhile,
 	isInRange,
 	animateWithClass,
@@ -16,7 +17,7 @@ import {
 
 import { presets, glyphs } from './presets'
 
-export { presets, glyphs }
+export { presets, glyphs, wait }
 
 // eslint-disable-next-line no-unused-vars
 type StepCallback = (string: string, writerData?: WriterDataResponse) => any
