@@ -144,19 +144,19 @@ new GlitchedWriter(htmlElement, presets.typewriter)
 
 ```ts
 {
-steps: RangeOrNumber // [1, 6]
-interval: RangeOrNumber // [50, 150]
-initialDelay: RangeOrNumber // [0, 1500]
-changeChance: RangeOrNumber // 0.6
-ghostChance: RangeOrNumber // 0.15
-maxGhosts: number | 'relative' // 'relative'
-glyphs: string | string[] | Set<string> // glyphs.full
-glyphsFromString: 'previous' | 'goal' | 'both' | 'none' // 'none'
-oneAtATime: boolean // false
-startFrom: 'matching' | 'previous' | 'erase' // 'matching'
-leadingText: AppendedText | undefined // undefined
-trailingText: AppendedText | undefined // undefined
-reverseOutput: boolean // false
+   steps?: RangeOrNumber // [1, 6]
+   interval?: RangeOrNumber // [50, 150]
+   initialDelay?: RangeOrNumber // [0, 1500]
+   changeChance?: RangeOrNumber // 0.6
+   ghostChance?: RangeOrNumber // 0.15
+   maxGhosts?: number | 'relative' // 'relative'
+   glyphs?: string | string[] | Set<string> // glyphs.full
+   glyphsFromString?: 'previous' | 'goal' | 'both' | 'none' // 'none'
+   oneAtATime?: boolean // false
+   startFrom?: 'matching' | 'previous' | 'erase' // 'matching'
+   leadingText?: AppendedText // undefined
+   trailingText?: AppendedText // undefined
+   reverseOutput?: boolean // false
 }
 
 interface AppendedText {
