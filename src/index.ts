@@ -7,7 +7,7 @@ import Char from './char'
 
 import { ConstructorOptions, WriteOptions, PlayOptions } from './types'
 // @ts-ignore
-import { wait, promiseWhile, isInRange } from './utils'
+import { promiseWhile, isInRange } from './utils'
 
 // eslint-disable-next-line no-unused-vars
 type StepCallback = (string: string, writerData?: WriterDataResponse) => any
@@ -46,8 +46,18 @@ export default class GlitchedWriter {
 		].join('')
 	}
 
+	get writerData(): WriterDataResponse {
+		const writer: GlitchedWriter = this,
+			{ options, state } = this
+
+		return {
+			writer,
+			options,
+			state,
+		}
+	}
+
 	emitStep(): void {
-		console.log('string:', this.string)
 		if (this.onStepCallback)
 			this.onStepCallback(this.string, this.getWriterData())
 	}
@@ -69,36 +79,6 @@ export default class GlitchedWriter {
 		return this.play({
 			reverse: this.options.oneAtATime && writeOptions?.erase,
 		})
-	}
-
-	// private eraseThenWrite
-
-	private createMatchingCharTable(): void {
-		const { previousString: previous, goalString: goal } = this,
-			goalStringArray = makeGoalArray(previous, goal)
-
-		let pi = -1
-		goalStringArray.forEach(l => {
-			pi++
-			if (l === '' && !previous[pi]) return
-			const fi = l !== '' ? previous.indexOf(l, pi) : -1
-
-			if (fi !== -1) {
-				const appendedText = previous.substring(pi, fi)
-				this.charTable.push(new Char(l, l, this, appendedText))
-				pi = fi
-				this.state.nGhosts += appendedText.length
-			} else this.charTable.push(new Char(previous[pi] || ' ', l, this))
-		})
-	}
-
-	private createPreviousCharTable(): void {
-		const { previousString: previous, goalString: goal } = this,
-			goalStringArray = makeGoalArray(previous, goal)
-
-		goalStringArray.forEach((l, i) =>
-			this.charTable.push(new Char(previous[i] || ' ', l, this)),
-		)
 	}
 
 	async play(playOptions?: PlayOptions): Promise<WriterDataResponse> {
@@ -154,17 +134,42 @@ export default class GlitchedWriter {
 		this.state.pause()
 	}
 
-	getWriterData(
+	private createMatchingCharTable(): void {
+		const { previousString: previous, goalString: goal } = this,
+			goalStringArray = makeGoalArray(previous, goal)
+
+		let pi = -1
+		goalStringArray.forEach(l => {
+			pi++
+			if (l === '' && !previous[pi]) return
+			const fi = l !== '' ? previous.indexOf(l, pi) : -1
+
+			if (fi !== -1) {
+				const appendedText = previous.substring(pi, fi)
+				this.charTable.push(new Char(l, l, this, appendedText))
+				pi = fi
+				this.state.nGhosts += appendedText.length
+			} else this.charTable.push(new Char(previous[pi] || ' ', l, this))
+		})
+	}
+
+	private createPreviousCharTable(): void {
+		const { previousString: previous, goalString: goal } = this,
+			goalStringArray = makeGoalArray(previous, goal)
+
+		goalStringArray.forEach((l, i) =>
+			this.charTable.push(new Char(previous[i] || ' ', l, this)),
+		)
+	}
+
+	private getWriterData(
 		status?: WriterDataResponse['status'],
 		message?: WriterDataResponse['message'],
 		error?: WriterDataResponse['error'],
 	): WriterDataResponse {
-		const writer: GlitchedWriter = this,
-			{ options, state } = this
+		const { writerData } = this
 		return {
-			writer,
-			options,
-			state,
+			...writerData,
 			status,
 			message,
 			error,
@@ -194,40 +199,3 @@ export async function glitchWrite(
 	const writer = new GlitchedWriter(options, onStepCallback)
 	return writer.write(string)
 }
-
-// const exampleWriter = new GlitchedWriter({
-// 	startFrom: 'erase',
-// 	oneAtATime: true,
-// 	initialDelay: 0,
-// 	interval: [10, 30],
-// 	steps: [1, 7],
-// 	maxGhosts: 1,
-// 	changeChance: 0.8,
-// 	glyphs: '',
-// 	glyphsFromString: 'both',
-// })
-
-const exampleWriter = new GlitchedWriter({
-	startFrom: 'erase',
-	oneAtATime: true,
-	initialDelay: 0,
-	interval: [150, 350],
-	steps: [0, 1],
-	maxGhosts: 1,
-	changeChance: 0,
-	glyphs: '@',
-})
-
-// eslint-disable-next-line func-names
-;(async function () {
-	await exampleWriter.write('Time To Die')
-
-	await wait(1000)
-	await exampleWriter.write('Some weird string')
-	await wait(1000)
-	await exampleWriter.write('Number two!')
-})()
-
-// exampleWriter.write('Time To Die').then(console.log)
-
-// setTimeout(() => exampleWriter.pause(), 2000)

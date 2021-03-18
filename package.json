@@ -15,11 +15,11 @@
     "lib/**/*"
   ],
   "scripts": {
-    "dev": "parcel test/index.pug --dist-dir dev",
+    "dev": "parcel test/index.pug --out-dir dev",
     "build": "tsc"
   },
   "devDependencies": {
-    "@parcel/transformer-typescript-types": "^2.0.0-beta.2",
+    "@parcel/transformer-typescript-types": "^2.0.0-nightly.630",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "eslint": "^6.8.0",
@@ -27,7 +27,7 @@
     "eslint-plugin-import": "^2.22.1",
     "lodash.debounce": "^4.0.8",
     "nodemon": "^2.0.7",
-    "parcel": "^2.0.0-beta.2",
+    "parcel-bundler": "^1.12.5",
     "pug": "^2.0.4",
     "sass": "^1.32.8",
     "ts-node": "^9.1.1",
