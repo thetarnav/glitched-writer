@@ -39,7 +39,7 @@ import GlitchedWriter from 'glitched-writer'
 Or use the CDN and attach this script link to your html document.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/glitched-writer@1.3.0/glitchedWriter.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.0/lib/index.min.js"></script>
 ```
 
 ## Usage:
