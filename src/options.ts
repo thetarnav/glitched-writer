@@ -29,8 +29,9 @@ export default class Options implements OptionsFields {
 		writer: GlitchedWriter,
 		options?: ConstructorOptions | PresetName,
 	) {
-		if (typeof options === 'string' || !options)
-			options = options ? presets[options] : this
+		if (typeof options === 'string') options = presets[options]
+
+		options ||= {}
 
 		this.steps = options.steps ?? this.steps
 		this.interval = options.interval ?? this.interval

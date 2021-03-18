@@ -42,8 +42,8 @@ export default class GlitchedWriter {
 	onStepCallback?: StepCallback
 
 	constructor(
-		options?: ConstructorOptions,
 		htmlElement?: HTMLElement,
+		options?: ConstructorOptions,
 		onStepCallback?: StepCallback,
 	) {
 		this.options = new Options(this, options)
@@ -251,10 +251,10 @@ function makeGoalArray(previous: string, goal: string): string[] {
 }
 
 export const createGlitchedWriter = (
-	options?: ConstructorOptions,
 	htmlElement?: HTMLElement,
+	options?: ConstructorOptions,
 	onStepCallback?: StepCallback,
-): GlitchedWriter => new GlitchedWriter(options, htmlElement, onStepCallback)
+): GlitchedWriter => new GlitchedWriter(htmlElement, options, onStepCallback)
 
 export async function glitchWrite(
 	string: string,
@@ -262,6 +262,6 @@ export async function glitchWrite(
 	options?: ConstructorOptions,
 	onStepCallback?: StepCallback,
 ): Promise<WriterDataResponse> {
-	const writer = new GlitchedWriter(options, htmlElement, onStepCallback)
+	const writer = new GlitchedWriter(htmlElement, options, onStepCallback)
 	return writer.write(string)
 }

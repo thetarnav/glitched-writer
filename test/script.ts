@@ -7,7 +7,7 @@ const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input') as HTMLInputElement,
 	logsEl = document.getElementById('logs')
 
-const writer = new GlitchedWriter(undefined, textEl)
+const writer = new GlitchedWriter(textEl)
 
 // eslint-disable-next-line func-names
 ;(async function () {
