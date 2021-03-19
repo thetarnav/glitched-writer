@@ -2,6 +2,8 @@ import debounce from 'lodash.debounce'
 
 import GlitchedWriter, {
 	WriterDataResponse,
+	createGlitchedWriter,
+	glitchWrite,
 	presets,
 	glyphs,
 	wait,

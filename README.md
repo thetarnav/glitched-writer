@@ -77,10 +77,12 @@ Writing stuff with async / await.
 ```js
 import { wait } from 'glitched-writer'
 
+// Wrap this in some async function:
+// Or use .then() instead.
 const res = await Writer.write('Welcome')
 
-console.log(`Current string: ${res.string}`)
-console.log('All the class data:' res.data)
+console.log(`Finished writing: ${res.string}`)
+console.log('All the writer data:', res)
 
 await wait(1200) // additional simple promise to wait some time
 
@@ -114,6 +116,21 @@ import { glitchWrite } from 'glitched-writer'
 glitchWrite('Write this and DISAPER!', htmlElement, options, onStepCallback)
 ```
 
+### Available imports
+
+List of all things that can be imported from glitched-writer module.
+
+```ts
+import GlitchedWriter, { // <-- GlitchedWriter class
+	WriterDataResponse, // <-- Type of response in callbacks
+	createGlitchedWriter, // <-- Alternative to creating writer class instance
+	glitchWrite, // <-- One time write funcion
+	presets, // <-- Object with all prepared presets of options
+	glyphs, // <-- Same but for glyph charsets
+	wait, // <-- Ulitity async function, that can be used to wait some time
+} from 'glitched-writer'
+```
+
 ## Presets
 
 To use one of the available presets, You can simply write it's name when creating writer, in the place of options.
@@ -128,7 +145,7 @@ Available presets as for now:
 new GlitchedWriter(htmlElement, 'nier')
 ```
 
-### Importing objects
+### Importing preset objects
 
 You can import the option object of mentioned presets and tweak them, as well as some glyph sets.
 
