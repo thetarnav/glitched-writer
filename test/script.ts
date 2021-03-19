@@ -1,7 +1,7 @@
 import debounce from 'lodash.debounce'
 
-// import GlitchedWriter, { WriterDataResponse, wait } from '../src'
-import GlitchedWriter, { WriterDataResponse, wait } from '../lib'
+import GlitchedWriter, { wait } from '../src'
+// import GlitchedWriter, { WriterDataResponse, wait } from '../lib'
 
 const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input') as HTMLInputElement,
@@ -12,11 +12,11 @@ const writer = new GlitchedWriter(textEl)
 // eslint-disable-next-line func-names
 ;(async function () {
 	await wait(1200)
-	await writer.write('my old friend.').then(logString)
+	await writer.write('my old\nfriend.')
 	await wait(1200)
-	await writer.write('This is only the beginning.').then(logString)
+	await writer.write('This is only the\nbeginning.')
 	await wait(1500)
-	await writer.write('Please, say something...').then(logString)
+	await writer.write('Please,\n\tsay something...')
 	inputEl.removeAttribute('disabled')
 })()
 
@@ -24,7 +24,7 @@ inputEl.addEventListener(
 	'input',
 	debounce(
 		() => {
-			writer.write(inputEl.value).then(logString)
+			writer.write(inputEl.value)
 		},
 		500,
 		{
@@ -33,11 +33,11 @@ inputEl.addEventListener(
 	),
 )
 
-// textEl.addEventListener(
-// 	'glitchWrote',
-// 	e => (logsEl.innerHTML += `<p>${e.detail.text}</p>`),
-// )
+textEl.addEventListener(
+	'gw_finished',
+	e => (logsEl.innerHTML += `<p>${e.detail.string}</p>`),
+)
 
-function logString({ string }: WriterDataResponse) {
-	logsEl.innerHTML += `<p>${string}</p>`
-}
+// function logString({ string }: WriterDataResponse) {
+// 	logsEl.innerHTML += `<p>${string}</p>`
+// }

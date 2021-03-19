@@ -1,11 +1,12 @@
 // eslint-disable-next-line import/no-cycle
 import GlitchedWriter from './index'
-import { random, deleteRandom, wait, promiseWhile } from './utils'
+import { random, deleteRandom, wait, promiseWhile, coinFlip } from './utils'
 
 export default class Char {
 	char: string
 	goal: string
 	stepsLeft: number
+	maxGhosts: number
 	ghostsBefore: string[] = []
 	ghostsAfter: string[] = []
 	writer: GlitchedWriter
@@ -20,8 +21,12 @@ export default class Char {
 		this.char = char
 		this.goal = goal
 		this.writer = writer
-		this.stepsLeft = writer.options.genSteps
 		if (initialGhosts) this.ghostsBefore = [...initialGhosts]
+
+		this.stepsLeft = writer.options.stepsLeft
+		if (this.isWhitespace) this.stepsLeft = 0
+
+		this.maxGhosts = writer.options.genMaxGhosts
 	}
 
 	get string(): string {
@@ -36,6 +41,10 @@ export default class Char {
 		)
 	}
 
+	get isWhitespace(): boolean {
+		return [' ', '\t', '\n', '\r', '\f', '\v'].includes(this.goal)
+	}
+
 	async type() {
 		const loop = async () => {
 			await wait(this.writer.options.genInterval)
@@ -46,7 +55,7 @@ export default class Char {
 			return true
 		}
 
-		await wait(this.writer.options.genInitDelay)
+		!this.isWhitespace && (await wait(this.writer.options.genInitDelay))
 
 		await promiseWhile(
 			() => !this.finished && !this.writer.state.isPaused && !this.stop,
@@ -56,9 +65,8 @@ export default class Char {
 		return this.finished
 	}
 
-	nextStep(): boolean {
-		const areStepsLeft = this.stepsLeft > 0
-		if (areStepsLeft && this.char !== this.goal) {
+	nextStep() {
+		if (this.stepsLeft > 0 && this.char !== this.goal) {
 			/**
 			 * IS GROWING
 			 */
@@ -67,41 +75,37 @@ export default class Char {
 				genChangeChance: changeChance,
 			} = this.writer.options
 
-			if (Math.random() <= ghostChance) {
-				if (this.writer.state.nGhosts < this.writer.options.genMaxGhosts) {
-					const newGhost = this.writer.options.genGhost
-
-					this.writer.state.nGhosts++
-					this.addGhost(newGhost)
-				} else this.removeGhost()
+			if (coinFlip(ghostChance)) {
+				if (this.writer.state.nGhosts < this.maxGhosts) this.addGhost()
+				else this.removeGhost()
 			}
-			if (Math.random() <= changeChance)
-				this.char = this.writer.options.genGhost
+			if (coinFlip(changeChance)) this.char = this.writer.options.genGhost
 		} else if (!this.finished) {
 			/**
 			 * IS SHRINKING
 			 */
-			if (this.char !== this.goal) this.char = this.goal
+			this.char = this.goal
 			this.removeGhost()
 		} else {
 			/**
 			 * IS DONE
 			 */
-			return true
+			return
 		}
 
 		this.stepsLeft--
-		return false
 	}
 
-	addGhost(l: string) {
-		Math.random() < 0.5
+	addGhost() {
+		const l = this.writer.options.genGhost
+		this.writer.state.nGhosts++
+		coinFlip()
 			? insertGhost(this.ghostsBefore, l)
 			: insertGhost(this.ghostsAfter, l)
 	}
 
 	removeGhost() {
-		Math.random() < 0.5 && this.ghostsBefore.length > 0
+		coinFlip() && this.ghostsBefore.length > 0
 			? deleteRandom(this.ghostsBefore)
 			: deleteRandom(this.ghostsAfter)
 	}

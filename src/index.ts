@@ -69,6 +69,7 @@ export default class GlitchedWriter {
 		this.charTable.forEach(char => (char.stop = true))
 		this.charTable = []
 		this.state.nGhosts = 0
+		this.options.setCharset()
 
 		if (this.options.startFrom === 'matching') this.createMatchingCharTable()
 		else this.createPreviousCharTable()
@@ -230,3 +231,7 @@ export {
 	WriterDataResponse,
 	Callback,
 }
+
+// const Writer = new GlitchedWriter(undefined, {}, string => console.log(string))
+
+// Writer.write('\tNothing\n\tspecial here!')

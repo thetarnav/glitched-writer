@@ -1,4 +1,9 @@
-import { parseCharset, random, randomChild, filterDuplicates } from './utils'
+import {
+	parseCharset,
+	randomChild,
+	filterDuplicates,
+	getRandomFromRange,
+} from './utils'
 import {
 	OptionsFields,
 	ConstructorOptions,
@@ -22,6 +27,7 @@ export default class Options implements OptionsFields {
 	leadingText: AppendedText | undefined = undefined
 	trailingText: AppendedText | undefined = undefined
 	writer: GlitchedWriter
+	ghostCharset: string = ''
 
 	constructor(
 		writer: GlitchedWriter,
@@ -39,6 +45,7 @@ export default class Options implements OptionsFields {
 		this.maxGhosts = options.maxGhosts ?? this.maxGhosts
 		if (options.glyphs !== undefined)
 			this.glyphs = parseCharset(options.glyphs)
+		this.ghostCharset = this.glyphs
 		this.glyphsFromString = options.glyphsFromString ?? this.glyphsFromString
 		this.oneAtATime = options.oneAtATime ?? this.oneAtATime
 		this.startFrom = options.startFrom ?? this.startFrom
@@ -47,7 +54,7 @@ export default class Options implements OptionsFields {
 		this.writer = writer
 	}
 
-	get genSteps(): number {
+	get stepsLeft(): number {
 		return getRandomFromRange(this.steps)
 	}
 	get genInterval(): number {
@@ -63,14 +70,28 @@ export default class Options implements OptionsFields {
 		return getRandomFromRange(this.ghostChance, false)
 	}
 	get genMaxGhosts(): number {
-		const { maxGhosts: max } = this
-
-		if (max === 'relative')
+		if (this.maxGhosts === 'relative')
 			return Math.round((this.writer.goalString?.length || 25) * 0.2)
 
-		return max
+		return this.maxGhosts
 	}
 	get genGhost(): string {
+		return randomChild(this.ghostCharset) ?? ''
+	}
+
+	getAppendedText(witch: 'trailing' | 'leading'): string {
+		const text = witch === 'trailing' ? this.trailingText : this.leadingText
+		if (!text) return ''
+		if (
+			text.display === 'always' ||
+			(text.display === 'when-typing' && this.writer.state.isTyping) ||
+			(text.display === 'when-not-typing' && !this.writer.state.isTyping)
+		)
+			return text.value
+		return ''
+	}
+
+	setCharset() {
 		let charset = this.glyphs
 
 		if (this.glyphsFromString !== 'none') {
@@ -86,27 +107,6 @@ export default class Options implements OptionsFields {
 			else addGoal()
 		}
 
-		return randomChild(charset) ?? ''
+		this.ghostCharset = charset
 	}
-
-	getAppendedText(witch: 'trailing' | 'leading'): string {
-		const text = witch === 'trailing' ? this.trailingText : this.leadingText
-		if (!text) return ''
-		if (
-			text.display === 'always' ||
-			(text.display === 'when-typing' && this.writer.state.isTyping) ||
-			(text.display === 'when-not-typing' && !this.writer.state.isTyping)
-		)
-			return text.value
-		return ''
-	}
-}
-
-function getRandomFromRange(
-	range: RangeOrNumber,
-	round: boolean = true,
-): number {
-	return typeof range === 'number'
-		? range
-		: random(...range, round ? 'round' : undefined)
 }

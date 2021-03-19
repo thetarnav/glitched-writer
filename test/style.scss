@@ -146,6 +146,8 @@ body {
 	// unicode-bidi: bidi-override;
 	// direction: rtl;
 
+	white-space: pre;
+
 	&::after,
 	&::before {
 		content: attr(data-string);

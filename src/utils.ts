@@ -1,3 +1,5 @@
+import { RangeOrNumber } from './types'
+
 /* eslint-disable no-unused-vars */
 export function random(
 	min: number,
@@ -82,3 +84,14 @@ export const animateWithClass = (
 
 export const reverseString = (str: string): string =>
 	str.split('').reverse().join('')
+
+export function getRandomFromRange(
+	range: RangeOrNumber,
+	round: boolean = true,
+): number {
+	return typeof range === 'number'
+		? range
+		: random(...range, round ? 'round' : undefined)
+}
+
+export const coinFlip = (p: number = 0.5): boolean => Math.random() < p

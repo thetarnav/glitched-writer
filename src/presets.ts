@@ -23,7 +23,6 @@ export const presets = {
 		startFrom: 'matching',
 		leadingText: undefined,
 		trailingText: undefined,
-		reverseOutput: false,
 	} as ConstructorOptions,
 	nier: {
 		interval: [10, 20],
