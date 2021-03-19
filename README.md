@@ -18,7 +18,7 @@ Glitched, text-writing npm module, with highly customizable settings to get the 
 
 -  For styling purposes, while writing: attatches **glitched-writer--writing** class to the HTML Element and **data-string attribute** with current string state.
 
--  Written in **typescript**.
+-  Written in **Typescript**.
 
 ---
 
@@ -49,7 +49,7 @@ Or use the CDN and attach this script link to your html document.
 Creating writer class instance:
 
 ```js
-// Default config and some attaching HTML Element:
+// Default config and attached HTML Element:
 const Writer = new GlitchedWriter(htmlElement)
 
 // Same, but with custom options:
@@ -58,10 +58,10 @@ const Writer = new GlitchedWriter(htmlElement, {
    oneAtATime: true
 })
 
-// Same, but with on-step-callback added:
+// On-step-callback added:
 const Writer = new GlitchedWriter(htmlElement, undefined, (string, writerData) => {
    console.log(`Current string: ${string}`)
-   console.log('All the class data:' writerData)
+   console.log('All the class data:', writerData)
 })
 
 // Or by using alternative class-creating function:
@@ -144,18 +144,18 @@ new GlitchedWriter(htmlElement, presets.typewriter)
 
 ```ts
 {
-   steps?: RangeOrNumber // [1, 6]
-   interval?: RangeOrNumber // [50, 150]
-   initialDelay?: RangeOrNumber // [0, 1500]
-   changeChance?: RangeOrNumber // 0.6
-   ghostChance?: RangeOrNumber // 0.15
-   maxGhosts?: number | 'relative' // 'relative'
-   glyphs?: string | string[] | Set<string> // glyphs.full
-   glyphsFromString?: 'previous' | 'goal' | 'both' | 'none' // 'none'
-   oneAtATime?: boolean // false
-   startFrom?: 'matching' | 'previous' | 'erase' // 'matching'
-   leadingText?: AppendedText // undefined
-   trailingText?: AppendedText // undefined
+   steps?: RangeOrNumber, // [1, 6]
+   interval?: RangeOrNumber, // [50, 150]
+   initialDelay?: RangeOrNumber, // [0, 1500]
+   changeChance?: RangeOrNumber, // 0.6
+   ghostChance?: RangeOrNumber, // 0.15
+   maxGhosts?: number | 'relative', // 'relative'
+   glyphs?: string | string[] | Set<string>, // glyphs.full
+   glyphsFromString?: 'previous' | 'goal' | 'both' | 'none', // 'none'
+   oneAtATime?: boolean, // false
+   startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
+   leadingText?: AppendedText, // undefined
+   trailingText?: AppendedText, // undefined
    reverseOutput?: boolean // false
 }
 
