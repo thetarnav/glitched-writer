@@ -99,13 +99,6 @@ Don't be afraid to call write method on top of each oder.
 Newer will stop the ongoing one.
 
 ```js
-import GlitchedWriter, { wait } from 'glitched-writer'
-
-const Writer = new GlitchedWriter(textEl, {}, undefined, string => {
-	// do sth after each finished write
-})
-Writer.write('Some placeholder')
-
 inputEl.addEventListener('input', () => {
 	Writer.write(inputEl.value)
 })
@@ -158,8 +151,8 @@ List of all things that can be imported from glitched-writer module.
 
 ```ts
 import GlitchedWriter, { // <-- GlitchedWriter class
-   ConstructorOptions // <-- Options type
-   Callback // <-- Callback type
+	ConstructorOptions, // <-- Options type
+	Callback, // <-- Callback type
 	WriterDataResponse, // <-- Type of response in callbacks
 	createGlitchedWriter, // <-- Alternative to creating writer class instance
 	glitchWrite, // <-- One time write funcion
@@ -210,7 +203,7 @@ new GlitchedWriter(htmlElement, presets.typewriter)
    oneAtATime?: boolean, // false
    startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
    leadingText?: AppendedText, // undefined
-   trailingText?: AppendedText, // undefined
+   trailingText?: AppendedText // undefined
 }
 
 interface AppendedText {
@@ -220,7 +213,7 @@ interface AppendedText {
 type RangeOrNumber = [number, number] | number
 ```
 
-### Description
+### Options Description
 
 **Range** values will result in random values for each step for every letter.
 
