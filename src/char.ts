@@ -24,7 +24,7 @@ export default class Char {
 		if (initialGhosts) this.ghostsBefore = [...initialGhosts]
 
 		this.stepsLeft = writer.options.stepsLeft
-		if (this.isWhitespace) this.stepsLeft = 0
+		if (this.isSpecial) this.stepsLeft = 0
 
 		this.maxGhosts = writer.options.genMaxGhosts
 	}
@@ -41,8 +41,8 @@ export default class Char {
 		)
 	}
 
-	get isWhitespace(): boolean {
-		return [' ', '\t', '\n', '\r', '\f', '\v'].includes(this.goal)
+	get isSpecial(): boolean {
+		return ['\t', '\n', '\r', '\f', '\v'].includes(this.goal)
 	}
 
 	async type() {
@@ -55,7 +55,7 @@ export default class Char {
 			return true
 		}
 
-		!this.isWhitespace && (await wait(this.writer.options.genInitDelay))
+		!this.isSpecial && (await wait(this.writer.options.genInitDelay))
 
 		await promiseWhile(
 			() => !this.finished && !this.writer.state.isPaused && !this.stop,

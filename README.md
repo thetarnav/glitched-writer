@@ -12,9 +12,13 @@ Glitched, text-writing npm module, with highly customizable settings to get the 
 
 -  Writes your text, by glitching or spelling it out.
 
--  Can be attached to a **HTML Element** or simply printed out, by providing callback function. Therefore it can be used anywhere.
-
 -  Highly customizable behavior. Set of options will help you achieve the effect you desire.
+
+-  Can be attached to a **HTML Element** for automatic text-displaying.
+
+-  Callback functions for every step and finish.
+
+-  Events **gw_finished** and **gw_step** are dispatched on the HTML Element.
 
 -  For styling purposes, while writing: attatches **glitched-writer--writing** class to the HTML Element and **data-string attribute** with current string state.
 
@@ -49,10 +53,10 @@ Or use the CDN and attach this script link to your html document.
 Creating writer class instance:
 
 ```js
-// Default config and attached HTML Element:
-const Writer = new GlitchedWriter(htmlElement)
+// Calling GlitchedWriter constructor:
+const Writer = new GlitchedWriter(htmlElement, options, onStepCallback, onFinishCallback)
 
-// Same, but with custom options:
+// Custom options:
 const Writer = new GlitchedWriter(htmlElement, {
    interval: [10, 70],
    oneAtATime: true
@@ -64,7 +68,7 @@ const Writer = new GlitchedWriter(htmlElement, undefined, (string, writerData) =
    console.log('All the class data:', writerData)
 })
 
-// Or by using alternative class-creating function:
+// Using alternative class-creating function:
 import { createGlitchedWriter } from 'glitched-writer'
 
 const Writer = createGlitchedWriter(htmlElement, ...)
@@ -72,7 +76,7 @@ const Writer = createGlitchedWriter(htmlElement, ...)
 
 ### Writing
 
-Writing stuff with async / await.
+Writing stuff and waiting with async / await.
 
 ```js
 import { wait } from 'glitched-writer'
@@ -87,6 +91,24 @@ console.log('All the writer data:', res)
 await wait(1200) // additional simple promise to wait some time
 
 await Writer.write('...to Glitch City!')
+```
+
+### Text Input
+
+Don't be afraid to call write method on top of each oder.
+Newer will stop the ongoing one.
+
+```js
+import GlitchedWriter, { wait } from 'glitched-writer'
+
+const Writer = new GlitchedWriter(textEl, {}, undefined, string => {
+	// do sth after each finished write
+})
+Writer.write('Some placeholder')
+
+inputEl.addEventListener('input', () => {
+	Writer.write(inputEl.value)
+})
 ```
 
 ### Pausing & Playing
@@ -110,10 +132,24 @@ setTimeout(async () => {
 
 ### One-Time-Use
 
+For quick one-time writing.
+
 ```js
 import { glitchWrite } from 'glitched-writer'
 
-glitchWrite('Write this and DISAPER!', htmlElement, options, onStepCallback)
+glitchWrite('Write this and DISAPER!', htmlElement, options, ...)
+```
+
+### Listening For Events
+
+```js
+textHtmlElement.addEventListener('gw_finished', e =>
+	console.log('finished writing:', e.detail.string),
+)
+
+textHtmlElement.addEventListener('gw_step', e =>
+	console.log('current step:', e.detail.string),
+)
 ```
 
 ### Available imports
@@ -122,6 +158,8 @@ List of all things that can be imported from glitched-writer module.
 
 ```ts
 import GlitchedWriter, { // <-- GlitchedWriter class
+   ConstructorOptions // <-- Options type
+   Callback // <-- Callback type
 	WriterDataResponse, // <-- Type of response in callbacks
 	createGlitchedWriter, // <-- Alternative to creating writer class instance
 	glitchWrite, // <-- One time write funcion
@@ -173,7 +211,6 @@ new GlitchedWriter(htmlElement, presets.typewriter)
    startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
    leadingText?: AppendedText, // undefined
    trailingText?: AppendedText, // undefined
-   reverseOutput?: boolean // false
 }
 
 interface AppendedText {
@@ -209,7 +246,6 @@ type RangeOrNumber = [number, number] | number
 -  **leadingText** and **trailingText** - _Former adds stuff to the begining and latter to the end._
    -  value - _Whats gets added_
    -  display - _When_: 'always' or 'when-typing' or 'when-not-typing'
--  **reverseOutput** - _should the string output be reversed or not. It's usefull for using the ::first-letter css selector for... well... the last letter_
 
 ## Links:
 

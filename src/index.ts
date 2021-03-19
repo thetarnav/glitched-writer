@@ -211,15 +211,23 @@ export const createGlitchedWriter = (
 	htmlElement?: HTMLElement,
 	options?: ConstructorOptions,
 	onStepCallback?: Callback,
-): GlitchedWriter => new GlitchedWriter(htmlElement, options, onStepCallback)
+	onFinishCallback?: Callback,
+): GlitchedWriter =>
+	new GlitchedWriter(htmlElement, options, onStepCallback, onFinishCallback)
 
 export async function glitchWrite(
 	string: string,
 	htmlElement?: HTMLElement,
 	options?: ConstructorOptions,
 	onStepCallback?: Callback,
+	onFinishCallback?: Callback,
 ): Promise<WriterDataResponse> {
-	const writer = new GlitchedWriter(htmlElement, options, onStepCallback)
+	const writer = new GlitchedWriter(
+		htmlElement,
+		options,
+		onStepCallback,
+		onFinishCallback,
+	)
 	return writer.write(string)
 }
 
