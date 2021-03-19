@@ -41,7 +41,7 @@ export default class Char {
 			await wait(this.writer.options.genInterval)
 
 			this.nextStep()
-			this.writer.emitStep()
+			this.writer.emiter.call('step')
 
 			return true
 		}

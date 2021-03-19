@@ -1,6 +1,5 @@
 import GlitchedWriter from '.'
 import { Callback } from './types'
-import { reverseString } from './utils'
 
 export default class {
 	writer: GlitchedWriter
@@ -17,31 +16,34 @@ export default class {
 		this.writer = writer
 	}
 
-	call(finished: boolean) {
-		const { htmlElement } = this.writer
-		let { string } = this.writer
+	call(eventType: 'step' | 'finish') {
+		const { htmlElement, writerData, string } = this.writer
 
-		if (this.writer.options.reverseOutput) string = reverseString(string)
+		if (htmlElement) {
+			htmlElement.textContent = string
+			htmlElement.setAttribute('data-string', string)
+		}
 
-		if (htmlElement) htmlElement.textContent = string
-		if (htmlElement) htmlElement.setAttribute('data-string', string)
+		if (eventType === 'finish') {
+			// ON FINISH
+			this.writer.state.finish()
+			this.onFinishCallback?.(string, writerData)
+			this.emitEvent('gw_finished')
+		} else {
+			// ON STEP
+			this.onStepCallback?.(string, writerData)
+			this.emitEvent('gw_step')
+		}
 	}
 
-	callOnStep() {
-		this.callAnytime()
-		if (this.onStepCallback)
-			this.onStepCallback(string, this.writer.writerData)
-	}
-
-	callOnFinish() {
-		const { htmlElement } = this.writer
-		let { string } = this.writer
-
-		if (this.writer.options.reverseOutput) string = reverseString(string)
-
-		if (htmlElement) htmlElement.textContent = string
-		if (htmlElement) htmlElement.setAttribute('data-string', string)
-		if (this.onStepCallback)
-			this.onStepCallback(string, this.writer.writerData)
+	private emitEvent(name: 'gw_finished' | 'gw_step') {
+		const { string, htmlElement, writerData } = this.writer
+		const payload = {
+			detail: {
+				string,
+				writerData,
+			},
+		}
+		htmlElement?.dispatchEvent(new CustomEvent(name, payload))
 	}
 }

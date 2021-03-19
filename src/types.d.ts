@@ -1,3 +1,7 @@
+import GlitchedWriter from '.'
+import Options from './options'
+import State from './state'
+
 export type ModifyInterface<T, R> = Omit<T, keyof R> & R
 
 export type RangeOrNumber = [number, number] | number
@@ -19,7 +23,6 @@ export interface OptionsFields {
 	startFrom: 'matching' | 'previous' | 'erase'
 	leadingText: AppendedText | undefined
 	trailingText: AppendedText | undefined
-	reverseOutput: boolean
 }
 
 export type ConstructorOptions = ModifyInterface<
@@ -36,3 +39,16 @@ export interface WriteOptions {
 export interface PlayOptions {
 	reverse?: boolean
 }
+
+export interface WriterDataResponse {
+	string: string
+	writer: GlitchedWriter
+	options: Options
+	state: State
+	status?: 'ERROR' | 'SUCCESS'
+	message?: string
+	error?: any
+}
+
+// eslint-disable-next-line no-unused-vars
+export type Callback = (string: string, writerData?: WriterDataResponse) => any

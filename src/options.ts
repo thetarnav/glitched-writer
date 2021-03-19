@@ -5,7 +5,6 @@ import {
 	RangeOrNumber,
 	AppendedText,
 } from './types'
-// eslint-disable-next-line import/no-cycle
 import GlitchedWriter from '.'
 import { glyphs, presets, PresetName } from './presets'
 
@@ -22,7 +21,6 @@ export default class Options implements OptionsFields {
 	startFrom: 'matching' | 'previous' | 'erase' = 'matching'
 	leadingText: AppendedText | undefined = undefined
 	trailingText: AppendedText | undefined = undefined
-	reverseOutput: boolean = false
 	writer: GlitchedWriter
 
 	constructor(
@@ -46,7 +44,6 @@ export default class Options implements OptionsFields {
 		this.startFrom = options.startFrom ?? this.startFrom
 		this.leadingText = options.leadingText ?? this.leadingText
 		this.trailingText = options.trailingText ?? this.trailingText
-		this.reverseOutput = options.reverseOutput ?? this.reverseOutput
 		this.writer = writer
 	}
 

@@ -1,13 +1,7 @@
 import debounce from 'lodash.debounce'
 
-import GlitchedWriter, {
-	WriterDataResponse,
-	createGlitchedWriter,
-	glitchWrite,
-	presets,
-	glyphs,
-	wait,
-} from '../src'
+// import GlitchedWriter, { WriterDataResponse, wait } from '../src'
+import GlitchedWriter, { WriterDataResponse, wait } from '../lib'
 
 const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input') as HTMLInputElement,

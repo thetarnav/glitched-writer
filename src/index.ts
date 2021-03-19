@@ -1,56 +1,36 @@
-// eslint-disable-next-line import/no-cycle
 import Options from './options'
 import State from './state'
-// @ts-ignore
-// eslint-disable-next-line import/no-cycle
 import Char from './char'
-
-import { ConstructorOptions, WriteOptions, PlayOptions } from './types'
-// @ts-ignore
+import Emiter from './emiter'
 import {
-	wait,
-	promiseWhile,
-	isInRange,
-	animateWithClass,
-	reverseString,
-} from './utils'
-
+	ConstructorOptions,
+	WriteOptions,
+	PlayOptions,
+	WriterDataResponse,
+	Callback,
+} from './types'
+import { wait, promiseWhile, isInRange } from './utils'
 import { presets, glyphs } from './presets'
 
-export { presets, glyphs, wait }
-
-// eslint-disable-next-line no-unused-vars
-type StepCallback = (string: string, writerData?: WriterDataResponse) => any
-
-export interface WriterDataResponse {
-	string: string
-	writer: GlitchedWriter
-	options: Options
-	state: State
-	status?: 'ERROR' | 'SUCCESS'
-	message?: string
-	error?: any
-}
-
-// @ts-ignore
 export default class GlitchedWriter {
 	htmlElement?: HTMLElement
 	options: Options
 	state: State
+	emiter: Emiter
 	charTable: Char[] = []
 	previousString: string = ''
 	goalString: string = ''
-	onStepCallback?: StepCallback
 
 	constructor(
 		htmlElement?: HTMLElement,
 		options?: ConstructorOptions,
-		onStepCallback?: StepCallback,
+		onStepCallback?: Callback,
+		onFinishCallback?: Callback,
 	) {
-		this.options = new Options(this, options)
-		if (onStepCallback) this.onStepCallback = onStepCallback
-		this.state = new State()
 		this.htmlElement = htmlElement
+		this.options = new Options(this, options)
+		this.state = new State(this)
+		this.emiter = new Emiter(this, onStepCallback, onFinishCallback)
 	}
 
 	get string(): string {
@@ -63,6 +43,11 @@ export default class GlitchedWriter {
 		].join('')
 	}
 
+	get genPreviousString(): string {
+		const elTextContent = this.htmlElement?.textContent
+		return (elTextContent ?? this.previousString).trim()
+	}
+
 	get writerData(): WriterDataResponse {
 		const writer: GlitchedWriter = this,
 			{ options, state, string } = this
@@ -73,24 +58,6 @@ export default class GlitchedWriter {
 			options,
 			state,
 		}
-	}
-
-	get genPreviousString(): string {
-		let elTextContent = this.htmlElement?.textContent
-		if (this.options.reverseOutput)
-			elTextContent &&= reverseString(elTextContent)
-		return (elTextContent ?? this.previousString).trim()
-	}
-
-	emitStep(): void {
-		const { htmlElement } = this
-		let { string } = this
-
-		if (this.options.reverseOutput) string = reverseString(string)
-
-		if (htmlElement) htmlElement.textContent = string
-		if (htmlElement) htmlElement.setAttribute('data-string', string)
-		if (this.onStepCallback) this.onStepCallback(string, this.getWriterData())
 	}
 
 	async write(string: string, writeOptions?: WriteOptions) {
@@ -124,7 +91,6 @@ export default class GlitchedWriter {
 			)
 
 		this.state.play()
-		this.toggleClass(true)
 
 		if (this.options.oneAtATime) {
 			const reverse = playOptions?.reverse ?? false
@@ -149,34 +115,23 @@ export default class GlitchedWriter {
 			const finished = (await Promise.all(playList)).every(result => result)
 			return this.returnResult(finished)
 		} catch (error) {
-			this.getWriterData('ERROR', 'Writer encountered an error.', error)
+			return this.getWriterData(
+				'ERROR',
+				'Writer encountered an error.',
+				error,
+			)
 		}
-
-		return this.state.finished
-			? this.getWriterData('SUCCESS', `The writer finished typing.`)
-			: this.getWriterData('ERROR', `Writer failed to finish typing.`)
 	}
 
 	pause() {
-		this.toggleClass(false)
 		this.state.pause()
 	}
 
 	private returnResult(finished: boolean): WriterDataResponse {
-		finished && this.state.finish()
-		this.emitStep()
-		this.toggleClass(false)
+		finished ? this.emiter.call('finish') : this.emiter.call('step')
 		return finished
 			? this.getWriterData('SUCCESS', `The writer finished typing.`)
 			: this.getWriterData('ERROR', `Writer failed to finish typing.`)
-	}
-
-	private toggleClass(enable: boolean): void {
-		const el = this.htmlElement,
-			className = 'glitched-writer--writing'
-		if (!el) return
-
-		enable ? animateWithClass(el, className) : el.classList.remove(className)
 	}
 
 	private createMatchingCharTable(): void {
@@ -254,15 +209,24 @@ function makeGoalArray(previous: string, goal: string): string[] {
 export const createGlitchedWriter = (
 	htmlElement?: HTMLElement,
 	options?: ConstructorOptions,
-	onStepCallback?: StepCallback,
+	onStepCallback?: Callback,
 ): GlitchedWriter => new GlitchedWriter(htmlElement, options, onStepCallback)
 
 export async function glitchWrite(
 	string: string,
 	htmlElement?: HTMLElement,
 	options?: ConstructorOptions,
-	onStepCallback?: StepCallback,
+	onStepCallback?: Callback,
 ): Promise<WriterDataResponse> {
 	const writer = new GlitchedWriter(htmlElement, options, onStepCallback)
 	return writer.write(string)
+}
+
+export {
+	presets,
+	glyphs,
+	wait,
+	ConstructorOptions,
+	WriterDataResponse,
+	Callback,
 }
