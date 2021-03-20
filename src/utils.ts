@@ -36,7 +36,10 @@ export function filterDuplicates(iterable: any[] | string): any {
 	return isString ? result.join('') : result
 }
 
-export function parseCharset(input: string | string[] | Set<string>): string {
+export function parseCharset(
+	input?: string | string[] | Set<string>,
+): string | undefined {
+	if (input === undefined) return undefined
 	let result: string
 	// Charset is a string
 	if (typeof input === 'string') result = input
@@ -72,12 +75,12 @@ export const isInRange = (min: number, value: number, max: number): boolean =>
 	value >= min && value < max
 
 export const animateWithClass = (
-	element: HTMLElement,
+	element: HTMLElement | Element,
 	className: string,
 ): void => {
 	element.classList.remove(className)
 	// eslint-disable-next-line no-void
-	void element.offsetWidth
+	void (element as HTMLElement).offsetWidth
 	element.classList.add(className)
 }
 
@@ -94,3 +97,31 @@ export function getRandomFromRange(
 }
 
 export const coinFlip = (p: number = 0.5): boolean => Math.random() < p
+
+export type HtmlTagOrString = { tag: string } | string
+
+export function findAllHtml(string: string): HtmlTagOrString[] {
+	const reg = new RegExp(
+			'(?:<style.+?>.+?</style>|<script.+?>.+?</script>|<(?:!|/?[a-zA-Z]+).*?/?>)',
+			'g',
+		),
+		result: HtmlTagOrString[] = []
+
+	let find: RegExpExecArray | null,
+		lastIndex = 0
+
+	// eslint-disable-next-line no-cond-assign
+	while ((find = reg.exec(string))) {
+		const from = find.index,
+			to = reg.lastIndex,
+			stringBefore = string.slice(lastIndex, from)
+
+		lastIndex = to
+
+		stringBefore && result.push(...stringBefore)
+		result.push({ tag: find[0] })
+	}
+	string.length > lastIndex && result.push(...string.slice(lastIndex))
+
+	return result
+}

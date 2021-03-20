@@ -20,6 +20,7 @@ export interface OptionsFields {
 	glyphs: string
 	glyphsFromString: 'previous' | 'goal' | 'both' | 'none'
 	oneAtATime: boolean
+	html: boolean
 	startFrom: 'matching' | 'previous' | 'erase'
 	leadingText: AppendedText | undefined
 	trailingText: AppendedText | undefined

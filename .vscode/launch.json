@@ -5,15 +5,10 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "pwa-node",
+			"command": "npm start",
+			"name": "Run npm start",
 			"request": "launch",
-			"name": "Launch Program",
-			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}\\src\\index.ts",
-			// For restarting on change:
-			"restart": true,
-			"runtimeExecutable": "nodemon",
-			"console": "integratedTerminal"
+			"type": "node-terminal"
 		}
 	]
 }

@@ -14,20 +14,21 @@ import GlitchedWriter from '.'
 import { glyphs, presets, PresetName } from './presets'
 
 export default class Options implements OptionsFields {
-	steps: RangeOrNumber = [1, 6]
-	interval: RangeOrNumber = [50, 150]
-	initialDelay: RangeOrNumber = [0, 1500]
-	changeChance: RangeOrNumber = 0.6
-	ghostChance: RangeOrNumber = 0.15
-	maxGhosts: number | 'relative' = 'relative'
-	glyphs: string = glyphs.full
-	glyphsFromString: 'previous' | 'goal' | 'both' | 'none' = 'none'
-	oneAtATime: boolean = false
-	startFrom: 'matching' | 'previous' | 'erase' = 'matching'
-	leadingText: AppendedText | undefined = undefined
-	trailingText: AppendedText | undefined = undefined
+	steps: RangeOrNumber
+	interval: RangeOrNumber
+	initialDelay: RangeOrNumber
+	changeChance: RangeOrNumber
+	ghostChance: RangeOrNumber
+	maxGhosts: number | 'relative'
+	glyphs: string
+	glyphsFromString: 'previous' | 'goal' | 'both' | 'none'
+	ghostCharset: string
+	oneAtATime: boolean
+	html: boolean
+	startFrom: 'matching' | 'previous' | 'erase'
+	leadingText: AppendedText | undefined
+	trailingText: AppendedText | undefined
 	writer: GlitchedWriter
-	ghostCharset: string = ''
 
 	constructor(
 		writer: GlitchedWriter,
@@ -37,21 +38,21 @@ export default class Options implements OptionsFields {
 
 		options ||= {}
 
-		this.steps = options.steps ?? this.steps
-		this.interval = options.interval ?? this.interval
-		this.initialDelay = options.initialDelay ?? this.initialDelay
-		this.changeChance = options.changeChance ?? this.changeChance
-		this.ghostChance = options.ghostChance ?? this.ghostChance
-		this.maxGhosts = options.maxGhosts ?? this.maxGhosts
-		if (options.glyphs !== undefined)
-			this.glyphs = parseCharset(options.glyphs)
-		this.ghostCharset = this.glyphs
-		this.glyphsFromString = options.glyphsFromString ?? this.glyphsFromString
-		this.oneAtATime = options.oneAtATime ?? this.oneAtATime
-		this.startFrom = options.startFrom ?? this.startFrom
-		this.leadingText = options.leadingText ?? this.leadingText
-		this.trailingText = options.trailingText ?? this.trailingText
 		this.writer = writer
+		this.steps = options.steps ?? [1, 6]
+		this.interval = options.interval ?? [50, 150]
+		this.initialDelay = options.initialDelay ?? [0, 1500]
+		this.changeChance = options.changeChance ?? 0.6
+		this.ghostChance = options.ghostChance ?? 0.15
+		this.maxGhosts = options.maxGhosts ?? 'relative'
+		this.glyphs = parseCharset(options.glyphs) ?? glyphs.full
+		this.glyphsFromString = options.glyphsFromString ?? 'none'
+		this.ghostCharset = this.glyphs
+		this.oneAtATime = options.oneAtATime ?? false
+		this.html = options.html ?? false
+		this.startFrom = options.startFrom ?? 'matching'
+		this.leadingText = options.leadingText ?? undefined
+		this.trailingText = options.trailingText ?? undefined
 	}
 
 	get stepsLeft(): number {
@@ -71,7 +72,7 @@ export default class Options implements OptionsFields {
 	}
 	get genMaxGhosts(): number {
 		if (this.maxGhosts === 'relative')
-			return Math.round((this.writer.goalString?.length || 25) * 0.2)
+			return Math.round((this.writer.goalString?.length || 25) * 0.25)
 
 		return this.maxGhosts
 	}

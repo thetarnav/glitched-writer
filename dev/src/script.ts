@@ -1,7 +1,7 @@
 import debounce from 'lodash.debounce'
 
-// import GlitchedWriter, { wait } from '../src'
-import GlitchedWriter, { wait } from '../lib'
+import GlitchedWriter, { wait } from '../../src'
+// import GlitchedWriter, { wait } from '../lib'
 
 const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input') as HTMLInputElement,
@@ -22,15 +22,9 @@ const writer = new GlitchedWriter(textEl)
 
 inputEl.addEventListener(
 	'input',
-	debounce(
-		() => {
-			writer.write(inputEl.value)
-		},
-		500,
-		{
-			// maxWait: 1000,
-		},
-	),
+	debounce(() => {
+		writer.write(inputEl.value)
+	}, 500),
 )
 
 textEl.addEventListener(

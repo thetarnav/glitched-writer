@@ -11,5 +11,5 @@
 	},
 	"compileOnSave": true,
 	"include": ["src"],
-	"exclude": ["node_modules", "dev"]
+	"exclude": ["node_modules", "dev", "lib"]
 }

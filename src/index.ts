@@ -13,7 +13,7 @@ import { wait, promiseWhile, isInRange } from './utils'
 import { presets, glyphs } from './presets'
 
 export default class GlitchedWriter {
-	htmlElement?: HTMLElement
+	htmlElement?: HTMLElement | Element
 	options: Options
 	state: State
 	emiter: Emiter
@@ -22,7 +22,7 @@ export default class GlitchedWriter {
 	goalString: string = ''
 
 	constructor(
-		htmlElement?: HTMLElement,
+		htmlElement?: HTMLElement | Element,
 		options?: ConstructorOptions,
 		onStepCallback?: Callback,
 		onFinishCallback?: Callback,
@@ -34,11 +34,11 @@ export default class GlitchedWriter {
 	}
 
 	get string(): string {
-		const charTableMap = this.charTable.map(char => char.string)
+		const string = this.charTable.map(char => char.string).join('')
 
 		return [
 			this.options.getAppendedText('leading'),
-			charTableMap.join(''),
+			string,
 			this.options.getAppendedText('trailing'),
 		].join('')
 	}
@@ -137,7 +137,7 @@ export default class GlitchedWriter {
 
 	private createMatchingCharTable(): void {
 		const { genPreviousString: previous, goalString: goal } = this,
-			goalStringArray = makeGoalArray(previous, goal),
+			goalStringArray = strechGoal(previous, goal),
 			maxDist = Math.ceil(this.options.genMaxGhosts / 2)
 
 		let pi = -1
@@ -158,7 +158,7 @@ export default class GlitchedWriter {
 
 	private createPreviousCharTable(): void {
 		const { previousString: previous, goalString: goal } = this,
-			goalStringArray = makeGoalArray(previous, goal)
+			goalStringArray = strechGoal(previous, goal)
 
 		goalStringArray.forEach((l, i) =>
 			this.charTable.push(new Char(previous[i] || ' ', l, this)),
@@ -198,11 +198,11 @@ export default class GlitchedWriter {
 	}
 }
 
-function makeGoalArray(previous: string, goal: string): string[] {
-	const goalArray = Array.from(goal),
+function strechGoal(previous: string, goal: string): string[] {
+	const goalArray = typeof goal === 'object' ? goal : Array.from(goal),
 		prevGtGoal = Math.max(previous.length - goal.length, 0)
 
-	goalArray.push(...''.padEnd(prevGtGoal, ' '))
+	goalArray.push(...' '.repeat(prevGtGoal))
 
 	return goalArray
 }

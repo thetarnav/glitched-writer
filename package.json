@@ -15,31 +15,19 @@
     "lib/**/*"
   ],
   "scripts": {
-    "dev": "parcel test/index.pug --out-dir dev",
+    "start": "nodemon src/index.ts",
     "build": "tsc"
   },
   "devDependencies": {
-    "@parcel/transformer-typescript-types": "^2.0.0-nightly.630",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
-    "lodash.debounce": "^4.0.8",
     "nodemon": "^2.0.7",
-    "parcel-bundler": "^1.12.5",
-    "pug": "^3.0.2",
-    "sass": "^1.32.8",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   },
-  "browserslist": [
-    "last 3 and_chr versions",
-    "last 3 chrome versions",
-    "last 3 opera versions",
-    "last 3 ios_saf versions",
-    "last 3 safari versions"
-  ],
   "keywords": [
     "glitch",
     "text",
@@ -47,7 +35,7 @@
     "header",
     "decrypt",
     "content",
-    "frontend",
+    "front-end",
     "web",
     "html",
     "typewriter"
