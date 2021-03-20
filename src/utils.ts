@@ -125,3 +125,6 @@ export function findAllHtml(string: string): HtmlTagOrString[] {
 
 	return result
 }
+
+export const isSpecialChar = (l: string): boolean =>
+	['\t', '\n', '\r', '\f', '\v'].includes(l)

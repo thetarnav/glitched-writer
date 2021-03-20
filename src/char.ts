@@ -11,20 +11,27 @@ export default class Char {
 	ghostsAfter: string[] = []
 	writer: GlitchedWriter
 	stop: boolean = false
+	instant: boolean
 
 	constructor(
 		char: string,
 		goal: string,
 		writer: GlitchedWriter,
 		initialGhosts?: string,
+		instant: boolean = false,
 	) {
 		this.char = char
 		this.goal = goal
 		this.writer = writer
+		this.instant = instant
 		if (initialGhosts) this.ghostsBefore = [...initialGhosts]
 
 		this.stepsLeft = writer.options.stepsLeft
-		if (this.isSpecial) this.stepsLeft = 0
+
+		if (!instant && goal in ['\t', '\n', '\r', '\f', '\v'])
+			this.instant = true
+
+		if (this.instant) this.stepsLeft = 0
 
 		this.maxGhosts = writer.options.genMaxGhosts
 	}
@@ -41,13 +48,9 @@ export default class Char {
 		)
 	}
 
-	get isSpecial(): boolean {
-		return ['\t', '\n', '\r', '\f', '\v'].includes(this.goal)
-	}
-
 	async type() {
 		const loop = async () => {
-			await wait(this.writer.options.genInterval)
+			!this.instant && (await wait(this.writer.options.genInterval))
 
 			this.nextStep()
 			this.writer.emiter.call('step')
@@ -55,7 +58,7 @@ export default class Char {
 			return true
 		}
 
-		!this.isSpecial && (await wait(this.writer.options.genInitDelay))
+		!this.instant && (await wait(this.writer.options.genInitDelay))
 
 		await promiseWhile(
 			() => !this.finished && !this.writer.state.isPaused && !this.stop,
