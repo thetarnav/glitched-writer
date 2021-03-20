@@ -28,9 +28,6 @@ export default class Char {
 
 		this.stepsLeft = writer.options.stepsLeft
 
-		if (!instant && goal in ['\t', '\n', '\r', '\f', '\v'])
-			this.instant = true
-
 		if (this.instant) this.stepsLeft = 0
 
 		this.maxGhosts = writer.options.genMaxGhosts

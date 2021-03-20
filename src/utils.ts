@@ -98,14 +98,14 @@ export function getRandomFromRange(
 
 export const coinFlip = (p: number = 0.5): boolean => Math.random() < p
 
-export type HtmlTagOrString = { tag: string } | string
+export type TagOrString = { tag: string } | string
 
-export function findAllHtml(string: string): HtmlTagOrString[] {
-	const reg = new RegExp(
-			'(?:<style.+?>.+?</style>|<script.+?>.+?</script>|<(?:!|/?[a-zA-Z]+).*?/?>)',
-			'g',
-		),
-		result: HtmlTagOrString[] = []
+const findTagPattern =
+	'(?:<style.+?>.+?</style>|<script.+?>.+?</script>|<(?:!|/?[a-zA-Z]+).*?/?>)'
+
+export function htmlToArray(string: string): TagOrString[] {
+	const reg = new RegExp(findTagPattern, 'g'),
+		result: TagOrString[] = []
 
 	let find: RegExpExecArray | null,
 		lastIndex = 0
@@ -124,6 +124,12 @@ export function findAllHtml(string: string): HtmlTagOrString[] {
 	string.length > lastIndex && result.push(...string.slice(lastIndex))
 
 	return result
+}
+
+export function filterHtml(string: string): string {
+	const reg = new RegExp(findTagPattern, 'g')
+
+	return string.replace(reg, '')
 }
 
 export const isSpecialChar = (l: string): boolean =>

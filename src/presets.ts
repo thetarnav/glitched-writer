@@ -20,6 +20,7 @@ export const presets = {
 		glyphs: glyphs.full,
 		glyphsFromString: 'none',
 		oneAtATime: false,
+		html: false,
 		startFrom: 'matching',
 		leadingText: undefined,
 		trailingText: undefined,

@@ -13,9 +13,10 @@ import {
 	wait,
 	promiseWhile,
 	isInRange,
-	findAllHtml,
-	HtmlTagOrString,
+	htmlToArray,
+	TagOrString,
 	isSpecialChar,
+	filterHtml,
 } from './utils'
 import { presets, glyphs } from './presets'
 
@@ -25,7 +26,6 @@ export default class GlitchedWriter {
 	state: State
 	emiter: Emiter
 	charTable: Char[] = []
-	previousString: string = ''
 	goalString: string = ''
 
 	constructor(
@@ -50,9 +50,14 @@ export default class GlitchedWriter {
 		].join('')
 	}
 
-	get genPreviousString(): string {
-		const elTextContent = this.htmlElement?.textContent
-		return (elTextContent ?? this.previousString).trim()
+	get previousString(): string {
+		let prev = this.htmlElement?.textContent ?? this.string
+		if (this.options.html) {
+			prev = this.htmlElement?.innerHTML ?? prev
+			prev = filterHtml(prev)
+		}
+		prev = prev.trim()
+		return prev
 	}
 
 	get writerData(): WriterDataResponse {
@@ -69,9 +74,8 @@ export default class GlitchedWriter {
 
 	async write(string: string, writeOptions?: WriteOptions) {
 		if (this.options.startFrom === 'erase' && !writeOptions?.erase)
-			await this.write(this.genEraseGoalString(string), { erase: true })
+			await this.write(this.genGoalStringToErase(string), { erase: true })
 
-		this.previousString = this.htmlElement?.textContent ?? this.string
 		this.goalString = string
 		this.charTable.forEach(char => (char.stop = true))
 		this.charTable = []
@@ -143,8 +147,7 @@ export default class GlitchedWriter {
 	}
 
 	private createMatchingCharTable(): void {
-		const { genPreviousString: previous } = this,
-			goalStringArray = this.getGoalArray(),
+		const { goalStringArray, previousString: previous } = this,
 			maxDist = Math.ceil(this.options.genMaxGhosts / 2)
 
 		let pi = -1
@@ -173,18 +176,10 @@ export default class GlitchedWriter {
 				this.state.nGhosts += appendedText.length
 			} else this.addChar(pl || ' ', gl)
 		})
-
-		const text = this.charTable.map(({ char, goal, ghostsBefore }) => [
-			ghostsBefore,
-			char,
-			goal,
-		])
-		console.log(text)
 	}
 
 	private createPreviousCharTable(): void {
-		const { previousString: previous } = this,
-			goalStringArray = this.getGoalArray()
+		const { goalStringArray, previousString: previous } = this
 
 		let pi = -1
 		goalStringArray.forEach(gl => {
@@ -215,10 +210,11 @@ export default class GlitchedWriter {
 		this.charTable.push(new Char(pl, gl, this, appendedText, instant))
 	}
 
-	private getGoalArray(): HtmlTagOrString[] {
-		const { previousString: previous, goalString: goal } = this,
-			goalArray = this.options.html ? findAllHtml(goal) : Array.from(goal),
-			prevGtGoal = Math.max(previous.length - goal.length, 0)
+	private get goalStringArray(): TagOrString[] {
+		const { goalString: goal, previousString: previous } = this,
+			goalArray = this.options.html ? htmlToArray(goal) : Array.from(goal)
+
+		const prevGtGoal = Math.max(previous.length - goalArray.length, 0)
 
 		goalArray.push(...' '.repeat(prevGtGoal))
 
@@ -239,8 +235,8 @@ export default class GlitchedWriter {
 		}
 	}
 
-	private genEraseGoalString(goal: string): string {
-		const { genPreviousString: previous } = this
+	private genGoalStringToErase(goal: string): string {
+		const { previousString: previous } = this
 		let result = ''
 
 		for (let i = 0; i < goal.length; i++) {
@@ -290,13 +286,3 @@ export {
 	WriterDataResponse,
 	Callback,
 }
-
-const Writer = new GlitchedWriter(undefined, { html: true }, string =>
-	console.log(string),
-)
-
-;(async function () {
-	await Writer.write('Welcome to Glitch City')
-	await wait(500)
-	await Writer.write('\tNothing\n\tspecial</br> <a href="#">here!</a>')
-})()

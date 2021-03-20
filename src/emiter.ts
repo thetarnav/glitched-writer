@@ -20,7 +20,8 @@ export default class {
 		const { htmlElement, writerData, string } = this.writer
 
 		if (htmlElement) {
-			htmlElement.textContent = string
+			if (this.writer.options.html) htmlElement.innerHTML = string
+			else htmlElement.textContent = string
 			htmlElement.setAttribute('data-string', string)
 		}
 
