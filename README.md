@@ -145,6 +145,17 @@ textHtmlElement.addEventListener('gw_step', e =>
 )
 ```
 
+### Writing HTML
+
+New (**experimental & potentially dangerous**) config option let's you write text with html tags in it.
+
+```js
+// You need to enable html option.
+const Writer = new GlitchedWriter(htmlElement, { html: true })
+
+Writer.write('<b>Be sure to click <a href="...">this!</a></b>')
+```
+
 ### Available imports
 
 List of all things that can be imported from glitched-writer module.
@@ -201,6 +212,7 @@ new GlitchedWriter(htmlElement, presets.typewriter)
    glyphs?: string | string[] | Set<string>, // glyphs.full
    glyphsFromString?: 'previous' | 'goal' | 'both' | 'none', // 'none'
    oneAtATime?: boolean, // false
+   html?: boolean, // false
    startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
    leadingText?: AppendedText, // undefined
    trailingText?: AppendedText // undefined
@@ -232,6 +244,7 @@ type RangeOrNumber = [number, number] | number
    -  'both' - appends leters both of them
    -  'none' - leaves the glyph charset be
 -  **oneAtATime** - _If writing should take place from left-to-right, letter-by-letter or normally: all-at-once._
+-  **html** - Potentially dangerous option. If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to not enable it on user-provided content.
 -  **startFrom** - _Decides on witch algorithm to use._
    -  'matching' - Will scan starting and goal string for matching characters and will try to build character map from that.
    -  'previous' - Wont do any matching, just converts starting string into character map.
