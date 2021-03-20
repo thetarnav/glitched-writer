@@ -1,6 +1,6 @@
 {
   "name": "glitched-writer",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Glitched text-writer module, with highly customizable settings to get the effect You're looking for. Generally for web as a client dependency, but can be also used elswere.",
   "author": "Damian Tarnawski @thetarnav <gthetarnav@gmail.com>",
   "license": "MIT",
