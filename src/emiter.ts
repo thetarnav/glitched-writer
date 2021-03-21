@@ -22,22 +22,22 @@ export default class {
 		if (htmlElement) {
 			if (this.writer.options.html) htmlElement.innerHTML = string
 			else htmlElement.textContent = string
-			htmlElement.setAttribute('data-string', string)
+			htmlElement.setAttribute('data-gw-string', string)
 		}
 
 		if (eventType === 'finish') {
 			// ON FINISH
 			this.writer.state.finish()
 			this.onFinishCallback?.(string, writerData)
-			this.emitEvent('gw_finished')
+			this.emitEvent('gw-finished')
 		} else {
 			// ON STEP
 			this.onStepCallback?.(string, writerData)
-			this.emitEvent('gw_step')
+			this.emitEvent('gw-step')
 		}
 	}
 
-	private emitEvent(name: 'gw_finished' | 'gw_step') {
+	private emitEvent(name: 'gw-finished' | 'gw-step') {
 		const { string, htmlElement, writerData } = this.writer
 		const payload = {
 			detail: {

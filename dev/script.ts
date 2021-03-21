@@ -1,13 +1,14 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import debounce from 'lodash.debounce'
 
-import GlitchedWriter, { wait, glyphs, presets } from '../../src'
+import GlitchedWriter, { wait } from '../src'
 // import GlitchedWriter, { wait } from '../lib'
 
 const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input') as HTMLInputElement,
 	logsEl = document.getElementById('logs')
 
-const writer = new GlitchedWriter(textEl, presets.zalgo)
+const writer = new GlitchedWriter(textEl, 'zalgo')
 
 // eslint-disable-next-line func-names
 ;(async function () {
@@ -28,7 +29,7 @@ inputEl.addEventListener(
 )
 
 textEl.addEventListener(
-	'gw_finished',
+	'gw-finished',
 	e => (logsEl.innerHTML += `<p>${e.detail.string}</p>`),
 )
 

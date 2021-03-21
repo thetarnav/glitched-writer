@@ -100,6 +100,7 @@
 		"no-empty-function": "warn",
 		"no-multi-spaces": "warn",
 		"wrap-iife": "off",
-		"import/no-cycle": "off"
+		"import/no-cycle": "off",
+		"import/first": "off"
 	}
 }

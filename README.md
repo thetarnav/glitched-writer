@@ -18,9 +18,9 @@ Glitched, text-writing npm module, with highly customizable settings to get the 
 
 -  Callback functions for every step and finish.
 
--  Events **gw_finished** and **gw_step** are dispatched on the HTML Element.
+-  Events **gw-finished** and **gw-step** are dispatched on the HTML Element.
 
--  For styling purposes, while writing: attatches **glitched-writer--writing** class to the HTML Element and **data-string attribute** with current string state.
+-  For styling purposes, while writing: attatches **gw-writing** class to the HTML Element and **data-gw-string attribute** with current string state.
 
 -  Written in **Typescript**.
 
@@ -43,7 +43,7 @@ import GlitchedWriter from 'glitched-writer'
 Or use the CDN and attach this script link to your html document.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.0/lib/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.6/lib/index.min.js"></script>
 ```
 
 ## Usage:
@@ -204,17 +204,18 @@ new GlitchedWriter(htmlElement, presets.typewriter)
 
 ```ts
 {
-   steps?: RangeOrNumber, // [1, 6]
-   interval?: RangeOrNumber, // [50, 150]
-   initialDelay?: RangeOrNumber, // [0, 1500]
+   steps?: RangeOrNumber, // [1, 8]
+   interval?: RangeOrNumber, // [60, 170]
+   initialDelay?: RangeOrNumber, // [0, 2000]
    changeChance?: RangeOrNumber, // 0.6
-   ghostChance?: RangeOrNumber, // 0.15
-   maxGhosts?: number | 'relative', // 'relative'
-   glyphs?: string | string[] | Set<string>, // glyphs.full
-   glyphsFromString?: 'previous' | 'goal' | 'both' | 'none', // 'none'
+   ghostChance?: RangeOrNumber, // 0.2
+   maxGhosts?: number, // '0.2'
+   glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
+   glyphsFromString?: boolean // false
+   startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
    oneAtATime?: boolean, // false
    html?: boolean, // false
-   startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
+   fillSpace?: boolean // true,
 }
 
 type RangeOrNumber = [number, number] | number
@@ -231,19 +232,18 @@ type RangeOrNumber = [number, number] | number
 -  **initialDelay** - _first delay each letter must wait before it starts working_
 -  **changeChance** - _Percentage Chance for letter to change to something else (from glyph charset)_
 -  **ghostChance** - _Percentage Chance for ghost letter to appear_
--  **maxGhosts** - _Max number of ghosts for entire string_
+-  **maxGhosts** - _Maximal number of ghosts to occur_
+   -  **int** - _(eg. 15) -> this will be the limit._
+   -  **float** - _(eg. 0.25) -> Limit = maxGhosts \* goalString.length_
 -  **glyphs** - _A set of characters that can appear as ghosts or letters can change into them_
--  **glyphsFromString** - _If you want to add letters from string to the glyph charset_
-   -  'previous' - appends leters from starting string
-   -  'goal' - appends leters from goal string
-   -  'both' - appends leters both of them
-   -  'none' - leaves the glyph charset be
--  **oneAtATime** - _If writing should take place from left-to-right, letter-by-letter or normally: all-at-once._
--  **html** - Potentially dangerous option. If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to not enable it on user-provided content.
+-  **glyphsFromString** - _If you want to add letters from written string to the glyph charset_
 -  **startFrom** - _Decides on witch algorithm to use._
    -  'matching' - Will scan starting and goal string for matching characters and will try to build character map from that.
    -  'previous' - Wont do any matching, just converts starting string into character map.
    -  'erase' - First Erases entire string and then writes from blank space.
+-  **oneAtATime** - _If writing should take place from left-to-right, letter-by-letter or normally: all-at-once._
+-  **html** - Potentially dangerous option. If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to not enable it on user-provided content.
+-  **fillSpace** - _Normally if letter gets erased it actually gets replaced with space instead - to make words appear from and disappear into space, rather then sticking to the rest of the words. Set to false if you want to disable this._
 
 ## Links:
 

@@ -150,7 +150,7 @@ body {
 
 	&::after,
 	&::before {
-		content: attr(data-string);
+		content: attr(data-gw-string);
 		position: absolute;
 		opacity: 0;
 		left: 0;
@@ -165,7 +165,7 @@ body {
 		z-index: -1;
 		color: $pink;
 	}
-	&.glitched-writer--writing {
+	&.gw-writing {
 		// &:first-letter {
 		// 	background-color: $light-blue !important;
 		// 	color: $black !important;

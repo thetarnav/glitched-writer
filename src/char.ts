@@ -6,7 +6,6 @@ export default class Char {
 	char: string
 	goal: string
 	stepsLeft: number
-	maxGhosts: number
 	ghostsBefore: string[] = []
 	ghostsAfter: string[] = []
 	writer: GlitchedWriter
@@ -29,8 +28,6 @@ export default class Char {
 		this.stepsLeft = writer.options.stepsLeft
 
 		if (this.instant) this.stepsLeft = 0
-
-		this.maxGhosts = writer.options.genMaxGhosts
 	}
 
 	get string(): string {
@@ -49,10 +46,9 @@ export default class Char {
 		const loop = async () => {
 			!this.instant && (await wait(this.writer.options.genInterval))
 
-			this.nextStep()
+			this.step()
 			this.writer.emiter.call('step')
-
-			return true
+			this.stepsLeft--
 		}
 
 		!this.instant && (await wait(this.writer.options.genInitDelay))
@@ -65,7 +61,7 @@ export default class Char {
 		return this.finished
 	}
 
-	nextStep() {
+	step() {
 		if (this.stepsLeft > 0 && this.char !== this.goal) {
 			/**
 			 * IS GROWING
@@ -76,7 +72,7 @@ export default class Char {
 			} = this.writer.options
 
 			if (coinFlip(ghostChance)) {
-				if (this.writer.state.nGhosts < this.maxGhosts) this.addGhost()
+				if (this.writer.state.ghostsInLimit) this.addGhost()
 				else this.removeGhost()
 			}
 			if (coinFlip(changeChance)) this.char = this.writer.options.genGhost
@@ -86,14 +82,7 @@ export default class Char {
 			 */
 			this.char = this.goal
 			this.removeGhost()
-		} else {
-			/**
-			 * IS DONE
-			 */
-			return
 		}
-
-		this.stepsLeft--
 	}
 
 	addGhost() {
@@ -105,6 +94,7 @@ export default class Char {
 	}
 
 	removeGhost() {
+		this.writer.state.nGhosts--
 		coinFlip() && this.ghostsBefore.length > 0
 			? deleteRandom(this.ghostsBefore)
 			: deleteRandom(this.ghostsAfter)

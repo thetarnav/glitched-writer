@@ -17,8 +17,9 @@ import {
 	TagOrString,
 	isSpecialChar,
 	filterHtml,
+	arrayOfTheSame,
 } from './utils'
-import { presets, glyphs } from './presets'
+import { presets, glyphs, PresetName } from './presets'
 
 export default class GlitchedWriter {
 	htmlElement?: HTMLElement | Element
@@ -30,7 +31,7 @@ export default class GlitchedWriter {
 
 	constructor(
 		htmlElement?: HTMLElement | Element,
-		options?: ConstructorOptions,
+		options?: ConstructorOptions | PresetName,
 		onStepCallback?: Callback,
 		onFinishCallback?: Callback,
 	) {
@@ -144,7 +145,7 @@ export default class GlitchedWriter {
 
 	private createMatchingCharTable(): void {
 		const { goalStringArray, previousString: previous } = this,
-			maxDist = Math.ceil(this.options.genMaxGhosts / 2)
+			maxDist = Math.min(Math.ceil(this.options.genMaxGhosts / 2), 5)
 
 		let pi = -1
 		goalStringArray.forEach(gl => {
@@ -170,7 +171,7 @@ export default class GlitchedWriter {
 				this.addChar(gl, gl, appendedText)
 				pi = fi
 				this.state.nGhosts += appendedText.length
-			} else this.addChar(pl || ' ', gl)
+			} else this.addChar(pl || this.options.space, gl)
 		})
 	}
 
@@ -180,7 +181,7 @@ export default class GlitchedWriter {
 		let pi = -1
 		goalStringArray.forEach(gl => {
 			pi++
-			const pl = previous[pi] || ' '
+			const pl = previous[pi] || this.options.space
 
 			if (typeof gl === 'object' || isSpecialChar(gl)) {
 				pi--
@@ -207,12 +208,12 @@ export default class GlitchedWriter {
 	}
 
 	private get goalStringArray(): TagOrString[] {
-		const { goalString: goal, previousString: previous } = this,
-			goalArray = this.options.html ? htmlToArray(goal) : Array.from(goal)
+		const { goalString: goal, previousString: previous, options } = this,
+			goalArray = options.html ? htmlToArray(goal) : Array.from(goal)
 
 		const prevGtGoal = Math.max(previous.length - goalArray.length, 0)
 
-		goalArray.push(...' '.repeat(prevGtGoal))
+		goalArray.push(...arrayOfTheSame(options.space, prevGtGoal))
 
 		return goalArray
 	}
@@ -244,7 +245,8 @@ export default class GlitchedWriter {
 		}
 
 		const diff = Math.max(goal.length - result.length, 0)
-		if (diff > 0) result = result.padEnd(diff, ' ')
+		if (diff > 0 && this.options.space !== '')
+			result = result.padEnd(diff, ' ')
 
 		return result
 	}

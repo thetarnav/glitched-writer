@@ -1,17 +1,14 @@
 import {
 	parseCharset,
-	randomChild,
 	filterDuplicates,
 	getRandomFromRange,
+	filterHtml,
 } from './utils'
-import {
-	OptionsFields,
-	ConstructorOptions,
-	RangeOrNumber,
-	AppendedText,
-} from './types'
+import { OptionsFields, ConstructorOptions, RangeOrNumber } from './types'
 import GlitchedWriter from '.'
-import { glyphs, presets, PresetName } from './presets'
+import { presets, PresetName } from './presets'
+
+const sample = require('lodash.sample')
 
 export default class Options implements OptionsFields {
 	steps: RangeOrNumber
@@ -19,14 +16,15 @@ export default class Options implements OptionsFields {
 	initialDelay: RangeOrNumber
 	changeChance: RangeOrNumber
 	ghostChance: RangeOrNumber
-	maxGhosts: number | 'relative'
+	maxGhosts: number
 	glyphs: string
-	glyphsFromString: 'previous' | 'goal' | 'both' | 'none'
+	glyphsFromString: boolean
 	ghostCharset: string
 	oneAtATime: boolean
 	html: boolean
 	startFrom: 'matching' | 'previous' | 'erase'
 	writer: GlitchedWriter
+	space: string
 
 	constructor(
 		writer: GlitchedWriter,
@@ -36,19 +34,22 @@ export default class Options implements OptionsFields {
 
 		options ||= {}
 
-		this.writer = writer
-		this.steps = options.steps ?? [1, 6]
-		this.interval = options.interval ?? [50, 150]
-		this.initialDelay = options.initialDelay ?? [0, 1500]
-		this.changeChance = options.changeChance ?? 0.6
-		this.ghostChance = options.ghostChance ?? 0.15
-		this.maxGhosts = options.maxGhosts ?? 'relative'
-		this.glyphs = parseCharset(options.glyphs) ?? glyphs.full + glyphs.zalgo
-		this.glyphsFromString = options.glyphsFromString ?? 'none'
+		this.steps = options.steps ?? presets.default.steps
+		this.interval = options.interval ?? presets.default.interval
+		this.initialDelay = options.initialDelay ?? presets.default.initialDelay
+		this.changeChance = options.changeChance ?? presets.default.changeChance
+		this.ghostChance = options.ghostChance ?? presets.default.ghostChance
+		this.maxGhosts = options.maxGhosts ?? presets.default.maxGhosts
+		this.glyphs = parseCharset(options.glyphs) ?? presets.default.glyphs
+		this.glyphsFromString =
+			options.glyphsFromString ?? presets.default.glyphsFromString
 		this.ghostCharset = this.glyphs
-		this.oneAtATime = options.oneAtATime ?? false
-		this.html = options.html ?? false
-		this.startFrom = options.startFrom ?? 'matching'
+		this.oneAtATime = options.oneAtATime ?? presets.default.oneAtATime
+		this.html = options.html ?? presets.default.html
+		this.startFrom = options.startFrom ?? presets.default.startFrom
+
+		this.writer = writer
+		this.space = options.fillSpace ? ' ' : ''
 	}
 
 	get stepsLeft(): number {
@@ -67,30 +68,29 @@ export default class Options implements OptionsFields {
 		return getRandomFromRange(this.ghostChance, false)
 	}
 	get genMaxGhosts(): number {
-		if (this.maxGhosts === 'relative')
-			return Math.round((this.writer.goalString?.length || 25) * 0.25)
+		if (Number.isInteger(this.maxGhosts)) return this.maxGhosts
 
-		return this.maxGhosts
+		let length: number
+		if (this.writer.options.html)
+			length = filterHtml(this.writer.goalString).length
+		else length = this.writer.goalString.length
+
+		return Math.round((length || 20) * this.maxGhosts)
 	}
 	get genGhost(): string {
-		return randomChild(this.ghostCharset) ?? ''
+		return sample(this.ghostCharset) ?? ''
 	}
 
 	setCharset() {
 		let charset = this.glyphs
 
-		if (this.glyphsFromString !== 'none') {
-			const addPrevious = () =>
-				(charset += filterDuplicates(this.writer.previousString))
-			const addGoal = () =>
-				(charset += filterDuplicates(this.writer.goalString))
-
-			if (this.glyphsFromString === 'both') {
-				addPrevious()
-				addGoal()
-			} else if (this.glyphsFromString === 'previous') addPrevious()
-			else addGoal()
-		}
+		if (this.glyphsFromString)
+			charset += filterDuplicates(
+				this.writer.previousString +
+					(this.writer.options.html
+						? filterHtml(this.writer.goalString)
+						: this.writer.goalString),
+			)
 
 		this.ghostCharset = charset
 	}

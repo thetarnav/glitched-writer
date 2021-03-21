@@ -21,12 +21,6 @@ export function random(
 	return result
 }
 
-export function randomChild<T>(array: Array<T>): T
-export function randomChild(array: string): string
-export function randomChild(array: any[] | string): any {
-	return array[random(0, array.length, 'floor')]
-}
-
 export function filterDuplicates(iterable: string): string
 export function filterDuplicates<T>(iterable: Array<T>): Array<T>
 export function filterDuplicates(iterable: any[] | string): any {
@@ -83,9 +77,6 @@ export const animateWithClass = (
 	void (element as HTMLElement).offsetWidth
 	element.classList.add(className)
 }
-
-export const reverseString = (str: string): string =>
-	str.split('').reverse().join('')
 
 export function getRandomFromRange(
 	range: RangeOrNumber,

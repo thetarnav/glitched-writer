@@ -16,9 +16,9 @@ export interface OptionsFields {
 	initialDelay: RangeOrNumber
 	changeChance: RangeOrNumber
 	ghostChance: RangeOrNumber
-	maxGhosts: number | 'relative'
+	maxGhosts: number
 	glyphs: string
-	glyphsFromString: 'previous' | 'goal' | 'both' | 'none'
+	glyphsFromString: boolean
 	oneAtATime: boolean
 	html: boolean
 	startFrom: 'matching' | 'previous' | 'erase'
@@ -28,6 +28,7 @@ export type ConstructorOptions = ModifyInterface<
 	Partial<OptionsFields>,
 	{
 		glyphs?: string | string[] | Set<string>
+		fillSpace?: boolean
 	}
 >
 
