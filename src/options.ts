@@ -26,8 +26,6 @@ export default class Options implements OptionsFields {
 	oneAtATime: boolean
 	html: boolean
 	startFrom: 'matching' | 'previous' | 'erase'
-	leadingText: AppendedText | undefined
-	trailingText: AppendedText | undefined
 	writer: GlitchedWriter
 
 	constructor(
@@ -51,8 +49,6 @@ export default class Options implements OptionsFields {
 		this.oneAtATime = options.oneAtATime ?? false
 		this.html = options.html ?? false
 		this.startFrom = options.startFrom ?? 'matching'
-		this.leadingText = options.leadingText ?? undefined
-		this.trailingText = options.trailingText ?? undefined
 	}
 
 	get stepsLeft(): number {
@@ -78,18 +74,6 @@ export default class Options implements OptionsFields {
 	}
 	get genGhost(): string {
 		return randomChild(this.ghostCharset) ?? ''
-	}
-
-	getAppendedText(witch: 'trailing' | 'leading'): string {
-		const text = witch === 'trailing' ? this.trailingText : this.leadingText
-		if (!text) return ''
-		if (
-			text.display === 'always' ||
-			(text.display === 'when-typing' && this.writer.state.isTyping) ||
-			(text.display === 'when-not-typing' && !this.writer.state.isTyping)
-		)
-			return text.value
-		return ''
 	}
 
 	setCharset() {

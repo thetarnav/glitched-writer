@@ -22,8 +22,6 @@ export interface OptionsFields {
 	oneAtATime: boolean
 	html: boolean
 	startFrom: 'matching' | 'previous' | 'erase'
-	leadingText: AppendedText | undefined
-	trailingText: AppendedText | undefined
 }
 
 export type ConstructorOptions = ModifyInterface<

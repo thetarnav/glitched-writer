@@ -23,8 +23,6 @@ export const presets = {
 		oneAtATime: false,
 		html: false,
 		startFrom: 'matching',
-		leadingText: undefined,
-		trailingText: undefined,
 	} as ConstructorOptions,
 	nier: {
 		interval: [10, 20],
@@ -57,10 +55,6 @@ export const presets = {
 		glyphs: '',
 		oneAtATime: true,
 		startFrom: 'erase',
-		trailingText: {
-			value: '_',
-			display: 'when-typing',
-		},
 	} as ConstructorOptions,
 	zalgo: {
 		initialDelay: [0, 3000],

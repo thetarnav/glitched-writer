@@ -182,7 +182,7 @@ Available presets as for now:
 -  **nier** - _Imitating the way text was appearing in the NieR: Automata's UI._
 -  **typewriter** - _One letter at a time, only slightly glitched._
 -  **terminal** - _Imitating being typed by a machine._
--  **zalgo** - _Inspired by "the zalgo text", Ghost characters mostly includes the unicode combining characters, which makes the text glitch vertically._
+-  **zalgo** - _Inspired by the "zalgo" or "cursed text", Ghost characters mostly includes the unicode combining characters, which makes the text glitch vertically._
 
 ```js
 new GlitchedWriter(htmlElement, 'nier')
@@ -215,14 +215,8 @@ new GlitchedWriter(htmlElement, presets.typewriter)
    oneAtATime?: boolean, // false
    html?: boolean, // false
    startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
-   leadingText?: AppendedText, // undefined
-   trailingText?: AppendedText // undefined
 }
 
-interface AppendedText {
-	value: string
-	display: 'always' | 'when-typing' | 'when-not-typing'
-}
 type RangeOrNumber = [number, number] | number
 ```
 
@@ -250,9 +244,6 @@ type RangeOrNumber = [number, number] | number
    -  'matching' - Will scan starting and goal string for matching characters and will try to build character map from that.
    -  'previous' - Wont do any matching, just converts starting string into character map.
    -  'erase' - First Erases entire string and then writes from blank space.
--  **leadingText** and **trailingText** - _Former adds stuff to the begining and latter to the end._
-   -  value - _Whats gets added_
-   -  display - _When_: 'always' or 'when-typing' or 'when-not-typing'
 
 ## Links:
 

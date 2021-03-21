@@ -43,11 +43,7 @@ export default class GlitchedWriter {
 	get string(): string {
 		const string = this.charTable.map(char => char.string).join('')
 
-		return [
-			this.options.getAppendedText('leading'),
-			string,
-			this.options.getAppendedText('trailing'),
-		].join('')
+		return string
 	}
 
 	get previousString(): string {
