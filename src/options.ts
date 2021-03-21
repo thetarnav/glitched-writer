@@ -45,7 +45,7 @@ export default class Options implements OptionsFields {
 		this.changeChance = options.changeChance ?? 0.6
 		this.ghostChance = options.ghostChance ?? 0.15
 		this.maxGhosts = options.maxGhosts ?? 'relative'
-		this.glyphs = parseCharset(options.glyphs) ?? glyphs.full
+		this.glyphs = parseCharset(options.glyphs) ?? glyphs.full + glyphs.zalgo
 		this.glyphsFromString = options.glyphsFromString ?? 'none'
 		this.ghostCharset = this.glyphs
 		this.oneAtATime = options.oneAtATime ?? false

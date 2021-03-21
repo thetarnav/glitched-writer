@@ -182,6 +182,7 @@ Available presets as for now:
 -  **nier** - _Imitating the way text was appearing in the NieR: Automata's UI._
 -  **typewriter** - _One letter at a time, only slightly glitched._
 -  **terminal** - _Imitating being typed by a machine._
+-  **zalgo** - _Inspired by "the zalgo text", Ghost characters mostly includes the unicode combining characters, which makes the text glitch vertically._
 
 ```js
 new GlitchedWriter(htmlElement, 'nier')

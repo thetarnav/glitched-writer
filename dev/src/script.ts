@@ -1,28 +1,22 @@
 import debounce from 'lodash.debounce'
 
-import GlitchedWriter, { wait } from '../../src'
+import GlitchedWriter, { wait, glyphs, presets } from '../../src'
 // import GlitchedWriter, { wait } from '../lib'
 
 const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input') as HTMLInputElement,
 	logsEl = document.getElementById('logs')
 
-const writer = new GlitchedWriter(textEl, {
-	html: true,
-	startFrom: 'erase',
-	initialDelay: [0, 500],
-	interval: [10, 50],
-	steps: [1, 3],
-})
+const writer = new GlitchedWriter(textEl, presets.zalgo)
 
 // eslint-disable-next-line func-names
 ;(async function () {
 	await wait(1200)
-	await writer.write('<i>my old friend.</i>')
+	await writer.write('my old friend.')
 	await wait(1200)
-	await writer.write('This is only <b>the beginning.</b>')
+	await writer.write('This is only the beginning.')
 	await wait(1500)
-	await writer.write('<i>Please</i>,</br>say something...')
+	await writer.write('Please, say something...')
 	inputEl.removeAttribute('disabled')
 })()
 
