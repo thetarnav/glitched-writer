@@ -46,7 +46,7 @@ import GlitchedWriter from 'glitched-writer'
 Or use the CDN and attach this script link to your html document.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.6/lib/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.7/lib/index.min.js"></script>
 ```
 
 ## Usage:
@@ -242,6 +242,7 @@ new GlitchedWriter(htmlElement, presets.typewriter)
    startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
    oneAtATime?: boolean, // false
    html?: boolean, // false
+	letterize?: boolean, // false
    fillSpace?: boolean // true,
 }
 
