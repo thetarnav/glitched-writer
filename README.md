@@ -178,7 +178,7 @@ import GlitchedWriter, { // <-- GlitchedWriter class
 To use one of the available presets, You can simply write it's name when creating writer, in the place of options.
 Available presets as for now:
 
--  **default** - _It is loaded automatically, ant it is the one from the GIF on top._
+-  **default** - _Loaded automatically, featured on the GIF up top._
 
 -  **nier** - _Imitating the way text was appearing in the NieR: Automata's UI._
 
@@ -231,36 +231,36 @@ type RangeOrNumber = [number, number] | number
 
 **Ghost** are letters that gets rendered in the time of writing, but are removed to reach goal string.
 
--  **steps** - _Number of **minimum** steps it takes one letter to reach it's goal one. Set to 0 if you want them to change to right letter in one step._
+-  **steps** - Number of **minimum** steps it takes one letter to reach it's goal one. Set to 0 if you want them to change to right letter in one step.
 
--  **interval** - _Interval between each step, for every letter._
+-  **interval** - Interval between each step, for every letter.
 
--  **initialDelay** - _first delay each letter must wait before it starts working_
+-  **initialDelay** - first delay each letter must wait before it starts working
 
--  **changeChance** - _Percentage Chance for letter to change to something else (from glyph charset)_
+-  **changeChance** - Percentage Chance for letter to change to something else (from glyph charset)
 
--  **ghostChance** - _Percentage Chance for ghost letter to appear_
+-  **ghostChance** - Percentage Chance for ghost letter to appear
 
--  **maxGhosts** - _Maximal number of ghosts to occur_
+-  **maxGhosts** - Maximal number of ghosts to occur
 
    -  **int** - _(eg. 15) -> this will be the limit._
    -  **float** - _(eg. 0.25) -> Limit = maxGhosts \* goalString.length_
 
--  **glyphs** - _A set of characters that can appear as ghosts or letters can change into them_
+-  **glyphs** - A set of characters that can appear as ghosts or letters can change into them
 
--  **glyphsFromString** - _If you want to add letters from written string to the glyph charset_
+-  **glyphsFromString** - If you want to add letters from written string to the glyph charset
 
--  **startFrom** - _Decides on witch algorithm to use._
+-  **startFrom** - Decides on witch algorithm to use.
 
-   -  'matching' - Will scan starting and goal string for matching characters and will try to build character map from that.
-   -  'previous' - Wont do any matching, just converts starting string into character map.
-   -  'erase' - First Erases entire string and then writes from blank space.
+   -  'matching' - _Will scan starting and goal string for matching characters and will try to build character map from that._
+   -  'previous' - _Wont do any matching, just converts starting string into character map._
+   -  'erase' - _First Erases entire string and then writes from blank space._
 
--  **oneAtATime** - _If writing should take place from left-to-right, letter-by-letter or normally: all-at-once._
+-  **oneAtATime** - If writing should take place from left-to-right, letter-by-letter or normally: all-at-once.
 
 -  **html** - Potentially dangerous option. If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to not enable it on user-provided content.
 
--  **fillSpace** - _Normally if letter gets erased it actually gets replaced with space instead - to make words appear from and disappear into space, rather then sticking to the rest of the words. Set to false if you want to disable this._
+-  **fillSpace** - Normally if letter gets erased it actually gets replaced with space instead - to make words appear from and disappear into space, rather then sticking to the rest of the words. Set to false if you want to disable this.
 
 ## Links:
 
