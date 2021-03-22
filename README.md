@@ -54,24 +54,28 @@ Creating writer class instance:
 
 ```js
 // Calling GlitchedWriter constructor:
-const Writer = new GlitchedWriter(htmlElement, options, onStepCallback, onFinishCallback)
+const Writer = new GlitchedWriter(
+	htmlElement,
+	options,
+	onStepCallback,
+	onFinishCallback,
+)
 
 // Custom options:
 const Writer = new GlitchedWriter(htmlElement, {
-   interval: [10, 70],
-   oneAtATime: true
+	interval: [10, 70],
+	oneAtATime: true,
 })
 
 // On-step-callback added:
-const Writer = new GlitchedWriter(htmlElement, undefined, (string, writerData) => {
-   console.log(`Current string: ${string}`)
-   console.log('All the class data:', writerData)
-})
-
-// Using alternative class-creating function:
-import { createGlitchedWriter } from 'glitched-writer'
-
-const Writer = createGlitchedWriter(htmlElement, ...)
+const Writer = new GlitchedWriter(
+	htmlElement,
+	undefined,
+	(string, writerData) => {
+		console.log(`Current string: ${string}`)
+		console.log('All the class data:', writerData)
+	},
+)
 ```
 
 ### Writing
@@ -165,7 +169,6 @@ import GlitchedWriter, { // <-- GlitchedWriter class
 	ConstructorOptions, // <-- Options type
 	Callback, // <-- Callback type
 	WriterDataResponse, // <-- Type of response in callbacks
-	createGlitchedWriter, // <-- Alternative to creating writer class instance
 	glitchWrite, // <-- One time write funcion
 	presets, // <-- Object with all prepared presets of options
 	glyphs, // <-- Same but for glyph charsets

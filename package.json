@@ -20,10 +20,16 @@
     "build": "tsc"
   },
   "dependencies": {
+    "lodash.findlast": "^4.6.0",
+    "lodash.findlastindex": "^4.6.0",
+    "lodash.flattendeep": "^4.4.0",
     "lodash.sample": "^4.2.1"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.0.0-beta.2",
+    "@types/lodash.findlast": "^4.6.6",
+    "@types/lodash.findlastindex": "^4.6.6",
+    "@types/lodash.flattendeep": "^4.4.6",
     "@types/lodash.sample": "^4.2.6",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",

@@ -49,7 +49,7 @@ export default class Options implements OptionsFields {
 		this.startFrom = options.startFrom ?? presets.default.startFrom
 
 		this.writer = writer
-		this.space = options.fillSpace ? ' ' : ''
+		this.space = options.fillSpace ?? presets.default.fillSpace ? ' ' : ''
 	}
 
 	get stepsLeft(): number {

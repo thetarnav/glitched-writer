@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { findLastIndex, flattenDeep } from 'lodash'
 import Options from './options'
 import State from './state'
 import Char from './char'
@@ -57,6 +59,22 @@ export default class GlitchedWriter {
 		return prev
 	}
 
+	get previousStringFromTable(): string {
+		let prev = flattenDeep(
+			this.charTable.map(({ ghostsBefore, l, ghostsAfter }) => [
+				ghostsBefore,
+				l,
+				ghostsAfter,
+			]),
+		).join('')
+		if (this.options.html) {
+			prev = this.htmlElement?.innerHTML ?? prev
+			prev = filterHtml(prev)
+		}
+		prev = prev.trim()
+		return prev
+	}
+
 	get writerData(): WriterDataResponse {
 		const writer: GlitchedWriter = this,
 			{ options, state, string } = this
@@ -74,19 +92,32 @@ export default class GlitchedWriter {
 			await this.write(this.genGoalStringToErase(string), { erase: true })
 
 		this.goalString = string
-		this.charTable.forEach(char => (char.stop = true))
-		this.charTable = []
 		this.state.nGhosts = 0
 		this.options.setCharset()
+		this.dropSpecialChars()
 
 		if (this.options.startFrom === 'matching') this.createMatchingCharTable()
 		else this.createPreviousCharTable()
+
+		// this.logCharTable()
 
 		this.pause()
 		return this.play({
 			reverse: this.options.oneAtATime && writeOptions?.erase,
 		})
 	}
+
+	// private logCharTable() {
+	// 	console.table(
+	// 		this.charTable.map(({ ghostsBefore, ghostsAfter, l, gl, special }) => [
+	// 			ghostsBefore.join(''),
+	// 			ghostsAfter.join(''),
+	// 			l,
+	// 			gl,
+	// 			special && 'HTML',
+	// 		]),
+	// 	)
+	// }
 
 	async play(playOptions?: PlayOptions): Promise<WriterDataResponse> {
 		const playList: Promise<boolean>[] = [],
@@ -148,14 +179,14 @@ export default class GlitchedWriter {
 			maxDist = Math.min(Math.ceil(this.options.genMaxGhosts / 2), 5)
 
 		let pi = -1
-		goalStringArray.forEach(gl => {
+		goalStringArray.forEach((gl, gi) => {
 			pi++
-			const pl = previous[pi]
-			if (gl === '' && !pl) return
+			const pl: string | undefined = previous[pi]
 
 			if (typeof gl === 'object' || isSpecialChar(gl)) {
 				pi--
-				this.addChar(
+				this.setChar(
+					gi,
 					'',
 					typeof gl === 'object' ? gl.tag : gl,
 					undefined,
@@ -168,24 +199,28 @@ export default class GlitchedWriter {
 
 			if (fi !== -1 && fi - pi <= maxDist) {
 				const appendedText = previous.substring(pi, fi)
-				this.addChar(gl, gl, appendedText)
+				this.setChar(gi, gl, gl, appendedText)
 				pi = fi
 				this.state.nGhosts += appendedText.length
-			} else this.addChar(pl || this.options.space, gl)
+			} else
+				this.setChar(gi, pl || this.options.space, gl || this.options.space)
 		})
+
+		this.dropOldChars(goalStringArray.length)
 	}
 
 	private createPreviousCharTable(): void {
 		const { goalStringArray, previousString: previous } = this
 
 		let pi = -1
-		goalStringArray.forEach(gl => {
+		goalStringArray.forEach((gl, gi) => {
 			pi++
 			const pl = previous[pi] || this.options.space
 
 			if (typeof gl === 'object' || isSpecialChar(gl)) {
 				pi--
-				this.addChar(
+				this.setChar(
+					gi,
 					'',
 					typeof gl === 'object' ? gl.tag : gl,
 					undefined,
@@ -194,26 +229,58 @@ export default class GlitchedWriter {
 				return
 			}
 
-			this.addChar(pl, gl)
+			this.setChar(gi, pl, gl)
 		})
+
+		this.dropOldChars(goalStringArray.length)
 	}
 
-	private addChar(
+	// private dropEmptyChars() {
+	// 	const { length } = this.charTable,
+	// 		n = this.charTable.filter(({ l, gl }) => !l && !gl).length
+
+	// 	n && this.charTable.splice(length - n, n)
+	// }
+
+	private dropOldChars(from: number) {
+		const { charTable } = this
+		charTable.splice(from, charTable.length - from)
+	}
+
+	private dropSpecialChars() {
+		let i: number = findLastIndex(this.charTable, 'special')
+		while (i !== -1) {
+			this.charTable.splice(i, 1)
+			i = findLastIndex(this.charTable, 'special')
+		}
+	}
+
+	private setChar(
+		ci: number,
 		pl: string,
 		gl: string,
 		appendedText?: string,
-		instant: boolean = false,
+		special: boolean = false,
 	) {
-		this.charTable.push(new Char(pl, gl, this, appendedText, instant))
+		const { charTable } = this,
+			char: Char | undefined = charTable[ci]
+
+		if (special) {
+			charTable.splice(ci, 0, new Char('', gl, this, '', true))
+			return
+		}
+
+		char
+			? char.reset(pl, gl, appendedText, special)
+			: charTable.push(new Char(pl, gl, this, appendedText, special))
 	}
 
 	private get goalStringArray(): TagOrString[] {
 		const { goalString: goal, previousString: previous, options } = this,
-			goalArray = options.html ? htmlToArray(goal) : Array.from(goal)
+			goalArray = options.html ? htmlToArray(goal) : Array.from(goal),
+			prevGtGoal = Math.max(previous.length - goalArray.length, 0)
 
-		const prevGtGoal = Math.max(previous.length - goalArray.length, 0)
-
-		goalArray.push(...arrayOfTheSame(options.space, prevGtGoal))
+		goalArray.push(...arrayOfTheSame('', prevGtGoal))
 
 		return goalArray
 	}
@@ -276,3 +343,18 @@ export {
 	WriterDataResponse,
 	Callback,
 }
+
+// const writer = new GlitchedWriter(undefined, { html: true }, string =>
+// 	console.log(string),
+// )
+
+// // eslint-disable-next-line func-names
+// ;(async function () {
+// 	await wait(1200)
+// 	await writer.write('<h3>This is only the beginning.</h3>')
+// 	await wait(1200)
+// 	await writer.write('Please, <b>say something</b>...')
+// 	await wait(1500)
+// 	await writer.write('my <i>old</i> friend.')
+// 	// inputEl.removeAttribute('disabled')
+// })()

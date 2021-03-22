@@ -1,4 +1,4 @@
-import { ConstructorOptions, OptionsFields } from './types'
+import { ConstructorOptions, RangeOrNumber } from './types'
 
 export const glyphs = {
 	nier:
@@ -12,19 +12,19 @@ export const glyphs = {
 
 export const presets = {
 	default: {
-		steps: [1, 8],
-		interval: [60, 170],
-		initialDelay: [0, 2000],
-		changeChance: 0.6,
-		ghostChance: 0.2,
+		steps: [1, 8] as RangeOrNumber,
+		interval: [60, 170] as RangeOrNumber,
+		initialDelay: [0, 2000] as RangeOrNumber,
+		changeChance: 0.6 as RangeOrNumber,
+		ghostChance: 0.2 as RangeOrNumber,
 		maxGhosts: 0.2,
 		glyphs: glyphs.full + glyphs.zalgo,
 		glyphsFromString: false,
 		oneAtATime: false,
 		html: false,
 		fillSpace: true,
-		startFrom: 'matching',
-	} as OptionsFields,
+		startFrom: 'matching' as 'matching' | 'previous' | 'erase',
+	},
 	nier: {
 		interval: [10, 20],
 		initialDelay: [0, 0],
