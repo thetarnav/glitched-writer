@@ -1,5 +1,6 @@
 import GlitchedWriter from '.'
 import { Callback } from './types'
+import { filterHtml } from './utils'
 
 export default class {
 	writer: GlitchedWriter
@@ -19,11 +20,14 @@ export default class {
 	call(eventType: 'step' | 'finish') {
 		const { htmlElement, writerData, string } = this.writer
 
-		if (htmlElement) {
+		if (htmlElement && !this.writer.options.letterize) {
 			if (this.writer.options.html) htmlElement.innerHTML = string
 			else htmlElement.textContent = string
-			htmlElement.setAttribute('data-gw-string', string)
 		}
+		htmlElement?.setAttribute(
+			'data-gw-string',
+			this.writer.options.html ? filterHtml(string) : string,
+		)
 
 		if (eventType === 'finish') {
 			// ON FINISH

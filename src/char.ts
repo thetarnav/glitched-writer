@@ -11,6 +11,12 @@ export default class Char {
 	writer: GlitchedWriter
 	stop: boolean = false
 	special: boolean
+	els?: {
+		charEl: HTMLSpanElement
+		ghostsBeforeEl: HTMLSpanElement
+		letterEl: HTMLSpanElement
+		ghostsAfterEl: HTMLSpanElement
+	}
 
 	constructor(
 		l: string,
@@ -27,7 +33,25 @@ export default class Char {
 
 		this.stepsLeft = writer.options.stepsLeft
 
-		if (this.special) this.stepsLeft = 0
+		if (special) this.stepsLeft = 0
+		else if (writer.options.letterize) {
+			this.els = {
+				charEl: document.createElement('span'),
+				ghostsBeforeEl: document.createElement('span'),
+				letterEl: document.createElement('span'),
+				ghostsAfterEl: document.createElement('span'),
+			}
+			this.els.charEl.className = 'gw-char'
+			this.els.ghostsBeforeEl.className = 'gw-ghosts'
+			this.els.ghostsAfterEl.className = 'gw-ghosts'
+			this.els.letterEl.className = 'gw-letter'
+			this.els.charEl.append(
+				this.els.ghostsBeforeEl,
+				this.els.letterEl,
+				this.els.ghostsAfterEl,
+			)
+			this.writeToElement()
+		}
 	}
 
 	reset(
@@ -42,6 +66,11 @@ export default class Char {
 		this.special = special
 		this.ghostsBefore = Array.from(initialGhosts)
 		this.stepsLeft = this.writer.options.stepsLeft
+		this.writeToElement()
+		if (this.els) {
+			this.els.charEl.className = 'gw-char'
+			this.els.letterEl.className = 'gw-letter'
+		}
 	}
 
 	get string(): string {
@@ -56,22 +85,44 @@ export default class Char {
 		)
 	}
 
+	private writeToElement() {
+		if (!this.els) return
+
+		const { l, ghostsBefore, ghostsAfter } = this,
+			{ ghostsBeforeEl, ghostsAfterEl, letterEl: letter } = this.els
+
+		letter.textContent = l
+		ghostsBeforeEl.textContent = ghostsBefore.join('')
+		ghostsAfterEl.textContent = ghostsAfter.join('')
+	}
+
+	appendChild() {
+		if (this.els) this.writer.htmlElement?.appendChild(this.els.charEl)
+	}
+
 	async type() {
 		const loop = async () => {
 			!this.special && (await wait(this.writer.options.genInterval))
 
 			this.step()
 			this.writer.emiter.call('step')
+			this.writeToElement()
 			this.stepsLeft--
 		}
 
 		!this.special && (await wait(this.writer.options.genInitDelay))
+
+		if (this.els) this.els.charEl.classList.add('gw-typing')
 
 		await promiseWhile(
 			() => !this.finished && !this.writer.state.isPaused && !this.stop,
 			loop,
 		)
 
+		if (this.els) {
+			this.els.charEl.classList.add('gw-finished')
+			this.els.charEl.classList.remove('gw-typing')
+		}
 		return this.finished
 	}
 
@@ -80,20 +131,21 @@ export default class Char {
 			/**
 			 * IS GROWING
 			 */
-			const {
-				genGhostChance: ghostChance,
-				genChangeChance: changeChance,
-			} = this.writer.options
+			const { ghostChance, changeChance } = this.writer.options
 
 			if (coinFlip(ghostChance)) {
 				if (this.writer.state.ghostsInLimit) this.addGhost()
 				else this.removeGhost()
 			}
-			if (coinFlip(changeChance)) this.l = this.writer.options.genGhost
+			if (coinFlip(changeChance)) {
+				if (this.els) this.els.letterEl.classList.add('gw-glitched')
+				this.l = this.writer.options.genGhost
+			}
 		} else if (!this.finished) {
 			/**
 			 * IS SHRINKING
 			 */
+			if (this.els) this.els.letterEl.classList.remove('gw-glitched')
 			this.l = this.gl
 			this.removeGhost()
 		}

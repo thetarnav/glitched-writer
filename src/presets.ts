@@ -8,6 +8,7 @@ export const glyphs = {
 	letterlike:
 		'ABCDĐEFGHIJKLMNOPQRSTUVWXYZabcdđefghijklmnopqrstuvwxyzĄąĆćŻżŹźŃńóŁłАБВГҐДЂЕЁЄЖЗЅИІЇЙЈКЛЉМНЊОПРСТЋУЎФХЦЧЏШЩЪЫЬЭЮЯабвгґдђеёєжзѕиіїйјклљмнњопрстћуўфхцчџшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωάΆέΈέΉίϊΐΊόΌύΰϋΎΫΏĂÂÊÔƠƯăâêôơưĂÂÊÔƠƯăâêôơư1234567890',
 	zalgo: '̴̵̶̷̸̡̢̧̨̛̖̗̘̙̜̝̞̟̠̣̤̥̦̩̪̫̬̭̮̯̰̱̲̳̹̺̻̼͇͈͉͍͎̀́̂̃̄̅̆̇̈̉̊̋̌̍̎̏̐̑̒̓̔̽̾̿̀́͂̓̈́͆͊͋͌̕̚ͅ ͓͔͕͖͙͚͐͑͒͗͛ͣͤͥͦͧͨͩͪͫͬͭͮͯ͘͜͟͢͝͞͠͡͏҉',
+	neo: '!<>-_\\/[]{}—=+*^?#________',
 }
 
 export const presets = {
@@ -15,14 +16,15 @@ export const presets = {
 		steps: [1, 8] as RangeOrNumber,
 		interval: [60, 170] as RangeOrNumber,
 		initialDelay: [0, 2000] as RangeOrNumber,
-		changeChance: 0.6 as RangeOrNumber,
-		ghostChance: 0.2 as RangeOrNumber,
+		changeChance: 0.6,
+		ghostChance: 0.2,
 		maxGhosts: 0.2,
 		glyphs: glyphs.full + glyphs.zalgo,
 		glyphsFromString: false,
 		oneAtATime: false,
 		html: false,
 		fillSpace: true,
+		letterize: false,
 		startFrom: 'matching' as 'matching' | 'previous' | 'erase',
 	},
 	nier: {
@@ -61,12 +63,23 @@ export const presets = {
 		initialDelay: [0, 3000],
 		interval: [10, 35],
 		steps: [0, 42],
-		maxGhosts: 4.5,
-		changeChance: 0.2,
-		ghostChance: 0.6,
+		maxGhosts: 4.6,
+		changeChance: 0.5,
+		ghostChance: 0.7,
 		glyphs: glyphs.zalgo,
 		glyphsFromString: true,
 		fillSpace: false,
+	} as ConstructorOptions,
+	neo: {
+		glyphs: glyphs.neo,
+		maxGhosts: 0,
+		ghostChance: 0,
+		changeChance: 1,
+		interval: [30, 100],
+		initialDelay: [0, 1300],
+		steps: [4, 7],
+		startFrom: 'previous',
+		letterize: true,
 	} as ConstructorOptions,
 }
 

@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { findLastIndex, flattenDeep } from 'lodash'
+import { findLastIndex } from 'lodash'
 import Options from './options'
 import State from './state'
 import Char from './char'
@@ -51,29 +51,28 @@ export default class GlitchedWriter {
 
 	get previousString(): string {
 		let prev = this.htmlElement?.textContent ?? this.string
-		if (this.options.html) {
-			prev = this.htmlElement?.innerHTML ?? prev
-			prev = filterHtml(prev)
-		}
+		if (this.options.html) prev = filterHtml(prev)
+
 		prev = prev.trim()
 		return prev
 	}
 
-	get previousStringFromTable(): string {
-		let prev = flattenDeep(
-			this.charTable.map(({ ghostsBefore, l, ghostsAfter }) => [
-				ghostsBefore,
-				l,
-				ghostsAfter,
-			]),
-		).join('')
-		if (this.options.html) {
-			prev = this.htmlElement?.innerHTML ?? prev
-			prev = filterHtml(prev)
-		}
-		prev = prev.trim()
-		return prev
-	}
+	// get previousStringFromTable(): string {
+	// 	let prev = flattenDeep(
+	// 		this.charTable.map(({ ghostsBefore, l, ghostsAfter }) => [
+	// 			ghostsBefore,
+	// 			l,
+	// 			ghostsAfter,
+	// 		]),
+	// 	).join('')
+
+	// 	console.log(prev)
+
+	// 	if (this.options.html) prev = filterHtml(prev)
+
+	// 	prev = prev.trim()
+	// 	return prev
+	// }
 
 	get writerData(): WriterDataResponse {
 		const writer: GlitchedWriter = this,
@@ -94,12 +93,16 @@ export default class GlitchedWriter {
 		this.goalString = string
 		this.state.nGhosts = 0
 		this.options.setCharset()
-		this.dropSpecialChars()
+		this.removeSpecialChars()
 
 		if (this.options.startFrom === 'matching') this.createMatchingCharTable()
 		else this.createPreviousCharTable()
 
 		// this.logCharTable()
+		if (this.options.letterize) {
+			if (this.htmlElement) this.htmlElement.innerHTML = ''
+			this.charTable.forEach(char => char.appendChild())
+		}
 
 		this.pause()
 		return this.play({
@@ -206,7 +209,7 @@ export default class GlitchedWriter {
 				this.setChar(gi, pl || this.options.space, gl || this.options.space)
 		})
 
-		this.dropOldChars(goalStringArray.length)
+		this.removeExtraChars(goalStringArray.length)
 	}
 
 	private createPreviousCharTable(): void {
@@ -232,22 +235,18 @@ export default class GlitchedWriter {
 			this.setChar(gi, pl, gl)
 		})
 
-		this.dropOldChars(goalStringArray.length)
+		this.removeExtraChars(goalStringArray.length)
 	}
 
-	// private dropEmptyChars() {
-	// 	const { length } = this.charTable,
-	// 		n = this.charTable.filter(({ l, gl }) => !l && !gl).length
-
-	// 	n && this.charTable.splice(length - n, n)
-	// }
-
-	private dropOldChars(from: number) {
+	private removeExtraChars(from: number) {
 		const { charTable } = this
+		// for (let i = charTable.length - 1; i >= from; i--) {
+		// 	charTable[i].destroy()
+		// }
 		charTable.splice(from, charTable.length - from)
 	}
 
-	private dropSpecialChars() {
+	private removeSpecialChars() {
 		let i: number = findLastIndex(this.charTable, 'special')
 		while (i !== -1) {
 			this.charTable.splice(i, 1)

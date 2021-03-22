@@ -157,6 +157,24 @@ const Writer = new GlitchedWriter(htmlElement, { html: true })
 Writer.write('<b>Be sure to click <a href="...">this!</a></b>')
 ```
 
+### Letterize
+
+(**Experimental!**) Splits written text into multiple <span> elements. Then writing letters seperately into these child-elements. As for now: **!Do not work with "html" option!**, only one or the other.
+
+```js
+// You need to enable html option.
+const Writer = new GlitchedWriter(htmlElement, { letterize: true })
+
+Writer.write('Hello there!')
+/**
+ * The shape of one character:
+ * .gw-char (state classes: .gw-typing or .gw-finished)
+ * 	.gw-ghosts
+ * 	.gw-letter (also .gw-glitched when it is a "glitched" char.)
+ * 	.gw-ghosts
+ */
+```
+
 ### Available imports
 
 List of all things that can be imported from glitched-writer module.
@@ -178,15 +196,17 @@ import GlitchedWriter, { // <-- GlitchedWriter class
 To use one of the available presets, You can simply write it's name when creating writer, in the place of options.
 Available presets as for now:
 
--  **default** - _Loaded automatically, featured on the GIF up top._
+-  **default** - Loaded automatically, featured on the GIF up top.
 
--  **nier** - _Imitating the way text was appearing in the NieR: Automata's UI._
+-  **nier** - Imitating the way text was appearing in the _NieR: Automata's UI_.
 
--  **typewriter** - _One letter at a time, only slightly glitched._
+-  **typewriter** - One letter at a time, only slightly glitched.
 
--  **terminal** - _Imitating being typed by a machine._
+-  **terminal** - Imitating being typed by a machine.
 
--  **zalgo** - _Inspired by the "zalgo" or "cursed text", Ghost characters mostly includes the unicode combining characters, which makes the text glitch vertically._
+-  **zalgo** - Inspired by the _"zalgo"_ or _"cursed text"_, Ghost characters mostly includes the unicode combining characters, which makes the text glitch vertically.
+
+-  **neo** - Recreated: _Justin Windle's [!"Text Scramble Effect"](https://codepen.io/soulwire/pen/mErPAK)_
 
 ```js
 new GlitchedWriter(htmlElement, 'nier')
@@ -229,17 +249,17 @@ type RangeOrNumber = [number, number] | number
 
 **Range** values will result in random values for each step for every letter.
 
-**Ghost** are letters that gets rendered in the time of writing, but are removed to reach goal string.
+**Ghost** are "glitched letters" that gets rendered randomly in the time of writing, but aren't part of final string.
 
--  **steps** - Number of **minimum** steps it takes one letter to reach it's goal one. Set to 0 if you want them to change to right letter in one step.
+-  **steps** - Number of **minimum** steps it takes one letter to reach it's goal one. Set to 0 if you want them to change to right letter in one step. (int)
 
--  **interval** - Interval between each step, for every letter.
+-  **interval** - Interval between each step, for every letter. (int: ms)
 
--  **initialDelay** - first delay each letter must wait before it starts working
+-  **initialDelay** - first delay each letter must wait before it starts working (int: ms)
 
--  **changeChance** - Percentage Chance for letter to change to something else (from glyph charset)
+-  **changeChance** - Percentage Chance for letter to change to something else (from glyph charset) (p: 0-1)
 
--  **ghostChance** - Percentage Chance for ghost letter to appear
+-  **ghostChance** - Percentage Chance for ghost letter to appear (p: 0-1)
 
 -  **maxGhosts** - Maximal number of ghosts to occur
 
@@ -258,7 +278,9 @@ type RangeOrNumber = [number, number] | number
 
 -  **oneAtATime** - If writing should take place from left-to-right, letter-by-letter or normally: all-at-once.
 
--  **html** - Potentially dangerous option. If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to not enable it on user-provided content.
+-  **html** - _Potentially dangerous option._ If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to not enable it on user-provided content.
+
+-  **letterize** - _Experimental option._ Instead of injecting written text to "textContent" or "innerHTML", it appends every letter of that text as a child <span> element. Then changing textContent of that span to current letter. It gives a lot of styling possibilities, as you can style ghosts, letters, and whole chars seperately, depending on current writer and char state.
 
 -  **fillSpace** - Normally if letter gets erased it actually gets replaced with space instead - to make words appear from and disappear into space, rather then sticking to the rest of the words. Set to false if you want to disable this.
 

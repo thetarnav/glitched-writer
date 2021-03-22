@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { sample } from 'lodash'
 import {
 	parseCharset,
 	filterDuplicates,
@@ -8,20 +10,21 @@ import { OptionsFields, ConstructorOptions, RangeOrNumber } from './types'
 import GlitchedWriter from '.'
 import { presets, PresetName } from './presets'
 
-const sample = require('lodash.sample')
+// const sample = require('lodash.sample')
 
 export default class Options implements OptionsFields {
 	steps: RangeOrNumber
 	interval: RangeOrNumber
 	initialDelay: RangeOrNumber
-	changeChance: RangeOrNumber
-	ghostChance: RangeOrNumber
+	changeChance: number
+	ghostChance: number
 	maxGhosts: number
 	glyphs: string
 	glyphsFromString: boolean
 	ghostCharset: string
 	oneAtATime: boolean
 	html: boolean
+	letterize: boolean
 	startFrom: 'matching' | 'previous' | 'erase'
 	writer: GlitchedWriter
 	space: string
@@ -46,6 +49,9 @@ export default class Options implements OptionsFields {
 		this.ghostCharset = this.glyphs
 		this.oneAtATime = options.oneAtATime ?? presets.default.oneAtATime
 		this.html = options.html ?? presets.default.html
+		this.letterize = options.letterize ?? presets.default.letterize
+		if (typeof document === 'undefined') this.letterize = false
+		if (this.letterize) this.html = false
 		this.startFrom = options.startFrom ?? presets.default.startFrom
 
 		this.writer = writer
@@ -60,12 +66,6 @@ export default class Options implements OptionsFields {
 	}
 	get genInitDelay(): number {
 		return getRandomFromRange(this.initialDelay)
-	}
-	get genChangeChance(): number {
-		return getRandomFromRange(this.changeChance, false)
-	}
-	get genGhostChance(): number {
-		return getRandomFromRange(this.ghostChance, false)
 	}
 	get genMaxGhosts(): number {
 		if (Number.isInteger(this.maxGhosts)) return this.maxGhosts

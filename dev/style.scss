@@ -140,13 +140,24 @@ body {
 	font-size: 35px;
 	color: $light-blue;
 
-	@include font-family;
+	// @include font-family;
+	font-family: monospace;
 	@include text-shadow($light-blue);
 
 	// unicode-bidi: bidi-override;
 	// direction: rtl;
 
 	// white-space: pre;
+
+	// .gw-char:not(.gw-finished) {
+	// 	&,
+	// 	.gw-ghosts {
+	// 		opacity: 0.3;
+	// 	}
+	// }
+	.gw-glitched {
+		opacity: 0.3;
+	}
 
 	&::after,
 	&::before {
@@ -165,27 +176,22 @@ body {
 		z-index: -1;
 		color: $pink;
 	}
-	&.gw-writing {
-		// &:first-letter {
-		// 	background-color: $light-blue !important;
-		// 	color: $black !important;
-		// }
+	// &.gw-writing {
+	// 	animation: glitch-skew 1s steps(10, end) infinite alternate-reverse;
 
-		animation: glitch-skew 1s steps(10, end) infinite alternate-reverse;
-
-		&::after,
-		&::before {
-			opacity: 1;
-		}
-		&::after {
-			animation: glitch-animation-1 1.5s steps(20, end) infinite
-				alternate-reverse;
-		}
-		&::before {
-			animation: glitch-animation-2 2s steps(20, end) infinite
-				alternate-reverse;
-		}
-	}
+	// 	&::after,
+	// 	&::before {
+	// 		opacity: 1;
+	// 	}
+	// 	&::after {
+	// 		animation: glitch-animation-1 1.5s steps(20, end) infinite
+	// 			alternate-reverse;
+	// 	}
+	// 	&::before {
+	// 		animation: glitch-animation-2 2s steps(20, end) infinite
+	// 			alternate-reverse;
+	// 	}
+	// }
 	@keyframes glitch-skew {
 		$steps: 10;
 
