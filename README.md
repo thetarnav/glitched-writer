@@ -140,12 +140,9 @@ glitchWrite('Write this and DISAPER!', htmlElement, options, ...)
 ### Listening For Events
 
 ```js
-textHtmlElement.addEventListener('gw_finished', e =>
+// html element that you passed in writer constructor.
+textHtmlElement.addEventListener('gw-finished', e =>
 	console.log('finished writing:', e.detail.string),
-)
-
-textHtmlElement.addEventListener('gw_step', e =>
-	console.log('current step:', e.detail.string),
 )
 ```
 

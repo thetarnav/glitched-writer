@@ -29,22 +29,17 @@ export default class {
 			// ON FINISH
 			this.writer.state.finish()
 			this.onFinishCallback?.(string, writerData)
-			this.emitEvent('gw-finished')
+			this.emitEvent()
 		} else {
 			// ON STEP
 			this.onStepCallback?.(string, writerData)
-			this.emitEvent('gw-step')
 		}
 	}
 
-	private emitEvent(name: 'gw-finished' | 'gw-step') {
-		const { string, htmlElement, writerData } = this.writer
-		const payload = {
-			detail: {
-				string,
-				writerData,
-			},
-		}
-		htmlElement?.dispatchEvent(new CustomEvent(name, payload))
+	private emitEvent() {
+		const { htmlElement, writerData } = this.writer
+		htmlElement?.dispatchEvent(
+			new CustomEvent('gw-finished', { detail: writerData }),
+		)
 	}
 }
