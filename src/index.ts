@@ -252,18 +252,10 @@ export default class GlitchedWriter {
 	}
 }
 
-export const createGlitchedWriter = (
-	htmlElement?: HTMLElement,
-	options?: ConstructorOptions,
-	onStepCallback?: Callback,
-	onFinishCallback?: Callback,
-): GlitchedWriter =>
-	new GlitchedWriter(htmlElement, options, onStepCallback, onFinishCallback)
-
 export async function glitchWrite(
 	string: string,
-	htmlElement?: HTMLElement,
-	options?: ConstructorOptions,
+	htmlElement?: HTMLElement | Element,
+	options?: ConstructorOptions | PresetName,
 	onStepCallback?: Callback,
 	onFinishCallback?: Callback,
 ): Promise<WriterDataResponse> {

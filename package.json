@@ -1,7 +1,7 @@
 {
   "name": "glitched-writer",
   "version": "2.0.6",
-  "description": "Glitched text-writer module, with highly customizable settings to get the effect You're looking for. Generally for web as a client dependency, but can be also used elswere.",
+  "description": "Glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text. For web and node",
   "author": "Damian Tarnawski @thetarnav <gthetarnav@gmail.com>",
   "license": "MIT",
   "repository": {
@@ -42,6 +42,8 @@
     "glitch",
     "header",
     "decrypt",
+    "decode",
+    "scramble",
     "content",
     "front-end",
     "web",
