@@ -1,6 +1,7 @@
 # Glitched Writer
 
 [![npm](https://img.shields.io/npm/v/glitched-writer)](https://www.npmjs.com/package/glitched-writer) [![npm type definitions](https://img.shields.io/npm/types/glitched-writer)](https://www.npmjs.com/package/glitched-writer) [![](https://data.jsdelivr.com/v1/package/npm/glitched-writer/badge?style=rounded)](https://www.jsdelivr.com/package/npm/glitched-writer) [![NPM](https://img.shields.io/npm/l/glitched-writer)](https://www.npmjs.com/package/glitched-writer)
+[![npm](https://img.shields.io/npm/dt/glitched-writer)](https://www.npmjs.com/package/glitched-writer)
 
 [![glitched-writer-preview](https://user-images.githubusercontent.com/24491503/67164275-06ab6900-f379-11e9-81ac-cab76dbc8dcd.gif)](https://codepen.io/thetarnav/pen/MWWyPzY)
 
@@ -16,11 +17,13 @@
 
 -  Can be attached to a **HTML Element** for automatic text-displaying.
 
--  Callback functions for every step and finish.
+-  Callback functions firing on finish and every step.
 
--  Events **gw-finished** and **gw-step** are dispatched on the HTML Element.
+-  Custom Event **gw-finished** are dispatched on the HTML Element.
 
--  For styling purposes, while writing: attatches **gw-writing** class to the HTML Element and **data-gw-string attribute** with current string state.
+-  For styling purposes writer attatches **gw-writing** class to the HTML Element and **data-gw-string attribute** with current string.
+
+-  Possible to write text with **html tags** in it or letterize string into many **span** elements.
 
 -  Written in **Typescript**.
 
@@ -206,7 +209,7 @@ Available presets as for now:
 
 -  **zalgo** - Inspired by the _"zalgo"_ or _"cursed text"_, Ghost characters mostly includes the unicode combining characters, which makes the text glitch vertically.
 
--  **neo** - Recreated: _Justin Windle's [!"Text Scramble Effect"](https://codepen.io/soulwire/pen/mErPAK)_
+-  **neo** - Recreated: _Justin Windle's ["Text Scramble Effect"](https://codepen.io/soulwire/pen/mErPAK)_
 
 ```js
 new GlitchedWriter(htmlElement, 'nier')
