@@ -211,7 +211,7 @@ new GlitchedWriter(htmlElement, presets.typewriter)
    ghostChance?: RangeOrNumber, // 0.2
    maxGhosts?: number, // '0.2'
    glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
-   glyphsFromString?: boolean // false
+   glyphsFromString?: boolean, // false
    startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
    oneAtATime?: boolean, // false
    html?: boolean, // false
