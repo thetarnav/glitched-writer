@@ -186,7 +186,9 @@ export default class GlitchedWriter {
 			pi++
 			const pl: string | undefined = previous[pi]
 
-			if (typeof gl === 'object' || isSpecialChar(gl)) {
+			let isSpecial = false
+
+			if (typeof gl === 'object') {
 				pi--
 				this.setChar(
 					gi,
@@ -197,16 +199,23 @@ export default class GlitchedWriter {
 				)
 				return
 			}
+			isSpecial = isSpecialChar(gl)
 
 			const fi = gl !== '' ? previous.indexOf(gl, pi) : -1
 
-			if (fi !== -1 && fi - pi <= maxDist) {
+			if (fi !== -1 && fi - pi <= maxDist && !isSpecial) {
 				const appendedText = previous.substring(pi, fi)
 				this.setChar(gi, gl, gl, appendedText)
 				pi = fi
 				this.state.nGhosts += appendedText.length
 			} else
-				this.setChar(gi, pl || this.options.space, gl || this.options.space)
+				this.setChar(
+					gi,
+					pl || this.options.space,
+					gl || this.options.space,
+					'',
+					isSpecial,
+				)
 		})
 
 		this.removeExtraChars(goalStringArray.length)
@@ -220,7 +229,7 @@ export default class GlitchedWriter {
 			pi++
 			const pl = previous[pi] || this.options.space
 
-			if (typeof gl === 'object' || isSpecialChar(gl)) {
+			if (typeof gl === 'object') {
 				pi--
 				this.setChar(
 					gi,
@@ -232,7 +241,7 @@ export default class GlitchedWriter {
 				return
 			}
 
-			this.setChar(gi, pl, gl)
+			this.setChar(gi, pl, gl, undefined, isSpecialChar(gl))
 		})
 
 		this.removeExtraChars(goalStringArray.length)
@@ -265,7 +274,7 @@ export default class GlitchedWriter {
 			char: Char | undefined = charTable[ci]
 
 		if (special) {
-			charTable.splice(ci, 0, new Char('', gl, this, '', true))
+			charTable.splice(ci, 0, new Char(pl, gl, this, '', true))
 			return
 		}
 
@@ -311,8 +320,8 @@ export default class GlitchedWriter {
 		}
 
 		const diff = Math.max(goal.length - result.length, 0)
-		if (diff > 0 && this.options.space !== '')
-			result = result.padEnd(diff, ' ')
+		if (diff > 0 && this.options.space === ' ')
+			result = result.padEnd(diff + result.length, ' ')
 
 		return result
 	}
@@ -342,18 +351,3 @@ export {
 	WriterDataResponse,
 	Callback,
 }
-
-// const writer = new GlitchedWriter(undefined, { html: true }, string =>
-// 	console.log(string),
-// )
-
-// // eslint-disable-next-line func-names
-// ;(async function () {
-// 	await wait(1200)
-// 	await writer.write('<h3>This is only the beginning.</h3>')
-// 	await wait(1200)
-// 	await writer.write('Please, <b>say something</b>...')
-// 	await wait(1500)
-// 	await writer.write('my <i>old</i> friend.')
-// 	// inputEl.removeAttribute('disabled')
-// })()

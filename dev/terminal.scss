@@ -1,0 +1,112 @@
+$black: #000000;
+$dark: #33202a;
+$lighter: #5f5566;
+$white: #f5f4f6;
+$red: #f05d5e;
+$yellow: #fcab10;
+
+body {
+	background-color: $black;
+	background: radial-gradient(
+		ellipse at right 34% bottom 5%,
+		$dark,
+		$black 80%,
+		$black
+	);
+	background-position: left;
+	height: 100vh;
+	margin: 0;
+	overflow: hidden;
+	color: $white;
+	font: 1.3rem Inconsolata, monospace;
+	text-shadow: 0 0 5px $white;
+	&::after {
+		content: '';
+		position: absolute;
+		opacity: 0.3;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background: repeating-linear-gradient(
+			0deg,
+			rgba($black, 1),
+			rgba($black, 1) 2px,
+			transparent,
+			transparent 4px
+		);
+		pointer-events: none;
+	}
+	&::before {
+		content: '';
+		position: absolute;
+		z-index: 1000;
+		opacity: 0.4;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background: radial-gradient(
+			ellipse at right 34% bottom 5%,
+			transparent 60%,
+			$black
+		);
+		pointer-events: none;
+	}
+}
+::selection {
+	background: $lighter;
+	text-shadow: none;
+}
+pre {
+	margin: 0;
+	white-space: pre-wrap;
+	margin-bottom: 80vh;
+}
+
+@keyframes blink {
+	from,
+	to {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+}
+
+#output {
+	&:after {
+		content: '▮';
+		opacity: 1;
+		animation: blink 1s steps(1) infinite;
+	}
+	&.gw-writing {
+		&:after {
+			animation: none;
+		}
+	}
+}
+
+.wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 2rem;
+	overflow-y: scroll;
+	height: 100%;
+}
+
+div {
+	display: flex;
+}
+
+.incentive {
+	color: $yellow;
+}
+
+.log,
+.text {
+	visibility: hidden;
+}

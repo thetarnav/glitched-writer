@@ -50,13 +50,15 @@ export const presets = {
 		startFrom: 'erase',
 	} as ConstructorOptions,
 	terminal: {
-		interval: 50,
+		interval: 40,
 		initialDelay: [0, 0],
 		steps: 0,
 		changeChance: 1,
 		maxGhosts: 0,
 		glyphs: '',
 		oneAtATime: true,
+		fillSpace: false,
+		glyphsFromString: false,
 		startFrom: 'erase',
 	} as ConstructorOptions,
 	zalgo: {

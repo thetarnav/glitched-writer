@@ -199,7 +199,7 @@ import GlitchedWriter, { // <-- GlitchedWriter class
 To use one of the available presets, You can simply write it's name when creating writer, in the place of options.
 Available presets as for now:
 
--  **default** - Loaded automatically, featured on the GIF up top.
+-  **[default](https://codepen.io/thetarnav/pen/MWWyPzY)** - Loaded automatically, featured on the GIF up top.
 
 -  **nier** - Imitating the way text was appearing in the _NieR: Automata's UI_.
 
@@ -209,7 +209,7 @@ Available presets as for now:
 
 -  **zalgo** - Inspired by the _"zalgo"_ or _"cursed text"_, Ghost characters mostly includes the unicode combining characters, which makes the text glitch vertically.
 
--  **neo** - Recreated: _Justin Windle's ["Text Scramble Effect"](https://codepen.io/soulwire/pen/mErPAK)_
+-  **[neo](https://codepen.io/thetarnav/pen/vYgYWbb)** - Recreated: _Justin Windle's ["Text Scramble Effect"](https://codepen.io/soulwire/pen/mErPAK)_
 
 ```js
 new GlitchedWriter(htmlElement, 'nier')

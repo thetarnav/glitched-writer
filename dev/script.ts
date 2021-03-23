@@ -30,7 +30,7 @@ inputEl.addEventListener(
 
 textEl.addEventListener(
 	'gw-finished',
-	e => (logsEl.innerHTML += `<p>${e.detail.string}</p>`),
+	e => (logsEl.innerHTML += `<p>${(e as any).detail.string}</p>`),
 )
 
 // function logString({ string }: WriterDataResponse) {

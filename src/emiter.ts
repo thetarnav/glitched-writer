@@ -42,6 +42,8 @@ export default class {
 
 	private emitEvent() {
 		const { htmlElement, writerData } = this.writer
+
+		if (!htmlElement || typeof CustomEvent === 'undefined') return
 		htmlElement?.dispatchEvent(
 			new CustomEvent('gw-finished', { detail: writerData }),
 		)
