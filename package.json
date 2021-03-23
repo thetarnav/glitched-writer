@@ -1,7 +1,7 @@
 {
   "name": "glitched-writer",
   "version": "2.0.7",
-  "description": "Glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text. For web and node",
+  "description": "Glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text. For web and node.",
   "author": "Damian Tarnawski @thetarnav <gthetarnav@gmail.com>",
   "license": "MIT",
   "repository": {
@@ -46,7 +46,7 @@
     "decrypt",
     "decode",
     "scramble",
-    "content",
+    "animation",
     "front-end",
     "web",
     "html",

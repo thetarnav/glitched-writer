@@ -162,7 +162,7 @@ Writer.write('<b>Be sure to click <a href="...">this!</a></b>')
 
 ### Letterize
 
-(**Experimental!**) Splits written text into multiple <span> elements. Then writing letters seperately into these child-elements. As for now: **!Do not work with "html" option!**, only one or the other.
+(**Experimental!**) Splits written text into series of <span> elements. Then writing letters seperately into these child-elements. As for now: **!Do not work with "html" option!**, only one or the other.
 
 ```js
 // You need to enable html option.
@@ -171,10 +171,10 @@ const Writer = new GlitchedWriter(htmlElement, { letterize: true })
 Writer.write('Hello there!')
 /**
  * The shape of one character:
- * .gw-char (state classes: .gw-typing or .gw-finished)
- * 	.gw-ghosts
- * 	.gw-letter (also .gw-glitched when it is a "glitched" char.)
- * 	.gw-ghosts
+ * span.gw-char (state classes: .gw-typing or .gw-finished)
+ * 	span.gw-ghosts
+ * 	span.gw-letter (also .gw-glitched when it is a "glitched" char.)
+ * 	span.gw-ghosts
  */
 ```
 
@@ -231,11 +231,12 @@ new GlitchedWriter(htmlElement, presets.typewriter)
 
 ```ts
 {
-   steps?: RangeOrNumber, // [1, 8]
-   interval?: RangeOrNumber, // [60, 170]
-   initialDelay?: RangeOrNumber, // [0, 2000]
-   changeChance?: RangeOrNumber, // 0.6
-   ghostChance?: RangeOrNumber, // 0.2
+// name    [min   , max   ] | const   // default
+   steps?: [number, number] | number, // [1, 8]
+   interval?: [number, number] | number, // [60, 170]
+   initialDelay?: [number, number] | number, // [0, 2000]
+   changeChance?: number, // 0.6
+   ghostChance?: number, // 0.2
    maxGhosts?: number, // '0.2'
    glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
    glyphsFromString?: boolean, // false
@@ -245,8 +246,6 @@ new GlitchedWriter(htmlElement, presets.typewriter)
 	letterize?: boolean, // false
    fillSpace?: boolean // true,
 }
-
-type RangeOrNumber = [number, number] | number
 ```
 
 ### Options Description
@@ -261,9 +260,9 @@ type RangeOrNumber = [number, number] | number
 
 -  **initialDelay** - first delay each letter must wait before it starts working (int: ms)
 
--  **changeChance** - Percentage Chance for letter to change to something else (from glyph charset) (p: 0-1)
+-  **changeChance** - Percentage chance for letter to change to glitched one (from glyphs) (p: 0-1)
 
--  **ghostChance** - Percentage Chance for ghost letter to appear (p: 0-1)
+-  **ghostChance** - Percentage chance for ghost letter to appear (p: 0-1)
 
 -  **maxGhosts** - Maximal number of ghosts to occur
 
