@@ -1,59 +1,63 @@
 import GlitchedWriter, { wait, presets } from '../src'
+import { random } from '../src/utils'
 
 const outputEl = document.querySelector(`#output`),
-	Writer = new GlitchedWriter(
-		outputEl,
-		{
-			...presets.terminal,
-			interval: 20,
-			fillSpace: false,
-			glyphs: '',
-			glyphsFromString: false,
-			maxGhosts: 0,
-			ghostChance: 0,
-			changeChance: 0,
-		},
-		string => console.log(string),
-		string => console.log('FIN', string),
-	)
+	Writer = new GlitchedWriter(outputEl, {
+		...presets.terminal,
+		html: true,
+	})
 
-const phrazes = {
-	compiling: 'script: Compiling.',
-	compiled: 'script: Compiled successfully.',
-	hash: 'Hash: 33d8c38093d5e8261eac',
-	package: 'Package: GlitchedWriter',
-}
+const date = new Date()
 
 ;(async function () {
-	await Writer.write(phrazes.compiling)
+	await Writer.write('script: Compiling.')
 	await wait(200)
-	await Writer.write(phrazes.compiling + '.')
+	await Writer.add('.')
 	await wait(200)
-	await Writer.write(phrazes.compiling + '..')
+	await Writer.add('.')
 	await wait(200)
-	await Writer.write(phrazes.compiling + '.')
+	await Writer.remove(1)
 	await wait(200)
-	await Writer.write(phrazes.compiling)
+	await Writer.remove(1)
 	await wait(200)
-	await Writer.write(phrazes.compiling + '.')
+	await Writer.add('.')
 	await wait(200)
-	await Writer.write(phrazes.compiling + '..')
+	await Writer.add('.')
 	await wait(300)
-	await Writer.write(phrazes.compiled)
-	await wait(100)
-	await Writer.write(phrazes.compiled + '\n' + phrazes.hash)
-	await wait(100)
-	await Writer.write(
-		phrazes.compiled + '\n' + phrazes.hash + '\n' + phrazes.package,
-	)
-	await wait(100)
-	// await Writer.write(`
-	// script: Compiled successfully.\n
-	// Hash: 33d8c38093d5e8261eac\n
-	// Package: GlitchedWriter`);
-	// await wait(100);
-	// await Writer.write("script: Compiled successfully. \nHash: 33d8c38093d5e8261eac\nPackage: GlitchedWriter \nVersion: 2.0.7");
-	// await wait(100);
-	// const time = Math.round(Math.random() * 1500)
-	// await Writer.write(`script: Compiled successfully. \nHash: 33d8c38093d5e8261eac \nPackage: GlitchedWriter \nVersion: 2.0.7 \nTime: ${time}ms`);
+	await Writer.write(`script: Compiled successfully.
+hash: ${Date.now()}
+package: <a href="https://www.npmjs.com/package/glitched-writer" target="_blank">GlitchedWriter</a>
+version: 2.0.7
+time: ${random(0, 1500, 'round')}ms
+                                Asset       Size  Chunks                    Chunk Names
+                             <i>index.js</i>    ${random(
+											10,
+											50,
+											'round',
+										)}.3 MB       3  <strong>[emitted]</strong>  <strong>[big]</strong>  index
+                         <i>dashboard.js</i>    6.${random(
+										1,
+										10,
+										'round',
+									)} MB       1  <strong>[emitted]</strong>  <strong>[big]</strong>  dashboard
+ <i>0.81c79b4db476a98d272f.hot-update.js</i>    ${random(
+		40,
+		100,
+		'round',
+ )}.4 kB       0  <strong>[emitted]</strong>         project
+ <i>81c79b4db476a98d272f.hot-update.json</i>   52 bytes          <strong>[emitted]</strong>
+                        <i>manifest.json</i>  ${random(
+									100,
+									300,
+									'round',
+								)} bytes          <strong>[emitted]</strong>
+./app/javascript/common/components/Termianl.js 2.42 kB {0} {1} <strong>[built]</strong>
+
+<b>Welcome To Glitched Terminal!</b> (v 2.0.7)
+${date.getDate()}/${
+		date.getMonth() + 1
+	}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}
+Documentation: type "help"
+
+`)
 })()

@@ -100,9 +100,15 @@ export default class Char {
 		if (this.els) this.writer.htmlElement?.appendChild(this.els.charEl)
 	}
 
+	get interval(): number {
+		let interval = this.writer.options.genInterval
+		if (this.gl === '' || this.gl === ' ') interval /= 2
+		return interval
+	}
+
 	async type() {
 		const loop = async () => {
-			!this.special && (await wait(this.writer.options.genInterval))
+			!this.special && (await wait(this.interval))
 
 			this.step()
 			this.writer.emiter.call('step')

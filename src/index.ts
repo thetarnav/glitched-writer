@@ -110,6 +110,21 @@ export default class GlitchedWriter {
 		})
 	}
 
+	async add(string: string) {
+		const { previousString } = this
+
+		return this.write(previousString + string)
+	}
+
+	async remove(n: number) {
+		const { previousString } = this,
+			array = Array.from(previousString)
+
+		array.splice(-n)
+
+		return this.write(array.join(''), { erase: true })
+	}
+
 	// private logCharTable() {
 	// 	console.table(
 	// 		this.charTable.map(({ ghostsBefore, ghostsAfter, l, gl, special }) => [
