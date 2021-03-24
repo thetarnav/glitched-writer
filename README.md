@@ -149,6 +149,20 @@ textHtmlElement.addEventListener('gw-finished', e =>
 )
 ```
 
+### Add & Remove
+
+.add(string) & .remove(number) are methods usefull for quick, slight changes to the displayed text.
+
+```js
+// Let's say current text content is: "Hello World"
+
+Writer.add('!!!')
+// -> Hello World!!!
+
+Writer.remove(9)
+// -> Hello
+```
+
 ### Writing HTML
 
 New (**experimental & potentially dangerous**) config option let's you write text with html tags in it.
@@ -205,7 +219,7 @@ Available presets as for now:
 
 -  **typewriter** - One letter at a time, only slightly glitched.
 
--  **terminal** - Imitating being typed by a machine.
+-  **[terminal](https://codepen.io/thetarnav/pen/mdRyqga)** - Imitating being typed by a machine or a computer.
 
 -  **zalgo** - Inspired by the _"zalgo"_ or _"cursed text"_, Ghost characters mostly includes the unicode combining characters, which makes the text glitch vertically.
 
