@@ -51,7 +51,7 @@ export default class Options implements OptionsFields {
 		this.html = options.html ?? presets.default.html
 		this.letterize = options.letterize ?? presets.default.letterize
 		if (typeof document === 'undefined') this.letterize = false
-		if (this.letterize) this.html = false
+		// if (this.letterize) this.html = false
 		this.startFrom = options.startFrom ?? presets.default.startFrom
 
 		this.writer = writer

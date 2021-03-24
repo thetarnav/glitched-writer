@@ -89,14 +89,21 @@ export function getRandomFromRange(
 
 export const coinFlip = (p: number = 0.5): boolean => Math.random() < p
 
-export type TagOrString = { tag: string } | string
+export type LetterItem = { value: string; type?: 'tag' | 'html_entity' }
 
-const findTagPattern =
-	'(?:<style.+?>.+?</style>|<script.+?>.+?</script>|<(?:!|/?[a-zA-Z]+).*?/?>)'
+export const letterToLetterItem = (string: string): LetterItem => ({
+	value: string,
+})
 
-export function htmlToArray(string: string): TagOrString[] {
-	const reg = new RegExp(findTagPattern, 'g'),
-		result: TagOrString[] = []
+export const stringToLetterItems = (string: string | string[]): LetterItem[] =>
+	[...string].map(letterToLetterItem)
+
+const findHTMLPattern =
+	'(&#?[0-9a-zA-Z]{2,6};)|(<style.+?>.+?</style>|<script.+?>.+?</script>|<(?:!|/?[a-zA-Z]+).*?/?>)'
+
+export function htmlToArray(string: string): LetterItem[] {
+	const reg = new RegExp(findHTMLPattern, 'g'),
+		resultArray: LetterItem[] = []
 
 	let find: RegExpExecArray | null,
 		lastIndex = 0
@@ -109,16 +116,23 @@ export function htmlToArray(string: string): TagOrString[] {
 
 		lastIndex = to
 
-		stringBefore && result.push(...stringBefore)
-		result.push({ tag: find[0] })
-	}
-	string.length > lastIndex && result.push(...string.slice(lastIndex))
+		stringBefore && resultArray.push(...stringToLetterItems(stringBefore))
 
-	return result
+		const result: LetterItem = {
+			value: find[0],
+			type: find[1] !== undefined ? 'html_entity' : 'tag',
+		}
+
+		resultArray.push(result)
+	}
+	string.length > lastIndex &&
+		resultArray.push(...stringToLetterItems(string.slice(lastIndex)))
+
+	return resultArray
 }
 
 export function filterHtml(string: string): string {
-	const reg = new RegExp(findTagPattern, 'g')
+	const reg = new RegExp(findHTMLPattern, 'g')
 
 	return string.replace(reg, '')
 }

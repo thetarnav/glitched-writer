@@ -16,10 +16,11 @@ import {
 	promiseWhile,
 	isInRange,
 	htmlToArray,
-	TagOrString,
+	LetterItem,
 	isSpecialChar,
 	filterHtml,
 	arrayOfTheSame,
+	stringToLetterItems,
 } from './utils'
 import { presets, glyphs, PresetName } from './presets'
 
@@ -201,35 +202,29 @@ export default class GlitchedWriter {
 			pi++
 			const pl: string | undefined = previous[pi]
 
-			let isSpecial = false
+			let isWhitespace = false
 
-			if (typeof gl === 'object') {
+			if (gl.type === 'tag') {
 				pi--
-				this.setChar(
-					gi,
-					'',
-					typeof gl === 'object' ? gl.tag : gl,
-					undefined,
-					true,
-				)
+				this.setChar(gi, '', gl.value, undefined, true)
 				return
 			}
-			isSpecial = isSpecialChar(gl)
+			isWhitespace = isSpecialChar(gl.value)
 
-			const fi = gl !== '' ? previous.indexOf(gl, pi) : -1
+			const fi = gl.value !== '' ? previous.indexOf(gl.value, pi) : -1
 
-			if (fi !== -1 && fi - pi <= maxDist && !isSpecial) {
+			if (fi !== -1 && fi - pi <= maxDist && !isWhitespace) {
 				const appendedText = previous.substring(pi, fi)
-				this.setChar(gi, gl, gl, appendedText)
+				this.setChar(gi, gl.value, gl.value, appendedText)
 				pi = fi
 				this.state.nGhosts += appendedText.length
 			} else
 				this.setChar(
 					gi,
 					pl || this.options.space,
-					gl || this.options.space,
+					gl.value || this.options.space,
 					'',
-					isSpecial,
+					isWhitespace,
 				)
 		})
 
@@ -244,19 +239,13 @@ export default class GlitchedWriter {
 			pi++
 			const pl = previous[pi] || this.options.space
 
-			if (typeof gl === 'object') {
+			if (gl.type === 'tag') {
 				pi--
-				this.setChar(
-					gi,
-					'',
-					typeof gl === 'object' ? gl.tag : gl,
-					undefined,
-					true,
-				)
+				this.setChar(gi, '', gl.value, undefined, true)
 				return
 			}
 
-			this.setChar(gi, pl, gl, undefined, isSpecialChar(gl))
+			this.setChar(gi, pl, gl.value, undefined, isSpecialChar(gl.value))
 		})
 
 		this.removeExtraChars(goalStringArray.length)
@@ -298,12 +287,14 @@ export default class GlitchedWriter {
 			: charTable.push(new Char(pl, gl, this, appendedText, special))
 	}
 
-	private get goalStringArray(): TagOrString[] {
+	private get goalStringArray(): LetterItem[] {
 		const { goalString: goal, previousString: previous, options } = this,
-			goalArray = options.html ? htmlToArray(goal) : Array.from(goal),
+			goalArray = options.html
+				? htmlToArray(goal)
+				: stringToLetterItems(goal),
 			prevGtGoal = Math.max(previous.length - goalArray.length, 0)
 
-		goalArray.push(...arrayOfTheSame('', prevGtGoal))
+		goalArray.push(...stringToLetterItems(arrayOfTheSame('', prevGtGoal)))
 
 		return goalArray
 	}

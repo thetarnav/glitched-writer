@@ -71,6 +71,8 @@ export default class Char {
 			this.els.charEl.className = 'gw-char'
 			this.els.letterEl.className = 'gw-letter'
 		}
+
+		document.createDocumentFragment
 	}
 
 	get string(): string {
@@ -91,7 +93,8 @@ export default class Char {
 		const { l, ghostsBefore, ghostsAfter } = this,
 			{ ghostsBeforeEl, ghostsAfterEl, letterEl: letter } = this.els
 
-		letter.textContent = l
+		if (this.writer.options.html) letter.innerHTML = l
+		else letter.textContent = l
 		ghostsBeforeEl.textContent = ghostsBefore.join('')
 		ghostsAfterEl.textContent = ghostsAfter.join('')
 	}
