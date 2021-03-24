@@ -165,7 +165,8 @@ Writer.remove(9)
 
 ### Writing HTML
 
-New (**experimental & potentially dangerous**) config option let's you write text with html tags in it.
+(**! experimental & potentially dangerous !**) Let's you write text with html tags in it.
+Can be enabled along with "html" option, but the "double tags", like <b> ... </b> won't show up.
 
 ```js
 // You need to enable html option.
@@ -176,7 +177,7 @@ Writer.write('<b>Be sure to click <a href="...">this!</a></b>')
 
 ### Letterize
 
-(**Experimental!**) Splits written text into series of <span> elements. Then writing letters seperately into these child-elements. As for now: **!Do not work with "html" option!**, only one or the other.
+(**Experimental!**) Splits written text into series of <span> elements. Then writing letters seperately into these child-elements.
 
 ```js
 // You need to enable html option.
@@ -256,9 +257,9 @@ new GlitchedWriter(htmlElement, presets.typewriter)
    glyphsFromString?: boolean, // false
    startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
    oneAtATime?: boolean, // false
-   html?: boolean, // false
+	html?: boolean, // false
 	letterize?: boolean, // false
-   fillSpace?: boolean // true,
+   fillSpace?: boolean // true
 }
 ```
 
