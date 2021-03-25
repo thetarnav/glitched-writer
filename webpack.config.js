@@ -8,7 +8,7 @@ function generateConfig(name) {
 	const innerConfig = {
 		entry: './lib/index.js',
 		output: {
-			path: `${__dirname}/dist/`,
+			path: `${__dirname}/lib/`,
 			filename: `${name}.js`,
 			sourceMapFilename: `${name}.map`,
 			library: 'glitched-writer',
@@ -23,7 +23,7 @@ function generateConfig(name) {
 	return innerConfig
 }
 
-;['index', 'index.min'].forEach(key => {
+;['index.min'].forEach(key => {
 	config[key] = generateConfig(key)
 })
 

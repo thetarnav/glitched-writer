@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import debounce from 'lodash.debounce'
 
-import GlitchedWriter, { wait, presets } from '../src'
+import GlitchedWriter, { wait, presets } from '../lib'
 // import GlitchedWriter, { wait } from '../lib'
 
 const textEl = document.getElementById('glitch_this'),

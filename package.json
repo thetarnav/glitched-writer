@@ -9,12 +9,11 @@
     "url": "git+https://github.com/thetarnav/glitched-writer.git"
   },
   "homepage": "https://github.com/thetarnav/glitched-writer#readme",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "jsdelivr": "dist/index.min.js",
-  "unpkg": "dist/index.min.js",
+  "jsdelivr": "lib/index.min.js",
+  "unpkg": "lin/index.min.js",
   "files": [
-    "dist/**/*",
     "lib/**/*"
   ],
   "scripts": {
