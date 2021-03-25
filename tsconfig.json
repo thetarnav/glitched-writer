@@ -4,10 +4,12 @@
 		"lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
+		"downlevelIteration": true,
 		"outDir": "./lib",
 		"declaration": true,
+		"sourceMap": true,
 		"strict": true,
-		"target": "es2017"
+		"target": "es5"
 	},
 	"compileOnSave": true,
 	"include": ["src"],
