@@ -128,9 +128,12 @@ export default class Char {
 		const loop = async () => {
 			!this.instant && (await wait(this.interval))
 
+			const lastString = this.string
 			this.step()
-			this.writer.emiter.call('step')
-			this.writeToElement()
+			if (lastString !== this.string) {
+				this.writer.emiter.call('step')
+				this.writeToElement()
+			}
 			this.stepsLeft--
 		}
 
