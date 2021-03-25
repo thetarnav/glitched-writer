@@ -29,7 +29,6 @@
     "eslint-plugin-import": "^2.22.1",
     "jsdom": "^16.5.1",
     "lodash.debounce": "^4.0.8",
-    "merge2": "^1.4.1",
     "nodemon": "^2.0.7",
     "parcel": "^2.0.0-beta.2",
     "ts-node": "^9.1.1",
