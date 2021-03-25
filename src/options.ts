@@ -4,7 +4,6 @@ import {
 	filterDuplicates,
 	getRandomFromRange,
 	filterHtml,
-	random,
 	getRandom,
 } from './utils'
 import { ConstructorOptions, OptionsFields, RangeOrNumber } from './types'

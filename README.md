@@ -31,8 +31,8 @@
 
 ## Table Of Contents
 
-1. [Installation](#installation)
-2. [Usage](#usage)
+1. **[Installation](#installation)**
+2. **[Usage](#usage)**
    -  [Creating Class Instance](#creating-class-instance)
    -  [Writing](#writing)
    -  [Pausing & Playing](#pausing--playing)
@@ -43,8 +43,8 @@
    -  [Writing HTML](#writing-html)
    -  [Letterize](#letterize)
    -  [Available imports](#available-imports)
-3. [Presets](#presets)
-4. [Options](#customizing-options)
+3. **[Presets](#presets)**
+4. **[Options](#customizing-options)**
 
 ---
 
@@ -65,7 +65,7 @@ import GlitchedWriter from 'glitched-writer'
 Or use the CDN and attach this script link to your html document.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.7/lib/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.10/lib/index.min.js"></script>
 ```
 
 ## Usage:

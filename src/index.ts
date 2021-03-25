@@ -16,7 +16,6 @@ import {
 	isInRange,
 	htmlToArray,
 	LetterItem,
-	isSpecialChar,
 	filterHtml,
 	arrayOfTheSame,
 	stringToLetterItems,

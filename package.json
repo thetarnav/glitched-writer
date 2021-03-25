@@ -1,7 +1,7 @@
 {
   "name": "glitched-writer",
   "version": "2.0.9",
-  "description": "Glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text. For web and node.",
+  "description": "Glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text.",
   "author": "Damian Tarnawski @thetarnav <gthetarnav@gmail.com>",
   "license": "MIT",
   "repository": {
@@ -19,12 +19,8 @@
     "dev": "parcel dev/index.html",
     "build": "tsc"
   },
-  "dependencies": {
-    "lodash.findlastindex": "^4.6.0",
-    "lodash.sample": "^4.2.1"
-  },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.0.0-beta.2",
+    "@parcel/transformer-sass": "2.0.0-beta.2",
     "@types/jsdom": "^16.2.7",
     "@types/lodash.findlastindex": "^4.6.6",
     "@types/lodash.flattendeep": "^4.4.6",
