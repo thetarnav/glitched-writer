@@ -18,6 +18,7 @@ export default class {
 	}
 
 	call(eventType: 'step' | 'finish') {
+		this.writer.updateString()
 		const { htmlElement, writerData } = this.writer,
 			string =
 				eventType === 'finish' ? this.writer.goalString : this.writer.string

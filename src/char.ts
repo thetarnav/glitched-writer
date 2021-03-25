@@ -19,7 +19,9 @@ export default class Char {
 
 	stop: boolean = false
 	instant: boolean = false
-	isWhitespace: boolean = false
+	isSpace: boolean = false
+
+	afterGlitchChance: number = 0
 
 	els?: {
 		charEl: HTMLSpanElement
@@ -65,15 +67,19 @@ export default class Char {
 		initialGhosts: string = '',
 		instant: boolean = false,
 	) {
+		const { options } = this.writer
 		this.l = l
 		this.gl = gl
 		this.instant = instant
 		this.ghostsBefore = [...initialGhosts]
 
-		this.stepsLeft = this.writer.options.stepsLeft
+		this.stepsLeft = options.stepsLeft
 		if (instant) this.stepsLeft = 0
 
-		this.isWhitespace = isSpecialChar(l)
+		this.isSpace = [' ', ''].includes(l)
+
+		this.afterGlitchChance =
+			(options.ghostChance + options.changeChance) / 3.5
 	}
 
 	reset(
@@ -92,7 +98,7 @@ export default class Char {
 
 	get string(): string {
 		const { l: char, ghostsAfter, ghostsBefore } = this
-		return [ghostsBefore.join(''), char, ghostsAfter.join('')].join('')
+		return ghostsBefore.join('') + char + ghostsAfter.join('')
 	}
 
 	get finished(): boolean {
@@ -105,11 +111,9 @@ export default class Char {
 	private writeToElement() {
 		if (!this.els) return
 
-		const { l } = this,
-			{ ghostsBeforeEl, ghostsAfterEl, letterEl } = this.els
+		const { ghostsBeforeEl, ghostsAfterEl, letterEl } = this.els
 
-		if (this.writer.options.html) letterEl.innerHTML = l
-		else letterEl.textContent = l
+		letterEl.innerHTML = this.l
 		ghostsBeforeEl.textContent = this.ghostsBefore.join('')
 		ghostsAfterEl.textContent = this.ghostsAfter.join('')
 	}
@@ -120,7 +124,7 @@ export default class Char {
 
 	get interval(): number {
 		let interval = this.writer.options.genInterval
-		if (this.isWhitespace) interval /= 2
+		if (this.isSpace) interval /= 2
 		return interval
 	}
 
@@ -155,15 +159,14 @@ export default class Char {
 	}
 
 	step() {
-		const { ghostChance, changeChance } = this.writer.options
-
 		if (
 			(this.stepsLeft > 0 && this.l !== this.gl) ||
-			coinFlip((ghostChance + changeChance) / 3.5)
+			(coinFlip(this.afterGlitchChance) && !this.instant)
 		) {
 			/**
 			 * IS GROWING
 			 */
+			const { ghostChance, changeChance } = this.writer.options
 
 			if (coinFlip(ghostChance)) {
 				if (this.writer.state.ghostsInLimit) this.addGhost()

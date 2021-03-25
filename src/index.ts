@@ -28,7 +28,9 @@ export default class GlitchedWriter {
 	state: State
 	emiter: Emiter
 	charTable: Char[] = []
+
 	goalString: string = ''
+	string: string = ''
 
 	constructor(
 		htmlElement?: HTMLElement | Element | string,
@@ -43,12 +45,11 @@ export default class GlitchedWriter {
 		this.options = new Options(this, options)
 		this.state = new State(this)
 		this.emiter = new Emiter(this, onStepCallback, onFinishCallback)
+		this.string = this.previousString
 	}
 
-	get string(): string {
-		const string = this.charTable.map(char => char.string).join('')
-
-		return string
+	updateString(): void {
+		this.string = this.charTable.map(char => char.string).join('')
 	}
 
 	get previousString(): string {
@@ -213,7 +214,13 @@ export default class GlitchedWriter {
 
 			if (fi !== -1 && fi - pi <= maxDist) {
 				const appendedText = previous.substring(pi, fi)
-				this.setChar(gi, gl.value, gl.value, appendedText)
+				this.setChar(
+					gi,
+					gl.value,
+					gl.value,
+					appendedText,
+					gl.type === 'whitespace',
+				)
 				pi = fi
 				this.state.nGhosts += appendedText.length
 			} else
@@ -221,6 +228,8 @@ export default class GlitchedWriter {
 					gi,
 					pl || this.options.space,
 					gl.value || this.options.space,
+					undefined,
+					gl.type === 'whitespace',
 				)
 		})
 
@@ -268,19 +277,19 @@ export default class GlitchedWriter {
 		pl: string,
 		gl: string,
 		appendedText?: string,
-		special: boolean = false,
+		instant: boolean = false,
 	) {
 		const { charTable } = this,
 			char: Char | undefined = charTable[ci]
 
-		if (special) {
-			charTable.splice(ci, 0, new Char(this, pl, gl, '', true))
-			return
-		}
+		// if (instant) {
+		// 	charTable.splice(ci, 0, new Char(this, pl, gl, appendedText, true))
+		// 	return
+		// }
 
 		char
-			? char.reset(pl, gl, appendedText, special)
-			: charTable.push(new Char(this, pl, gl, appendedText, special))
+			? char.reset(pl, gl, appendedText, instant)
+			: charTable.push(new Char(this, pl, gl, appendedText, instant))
 	}
 
 	private get goalStringArray(): LetterItem[] {
