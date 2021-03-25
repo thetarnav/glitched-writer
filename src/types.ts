@@ -9,6 +9,23 @@ export interface AppendedText {
 	display: 'always' | 'when-typing' | 'when-not-typing'
 }
 
+export type RangeOrNumber = [number, number] | number
+
+export interface OptionsFields {
+	steps: RangeOrNumber
+	interval: RangeOrNumber
+	initialDelay: RangeOrNumber
+	changeChance: number
+	ghostChance: number
+	maxGhosts: number
+	glyphs: string
+	glyphsFromString: boolean
+	oneAtATime: boolean
+	html: boolean
+	letterize: boolean
+	startFrom: 'matching' | 'previous' | 'erase'
+}
+
 export type ConstructorOptions = ModifyInterface<
 	Partial<OptionsFields>,
 	{

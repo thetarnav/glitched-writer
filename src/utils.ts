@@ -1,3 +1,5 @@
+import { RangeOrNumber } from './types'
+
 /* eslint-disable no-unused-vars */
 export function random(
 	min: number,

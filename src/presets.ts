@@ -1,4 +1,4 @@
-import { ConstructorOptions } from './types'
+import { ConstructorOptions, RangeOrNumber } from './types'
 
 export const glyphs = {
 	nier:

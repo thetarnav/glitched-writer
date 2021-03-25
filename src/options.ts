@@ -6,7 +6,7 @@ import {
 	getRandomFromRange,
 	filterHtml,
 } from './utils'
-import { ConstructorOptions } from './types'
+import { ConstructorOptions, OptionsFields, RangeOrNumber } from './types'
 import GlitchedWriter from '.'
 import { presets, PresetName } from './presets'
 
