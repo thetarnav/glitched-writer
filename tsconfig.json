@@ -7,7 +7,7 @@
 		"downlevelIteration": true,
 		"outDir": "./lib",
 		"declaration": true,
-		"sourceMap": true,
+		// "sourceMap": true,
 		"strict": true,
 		"target": "es2017"
 	},

@@ -1,13 +1,6 @@
 // eslint-disable-next-line import/no-cycle
 import GlitchedWriter from './index'
-import {
-	random,
-	deleteRandom,
-	wait,
-	promiseWhile,
-	coinFlip,
-	isSpecialChar,
-} from './utils'
+import { random, deleteRandom, wait, promiseWhile, coinFlip } from './utils'
 
 export default class Char {
 	l!: string
