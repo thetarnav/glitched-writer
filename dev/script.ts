@@ -21,9 +21,9 @@ const writer = new GlitchedWriter(
 	await writer.write('<b>This is</b> the <strong>MONEY</strong>: &#163;')
 	await wait(1200)
 	await writer.write('Please, <i>say something</i>...')
-	await wait(1500)
-	await writer.write('my old friend.')
-	inputEl.removeAttribute('disabled')
+	// await wait(1500)
+	// await writer.write('my old friend.')
+	// inputEl.removeAttribute('disabled')
 })()
 
 inputEl.addEventListener(

@@ -10,7 +10,7 @@ export default class Char {
 	ghostsAfter: string[] = []
 	writer: GlitchedWriter
 	stop: boolean = false
-	special: boolean
+	instant: boolean
 	els?: {
 		charEl: HTMLSpanElement
 		ghostsBeforeEl: HTMLSpanElement
@@ -19,22 +19,22 @@ export default class Char {
 	}
 
 	constructor(
+		writer: GlitchedWriter,
 		l: string,
 		gl: string,
-		writer: GlitchedWriter,
-		initialGhosts?: string,
-		special: boolean = false,
+		initialGhosts: string = '',
+		instant: boolean = false,
 	) {
+		this.writer = writer
+
 		this.l = l
 		this.gl = gl
-		this.writer = writer
-		this.special = special
-		if (initialGhosts) this.ghostsBefore = [...initialGhosts]
+		this.instant = instant
+		this.ghostsBefore = [...initialGhosts]
 
 		this.stepsLeft = writer.options.stepsLeft
-
-		if (special) this.stepsLeft = 0
-		else if (writer.options.letterize) {
+		if (instant) this.stepsLeft = 0
+		if (writer.options.letterize) {
 			this.els = {
 				charEl: document.createElement('span'),
 				ghostsBeforeEl: document.createElement('span'),
@@ -58,12 +58,12 @@ export default class Char {
 		l: string,
 		gl: string,
 		initialGhosts: string = '',
-		special: boolean = false,
+		instant: boolean = false,
 	) {
-		if (!special && this.special) this.l = ''
+		if (!instant && this.instant) this.l = ''
 		this.l = l
 		this.gl = gl
-		this.special = special
+		this.instant = instant
 		this.ghostsBefore = Array.from(initialGhosts)
 		this.stepsLeft = this.writer.options.stepsLeft
 		this.writeToElement()
@@ -71,8 +71,6 @@ export default class Char {
 			this.els.charEl.className = 'gw-char'
 			this.els.letterEl.className = 'gw-letter'
 		}
-
-		document.createDocumentFragment
 	}
 
 	get string(): string {
@@ -111,7 +109,7 @@ export default class Char {
 
 	async type() {
 		const loop = async () => {
-			!this.special && (await wait(this.interval))
+			!this.instant && (await wait(this.interval))
 
 			this.step()
 			this.writer.emiter.call('step')
@@ -119,7 +117,7 @@ export default class Char {
 			this.stepsLeft--
 		}
 
-		!this.special && (await wait(this.writer.options.genInitDelay))
+		!this.instant && (await wait(this.writer.options.genInitDelay))
 
 		this.els?.charEl.classList.add('gw-typing')
 

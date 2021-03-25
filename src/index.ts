@@ -56,7 +56,6 @@ export default class GlitchedWriter {
 	get previousString(): string {
 		let prev = this.htmlElement?.textContent ?? this.string
 		if (this.options.html) prev = filterHtml(prev)
-
 		prev = prev.trim()
 		return prev
 	}
@@ -97,12 +96,12 @@ export default class GlitchedWriter {
 		this.goalString = string
 		this.state.nGhosts = 0
 		this.options.setCharset()
-		this.removeSpecialChars()
+		// this.removeSpecialChars()
 
 		if (this.options.startFrom === 'matching') this.createMatchingCharTable()
 		else this.createPreviousCharTable()
 
-		// this.logCharTable()
+		this.logCharTable()
 		if (this.options.letterize) {
 			if (this.htmlElement) this.htmlElement.innerHTML = ''
 			this.charTable.forEach(char => char.appendChild())
@@ -129,17 +128,17 @@ export default class GlitchedWriter {
 		return this.write(array.join(''), { erase: true })
 	}
 
-	// private logCharTable() {
-	// 	console.table(
-	// 		this.charTable.map(({ ghostsBefore, ghostsAfter, l, gl, special }) => [
-	// 			ghostsBefore.join(''),
-	// 			ghostsAfter.join(''),
-	// 			l,
-	// 			gl,
-	// 			special && 'HTML',
-	// 		]),
-	// 	)
-	// }
+	private logCharTable() {
+		console.table(
+			this.charTable.map(({ ghostsBefore, ghostsAfter, l, gl, instant }) => [
+				ghostsBefore.join(''),
+				ghostsAfter.join(''),
+				l,
+				gl,
+				instant && 'HTML',
+			]),
+		)
+	}
 
 	async play(playOptions?: PlayOptions): Promise<WriterDataResponse> {
 		const playList: Promise<boolean>[] = [],
@@ -281,13 +280,13 @@ export default class GlitchedWriter {
 			char: Char | undefined = charTable[ci]
 
 		if (special) {
-			charTable.splice(ci, 0, new Char(pl, gl, this, '', true))
+			charTable.splice(ci, 0, new Char(this, pl, gl, '', true))
 			return
 		}
 
 		char
 			? char.reset(pl, gl, appendedText, special)
-			: charTable.push(new Char(pl, gl, this, appendedText, special))
+			: charTable.push(new Char(this, pl, gl, appendedText, special))
 	}
 
 	private get goalStringArray(): LetterItem[] {
