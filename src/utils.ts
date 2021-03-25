@@ -89,7 +89,10 @@ export function getRandomFromRange(
 
 export const coinFlip = (p: number = 0.5): boolean => Math.random() < p
 
-export type LetterItem = { value: string; type?: 'tag' | 'html_entity' }
+export type LetterItem = {
+	value: string
+	type?: 'tag' | 'html_entity' | 'whitespace'
+}
 
 export const letterToLetterItem = (string: string): LetterItem => ({
 	value: string,
@@ -97,6 +100,9 @@ export const letterToLetterItem = (string: string): LetterItem => ({
 
 export const stringToLetterItems = (string: string | string[]): LetterItem[] =>
 	[...string].map(letterToLetterItem)
+
+export const isSpecialChar = (l: string): boolean =>
+	['\t', '\n', '\r', '\f', '\v'].includes(l)
 
 const findHTMLPattern =
 	'(&#?[0-9a-zA-Z]{2,6};)|(<style.+?>.+?</style>|<script.+?>.+?</script>|<(?:!|/?[a-zA-Z]+).*?/?>)'
@@ -128,6 +134,14 @@ export function htmlToArray(string: string): LetterItem[] {
 	string.length > lastIndex &&
 		resultArray.push(...stringToLetterItems(string.slice(lastIndex)))
 
+	// return resultArray.map(l =>
+	// 	l.type
+	// 		? l
+	// 		: {
+	// 				value: l.value,
+	// 				type: isSpecialChar(l.value) ? 'whitespace' : undefined,
+	// 		  },
+	// )
 	return resultArray
 }
 
@@ -136,6 +150,3 @@ export function filterHtml(string: string): string {
 
 	return string.replace(reg, '')
 }
-
-export const isSpecialChar = (l: string): boolean =>
-	['\t', '\n', '\r', '\f', '\v'].includes(l)

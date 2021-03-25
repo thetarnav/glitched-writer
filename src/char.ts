@@ -3,14 +3,14 @@ import GlitchedWriter from './index'
 import { random, deleteRandom, wait, promiseWhile, coinFlip } from './utils'
 
 export default class Char {
-	l: string
-	gl: string
-	stepsLeft: number
+	l!: string
+	gl!: string
+	stepsLeft!: number
 	ghostsBefore: string[] = []
 	ghostsAfter: string[] = []
 	writer: GlitchedWriter
 	stop: boolean = false
-	instant: boolean
+	instant!: boolean
 	els?: {
 		charEl: HTMLSpanElement
 		ghostsBeforeEl: HTMLSpanElement
@@ -27,13 +27,8 @@ export default class Char {
 	) {
 		this.writer = writer
 
-		this.l = l
-		this.gl = gl
-		this.instant = instant
-		this.ghostsBefore = [...initialGhosts]
+		this.setProps(l, gl, initialGhosts, instant)
 
-		this.stepsLeft = writer.options.stepsLeft
-		if (instant) this.stepsLeft = 0
 		if (writer.options.letterize) {
 			this.els = {
 				charEl: document.createElement('span'),
@@ -54,18 +49,28 @@ export default class Char {
 		}
 	}
 
+	private setProps(
+		l: string,
+		gl: string,
+		initialGhosts: string = '',
+		instant: boolean = false,
+	) {
+		this.l = l
+		this.gl = gl
+		this.instant = instant
+		this.ghostsBefore = [...initialGhosts]
+
+		this.stepsLeft = this.writer.options.stepsLeft
+		if (instant) this.stepsLeft = 0
+	}
+
 	reset(
 		l: string,
 		gl: string,
 		initialGhosts: string = '',
 		instant: boolean = false,
 	) {
-		if (!instant && this.instant) this.l = ''
-		this.l = l
-		this.gl = gl
-		this.instant = instant
-		this.ghostsBefore = Array.from(initialGhosts)
-		this.stepsLeft = this.writer.options.stepsLeft
+		this.setProps(l, gl, initialGhosts, instant)
 		this.writeToElement()
 		if (this.els) {
 			this.els.charEl.className = 'gw-char'

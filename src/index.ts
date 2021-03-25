@@ -1,5 +1,4 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { findLastIndex } from 'lodash'
 import Options from './options'
 import State from './state'
 import Char from './char'
@@ -54,8 +53,9 @@ export default class GlitchedWriter {
 	}
 
 	get previousString(): string {
-		let prev = this.htmlElement?.textContent ?? this.string
-		if (this.options.html) prev = filterHtml(prev)
+		let prev = this.htmlElement?.textContent
+		if (typeof prev !== 'string')
+			prev = this.options.html ? filterHtml(this.string) : this.string
 		prev = prev.trim()
 		return prev
 	}
@@ -101,7 +101,7 @@ export default class GlitchedWriter {
 		if (this.options.startFrom === 'matching') this.createMatchingCharTable()
 		else this.createPreviousCharTable()
 
-		this.logCharTable()
+		// this.logCharTable()
 		if (this.options.letterize) {
 			if (this.htmlElement) this.htmlElement.innerHTML = ''
 			this.charTable.forEach(char => char.appendChild())
@@ -128,17 +128,17 @@ export default class GlitchedWriter {
 		return this.write(array.join(''), { erase: true })
 	}
 
-	private logCharTable() {
-		console.table(
-			this.charTable.map(({ ghostsBefore, ghostsAfter, l, gl, instant }) => [
-				ghostsBefore.join(''),
-				ghostsAfter.join(''),
-				l,
-				gl,
-				instant && 'HTML',
-			]),
-		)
-	}
+	// private logCharTable() {
+	// 	console.table(
+	// 		this.charTable.map(({ ghostsBefore, ghostsAfter, l, gl, instant }) => [
+	// 			ghostsBefore.join(''),
+	// 			ghostsAfter.join(''),
+	// 			l,
+	// 			gl,
+	// 			instant && 'HTML',
+	// 		]),
+	// 	)
+	// }
 
 	async play(playOptions?: PlayOptions): Promise<WriterDataResponse> {
 		const playList: Promise<boolean>[] = [],
@@ -204,18 +204,15 @@ export default class GlitchedWriter {
 			pi++
 			const pl: string | undefined = previous[pi]
 
-			let isWhitespace = false
-
 			if (gl.type === 'tag') {
 				pi--
 				this.setChar(gi, '', gl.value, undefined, true)
 				return
 			}
-			isWhitespace = isSpecialChar(gl.value)
 
 			const fi = gl.value !== '' ? previous.indexOf(gl.value, pi) : -1
 
-			if (fi !== -1 && fi - pi <= maxDist && !isWhitespace) {
+			if (fi !== -1 && fi - pi <= maxDist) {
 				const appendedText = previous.substring(pi, fi)
 				this.setChar(gi, gl.value, gl.value, appendedText)
 				pi = fi
@@ -225,8 +222,6 @@ export default class GlitchedWriter {
 					gi,
 					pl || this.options.space,
 					gl.value || this.options.space,
-					'',
-					isWhitespace,
 				)
 		})
 
@@ -247,7 +242,7 @@ export default class GlitchedWriter {
 				return
 			}
 
-			this.setChar(gi, pl, gl.value, undefined, isSpecialChar(gl.value))
+			this.setChar(gi, pl, gl.value)
 		})
 
 		this.removeExtraChars(goalStringArray.length)
@@ -261,13 +256,13 @@ export default class GlitchedWriter {
 		charTable.splice(from, charTable.length - from)
 	}
 
-	private removeSpecialChars() {
-		let i: number = findLastIndex(this.charTable, 'special')
-		while (i !== -1) {
-			this.charTable.splice(i, 1)
-			i = findLastIndex(this.charTable, 'special')
-		}
-	}
+	// private removeSpecialChars() {
+	// 	let i: number = findLastIndex(this.charTable, 'special')
+	// 	while (i !== -1) {
+	// 		this.charTable.splice(i, 1)
+	// 		i = findLastIndex(this.charTable, 'special')
+	// 	}
+	// }
 
 	private setChar(
 		ci: number,

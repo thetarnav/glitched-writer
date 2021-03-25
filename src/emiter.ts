@@ -18,7 +18,9 @@ export default class {
 	}
 
 	call(eventType: 'step' | 'finish') {
-		const { htmlElement, writerData, string } = this.writer
+		const { htmlElement, writerData } = this.writer,
+			string =
+				eventType === 'finish' ? this.writer.goalString : this.writer.string
 
 		if (htmlElement && !this.writer.options.letterize) {
 			if (this.writer.options.html) htmlElement.innerHTML = string
