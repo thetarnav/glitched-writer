@@ -121,47 +121,51 @@ export default class Char {
 
 		!this.special && (await wait(this.writer.options.genInitDelay))
 
-		if (this.els) this.els.charEl.classList.add('gw-typing')
+		this.els?.charEl.classList.add('gw-typing')
 
 		await promiseWhile(
 			() => !this.finished && !this.writer.state.isPaused && !this.stop,
 			loop,
 		)
 
-		if (this.els && this.finished) {
-			this.els.charEl.classList.add('gw-finished')
-			this.els.charEl.classList.remove('gw-typing')
-			this.els.letterEl.classList.remove('gw-glitched')
+		if (this.finished) {
+			this.els?.charEl.classList.add('gw-finished')
+			this.els?.charEl.classList.remove('gw-typing')
+			this.els?.letterEl.classList.remove('gw-glitched')
 		}
 		return this.finished
 	}
 
 	step() {
-		if (this.stepsLeft > 0 && this.l !== this.gl) {
+		const { ghostChance, changeChance } = this.writer.options
+
+		if (
+			(this.stepsLeft > 0 && this.l !== this.gl) ||
+			coinFlip((ghostChance + changeChance) / 3.5)
+		) {
 			/**
 			 * IS GROWING
 			 */
-			const { ghostChance, changeChance } = this.writer.options
 
 			if (coinFlip(ghostChance)) {
 				if (this.writer.state.ghostsInLimit) this.addGhost()
 				else this.removeGhost()
 			}
 			if (coinFlip(changeChance)) {
-				if (this.els) this.els.letterEl.classList.add('gw-glitched')
+				this.els?.letterEl.classList.add('gw-glitched')
 				this.l = this.writer.options.genGhost
 			}
 		} else if (!this.finished) {
 			/**
 			 * IS SHRINKING
 			 */
-			if (this.els) this.els.letterEl.classList.remove('gw-glitched')
+			this.els?.letterEl.classList.remove('gw-glitched')
 			this.l = this.gl
 			this.removeGhost()
 		}
 	}
 
-	addGhost() {
+	private addGhost() {
 		const l = this.writer.options.genGhost
 		this.writer.state.nGhosts++
 		coinFlip()
@@ -169,7 +173,7 @@ export default class Char {
 			: insertGhost(this.ghostsAfter, l)
 	}
 
-	removeGhost() {
+	private removeGhost() {
 		this.writer.state.nGhosts--
 		coinFlip() && this.ghostsBefore.length > 0
 			? deleteRandom(this.ghostsBefore)
