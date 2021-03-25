@@ -1,10 +1,11 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { sample } from 'lodash'
 import {
 	parseCharset,
 	filterDuplicates,
 	getRandomFromRange,
 	filterHtml,
+	random,
+	getRandom,
 } from './utils'
 import { ConstructorOptions, OptionsFields, RangeOrNumber } from './types'
 import GlitchedWriter from '.'
@@ -19,7 +20,7 @@ export default class Options implements OptionsFields {
 	maxGhosts: number
 	glyphs: string
 	glyphsFromString: boolean
-	ghostCharset: string
+	ghostCharset: string[]
 	oneAtATime: boolean
 	html: boolean
 	letterize: boolean
@@ -44,7 +45,7 @@ export default class Options implements OptionsFields {
 		this.glyphs = parseCharset(options.glyphs) ?? presets.default.glyphs
 		this.glyphsFromString =
 			options.glyphsFromString ?? presets.default.glyphsFromString
-		this.ghostCharset = this.glyphs
+		this.ghostCharset = [...this.glyphs]
 		this.oneAtATime = options.oneAtATime ?? presets.default.oneAtATime
 		this.html = options.html ?? presets.default.html
 		this.letterize = options.letterize ?? presets.default.letterize
@@ -75,7 +76,7 @@ export default class Options implements OptionsFields {
 		return Math.round((length || 20) * this.maxGhosts)
 	}
 	get genGhost(): string {
-		return sample(this.ghostCharset) ?? ''
+		return getRandom(this.ghostCharset) ?? ''
 	}
 
 	setCharset() {
@@ -89,10 +90,8 @@ export default class Options implements OptionsFields {
 						: this.writer.goalString),
 			)
 
-		charset = [...charset]
-			.filter(l => !['\t', '\n', '\r', '\f', '\v'].includes(l))
-			.join('')
-
-		this.ghostCharset = charset
+		this.ghostCharset = [...charset].filter(
+			l => !['\t', '\n', '\r', '\f', '\v'].includes(l),
+		)
 	}
 }

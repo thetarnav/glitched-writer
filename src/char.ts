@@ -105,13 +105,13 @@ export default class Char {
 	private writeToElement() {
 		if (!this.els) return
 
-		const { l, ghostsBefore, ghostsAfter } = this,
-			{ ghostsBeforeEl, ghostsAfterEl, letterEl: letter } = this.els
+		const { l } = this,
+			{ ghostsBeforeEl, ghostsAfterEl, letterEl } = this.els
 
-		if (this.writer.options.html) letter.innerHTML = l
-		else letter.textContent = l
-		ghostsBeforeEl.textContent = ghostsBefore.join('')
-		ghostsAfterEl.textContent = ghostsAfter.join('')
+		if (this.writer.options.html) letterEl.innerHTML = l
+		else letterEl.textContent = l
+		ghostsBeforeEl.textContent = this.ghostsBefore.join('')
+		ghostsAfterEl.textContent = this.ghostsAfter.join('')
 	}
 
 	appendChild() {

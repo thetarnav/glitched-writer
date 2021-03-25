@@ -21,6 +21,17 @@ export function random(
 	return result
 }
 
+export function deleteRandom(array: any[]): void {
+	const { length } = array
+	array.splice(random(0, length, 'floor'), 1)
+}
+
+export function getRandom<T>(iterable: Array<T>): T
+export function getRandom(iterable: string): string
+export function getRandom(iterable: any[] | string): any {
+	return iterable[random(0, iterable.length, 'floor')]
+}
+
 export function filterDuplicates(iterable: string): string
 export function filterDuplicates<T>(iterable: Array<T>): Array<T>
 export function filterDuplicates(iterable: any[] | string): any {
@@ -43,11 +54,6 @@ export function parseCharset(
 	else result = Array.from(input as Set<string>).join('')
 
 	return result
-}
-
-export function deleteRandom(array: any[]): void {
-	const { length } = array
-	array.splice(random(0, length, 'floor'), 1)
 }
 
 export const wait = (time: number): Promise<number> =>
