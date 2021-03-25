@@ -6,7 +6,7 @@ import {
 	getRandomFromRange,
 	filterHtml,
 } from './utils'
-import { OptionsFields, ConstructorOptions, RangeOrNumber } from './types'
+import { ConstructorOptions } from './types'
 import GlitchedWriter from '.'
 import { presets, PresetName } from './presets'
 
@@ -29,7 +29,7 @@ export default class Options implements OptionsFields {
 
 	constructor(
 		writer: GlitchedWriter,
-		options?: ConstructorOptions | PresetName,
+		options?: ConstructorOptions | PresetName | null,
 	) {
 		if (typeof options === 'string') options = presets[options]
 

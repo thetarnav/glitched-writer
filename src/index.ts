@@ -25,7 +25,7 @@ import {
 import { presets, glyphs, PresetName } from './presets'
 
 export default class GlitchedWriter {
-	htmlElement?: HTMLElement | Element
+	htmlElement?: HTMLElement | Element | null
 	options: Options
 	state: State
 	emiter: Emiter
@@ -33,12 +33,15 @@ export default class GlitchedWriter {
 	goalString: string = ''
 
 	constructor(
-		htmlElement?: HTMLElement | Element,
-		options?: ConstructorOptions | PresetName,
+		htmlElement?: HTMLElement | Element | string,
+		options?: ConstructorOptions | PresetName | null,
 		onStepCallback?: Callback,
 		onFinishCallback?: Callback,
 	) {
-		this.htmlElement = htmlElement
+		if (typeof htmlElement === 'string') {
+			if (typeof document !== 'undefined')
+				this.htmlElement = document.querySelector(htmlElement)
+		} else this.htmlElement = htmlElement
 		this.options = new Options(this, options)
 		this.state = new State(this)
 		this.emiter = new Emiter(this, onStepCallback, onFinishCallback)

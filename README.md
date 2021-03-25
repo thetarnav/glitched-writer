@@ -29,6 +29,25 @@
 
 ---
 
+## Table Of Contents
+
+1. [Installation](#installation)
+2. [Usage](#usage)
+   -  [Creating Class Instance](#creating-class-instance)
+   -  [Writing](#writing)
+   -  [Pausing & Playing](#pausing--playing)
+   -  [One-Time-Use](#one-time-use)
+   -  [On Text Input](#on-text-input)
+   -  [Listening For Events](#listening-for-events)
+   -  [Add & Remove](#add--remove)
+   -  [Writing HTML](#writing-html)
+   -  [Letterize](#letterize)
+   -  [Available imports](#available-imports)
+3. [Presets](#presets)
+4. [Options](#customizing-options)
+
+---
+
 ## Installation
 
 Download package through npm.
@@ -58,27 +77,24 @@ Creating writer class instance:
 ```js
 // Calling GlitchedWriter constructor:
 const Writer = new GlitchedWriter(
-	htmlElement,
-	options,
-	onStepCallback,
-	onFinishCallback,
+	htmlElement, // Element or Selector string
+	options, // {...} or Preset name
+	onStepCallback, // (string, data) => {}
+	onFinishCallback, // (string, data) => {}
 )
 
 // Custom options:
 const Writer = new GlitchedWriter(htmlElement, {
 	interval: [10, 70],
 	oneAtATime: true,
+	letterize: true,
 })
 
 // On-step-callback added:
-const Writer = new GlitchedWriter(
-	htmlElement,
-	undefined,
-	(string, writerData) => {
-		console.log(`Current string: ${string}`)
-		console.log('All the class data:', writerData)
-	},
-)
+const Writer = new GlitchedWriter(htmlElement, {}, (string, writerData) => {
+	console.log(`Current string: ${string}`)
+	console.log('All the class data:', writerData)
+})
 ```
 
 ### Writing
@@ -98,17 +114,6 @@ console.log('All the writer data:', res)
 await wait(1200) // additional simple promise to wait some time
 
 await Writer.write('...to Glitch City!')
-```
-
-### Text Input
-
-Don't be afraid to call write method on top of each oder.
-Newer will stop the ongoing one.
-
-```js
-inputEl.addEventListener('input', () => {
-	Writer.write(inputEl.value)
-})
 ```
 
 ### Pausing & Playing
@@ -140,6 +145,17 @@ import { glitchWrite } from 'glitched-writer'
 glitchWrite('Write this and DISAPER!', htmlElement, options, ...)
 ```
 
+### On Text Input
+
+Don't be afraid to call write method on top of each oder.
+New will stop the ongoing.
+
+```js
+inputEl.addEventListener('input', () => {
+	Writer.write(inputEl.value)
+})
+```
+
 ### Listening For Events
 
 ```js
@@ -166,7 +182,7 @@ Writer.remove(9)
 ### Writing HTML
 
 (**! experimental & potentially dangerous !**) Let's you write text with html tags in it.
-Can be enabled along with "html" option, but the "double tags", like <b> ... </b> won't show up.
+Can be enabled along with "letterize" option, but the "double tags", like <b> ... </b> won't show up.
 
 ```js
 // You need to enable html option.
@@ -246,20 +262,20 @@ new GlitchedWriter(htmlElement, presets.typewriter)
 
 ```ts
 {
-// name    [min   , max   ] | const   // default
-   steps?: [number, number] | number, // [1, 8]
-   interval?: [number, number] | number, // [60, 170]
-   initialDelay?: [number, number] | number, // [0, 2000]
-   changeChance?: number, // 0.6
-   ghostChance?: number, // 0.2
-   maxGhosts?: number, // '0.2'
-   glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
-   glyphsFromString?: boolean, // false
-   startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
-   oneAtATime?: boolean, // false
+//	name    [min   , max   ] | const   // default
+	steps?: [number, number] | number, // [1, 8]
+	interval?: [number, number] | number, // [60, 170]
+	initialDelay?: [number, number] | number, // [0, 2000]
+	changeChance?: number, // 0.6
+	ghostChance?: number, // 0.2
+	maxGhosts?: number, // '0.2'
+	glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
+	glyphsFromString?: boolean, // false
+	startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
+	oneAtATime?: boolean, // false
 	html?: boolean, // false
 	letterize?: boolean, // false
-   fillSpace?: boolean // true
+	fillSpace?: boolean // true
 }
 ```
 

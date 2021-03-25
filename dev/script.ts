@@ -9,9 +9,9 @@ const textEl = document.getElementById('glitch_this'),
 	logsEl = document.getElementById('logs')
 
 const writer = new GlitchedWriter(
-	textEl,
+	'#glitch_this',
 	{ ...presets.zalgo, html: true, letterize: true },
-	string => console.log(string),
+	// string => console.log(string),
 )
 
 // eslint-disable-next-line func-names

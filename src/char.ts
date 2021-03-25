@@ -128,9 +128,10 @@ export default class Char {
 			loop,
 		)
 
-		if (this.els) {
+		if (this.els && this.finished) {
 			this.els.charEl.classList.add('gw-finished')
 			this.els.charEl.classList.remove('gw-typing')
+			this.els.letterEl.classList.remove('gw-glitched')
 		}
 		return this.finished
 	}
