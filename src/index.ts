@@ -32,6 +32,14 @@ export default class GlitchedWriter {
 	goalString: string = ''
 	string: string = ''
 
+	/**
+	 * Create new instance of Glitched Writer, that manages writing text to one HTML Element. Few writers can possess the same HTML Element, but don't write with them at the same time.
+	 * Use .write(string) method to start writing.
+	 * @param htmlElement HTML Element OR a Selector string (eg. '.text')
+	 * @param options Options object (eg. { html: true, ... }) OR preset name (eg. 'zalgo').
+	 * @param onStepCallback Callback, that will be triggered on every step. Params passed: string & writer data.
+	 * @param onFinishCallback Callback, that will be triggered when each writing finishes. Params passed: string & writer data.
+	 */
 	constructor(
 		htmlElement?: HTMLElement | Element | string,
 		options?: ConstructorOptions | PresetName | null,
@@ -77,6 +85,9 @@ export default class GlitchedWriter {
 	// 	return prev
 	// }
 
+	/**
+	 * All the data, about current state of the writer instance.
+	 */
 	get writerData(): WriterDataResponse {
 		const writer: GlitchedWriter = this,
 			{ options, state, string } = this
@@ -89,6 +100,11 @@ export default class GlitchedWriter {
 		}
 	}
 
+	/**
+	 * Main function of Glitched Writer. It orders writer to start typing passed string. Can be called multiple times after each other, or even during writing.
+	 * @param string text, that will get written.
+	 * @returns Promise, with writer data result
+	 */
 	async write(string: string, writeOptions?: WriteOptions) {
 		if (this.options.startFrom === 'erase' && !writeOptions?.erase)
 			await this.write(this.genGoalStringToErase(string), { erase: true })
@@ -113,12 +129,22 @@ export default class GlitchedWriter {
 		})
 	}
 
+	/**
+	 * Add text to end method. Orders writer to write same string as previous, but with this added at the end.
+	 * @param string text that will get added
+	 * @returns Promise, with writer data result
+	 */
 	async add(string: string) {
 		const { previousString } = this
 
 		return this.write(previousString + string)
 	}
 
+	/**
+	 * Remove last n-letters method. Orders writer to write same string as previous, but without n-letters at the end.
+	 * @param n number of letters to remove.
+	 * @returns Promise, with writer data result
+	 */
 	async remove(n: number) {
 		const { previousString } = this,
 			array = Array.from(previousString)
@@ -140,6 +166,10 @@ export default class GlitchedWriter {
 	// 	)
 	// }
 
+	/**
+	 * Resume last writing order.
+	 * @returns Promise, with writer data result
+	 */
 	async play(playOptions?: PlayOptions): Promise<WriterDataResponse> {
 		const playList: Promise<boolean>[] = [],
 			{ charTable } = this,
@@ -184,6 +214,9 @@ export default class GlitchedWriter {
 		}
 	}
 
+	/**
+	 * Pause current writer task.
+	 */
 	pause() {
 		this.state.pause()
 	}
