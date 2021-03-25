@@ -50,19 +50,23 @@
 
 ## Installation
 
-Download package through npm.
+Download and install with npm.
 
 ```bash
 npm i glitched-writer
 ```
 
-Then import GlitchedWriter class in the JavaScript file.
-
 ```js
 import GlitchedWriter from 'glitched-writer'
 ```
 
-Or use the CDN and attach this script link to your html document.
+Or use Skypack
+
+```js
+import glitchedWriter from 'https://cdn.skypack.dev/glitched-writer'
+```
+
+Or use [JsDelivr](https://www.jsdelivr.com/package/npm/glitched-writer) and attach this script link to your html document.
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.10/lib/index.min.js"></script>
