@@ -89,6 +89,10 @@ export default class Options implements OptionsFields {
 						: this.writer.goalString),
 			)
 
+		charset = [...charset]
+			.filter(l => !['\t', '\n', '\r', '\f', '\v'].includes(l))
+			.join('')
+
 		this.ghostCharset = charset
 	}
 }

@@ -102,7 +102,7 @@ export const stringToLetterItems = (string: string | string[]): LetterItem[] =>
 	[...string].map(letterToLetterItem)
 
 export const isSpecialChar = (l: string): boolean =>
-	['\t', '\n', '\r', '\f', '\v'].includes(l)
+	['\t', '\n', '\r', '\f', '\v', ' ', ''].includes(l)
 
 const findHTMLPattern =
 	'(&#?[0-9a-zA-Z]{2,6};)|(<style.+?>.+?</style>|<script.+?>.+?</script>|<(?:!|/?[a-zA-Z]+).*?/?>)'

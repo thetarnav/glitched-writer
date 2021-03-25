@@ -1,6 +1,13 @@
 // eslint-disable-next-line import/no-cycle
 import GlitchedWriter from './index'
-import { random, deleteRandom, wait, promiseWhile, coinFlip } from './utils'
+import {
+	random,
+	deleteRandom,
+	wait,
+	promiseWhile,
+	coinFlip,
+	isSpecialChar,
+} from './utils'
 
 export default class Char {
 	l!: string
@@ -9,8 +16,11 @@ export default class Char {
 	ghostsBefore: string[] = []
 	ghostsAfter: string[] = []
 	writer: GlitchedWriter
+
 	stop: boolean = false
-	instant!: boolean
+	instant: boolean = false
+	isWhitespace: boolean = false
+
 	els?: {
 		charEl: HTMLSpanElement
 		ghostsBeforeEl: HTMLSpanElement
@@ -62,6 +72,8 @@ export default class Char {
 
 		this.stepsLeft = this.writer.options.stepsLeft
 		if (instant) this.stepsLeft = 0
+
+		this.isWhitespace = isSpecialChar(l)
 	}
 
 	reset(
@@ -108,7 +120,7 @@ export default class Char {
 
 	get interval(): number {
 		let interval = this.writer.options.genInterval
-		if (this.gl === '' || this.gl === ' ') interval /= 2
+		if (this.isWhitespace) interval /= 2
 		return interval
 	}
 
