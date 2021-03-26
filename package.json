@@ -19,7 +19,8 @@
   "scripts": {
     "start": "nodemon test/index.ts",
     "dev": "parcel dev/index.html --dist-dir dev/dist",
-    "build": "tsc && grunt build"
+    "build": "tsc && grunt build",
+    "publish": "npm version patch && npm publish && git push && git push --tags"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.0.0-beta.2",
