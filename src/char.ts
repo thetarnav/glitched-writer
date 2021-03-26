@@ -23,8 +23,8 @@ export default class Char {
 
 	afterGlitchChance: number = 0
 
-	els?: {
-		charEl: HTMLSpanElement
+	letterize?: {
+		charEl?: HTMLSpanElement
 		ghostsBeforeEl: HTMLSpanElement
 		letterEl: HTMLSpanElement
 		ghostsAfterEl: HTMLSpanElement
@@ -41,17 +41,15 @@ export default class Char {
 
 		this.setProps(l, gl, initialGhosts, isTag)
 
-		if (writer.options.letterize && !isTag) {
-			this.els = {
-				charEl: document.createElement('span'),
+		if (writer.options.letterize) {
+			this.letterize = {
 				ghostsBeforeEl: document.createElement('span'),
 				letterEl: document.createElement('span'),
 				ghostsAfterEl: document.createElement('span'),
 			}
-			this.els.charEl.className = 'gw-char'
-			this.els.ghostsBeforeEl.className = 'gw-ghosts'
-			this.els.ghostsAfterEl.className = 'gw-ghosts'
-			this.els.letterEl.className = 'gw-letter'
+			this.letterize.ghostsBeforeEl.className = 'gw-ghosts'
+			this.letterize.ghostsAfterEl.className = 'gw-ghosts'
+			this.letterize.letterEl.className = 'gw-letter'
 		}
 	}
 
@@ -76,27 +74,14 @@ export default class Char {
 			(options.ghostChance + options.changeChance) / 3.7
 	}
 
-	private appendChildren() {
-		if (this.els)
-			this.els.charEl.append(
-				this.els.ghostsBeforeEl,
-				this.els.letterEl,
-				this.els.ghostsAfterEl,
-			)
-		this.writeToElement()
-	}
-
 	reset(
 		l: string,
 		gl: string,
 		initialGhosts: string = '',
-		instant: boolean = false,
+		isTag: boolean = false,
 	) {
-		this.setProps(l, gl, initialGhosts, instant)
-		if (this.els) {
-			this.els.charEl.className = 'gw-char'
-			this.els.letterEl.className = 'gw-letter'
-		}
+		this.setProps(l, gl, initialGhosts, isTag)
+		if (this.letterize) this.letterize.letterEl.className = 'gw-letter'
 	}
 
 	get string(): string {
@@ -111,9 +96,15 @@ export default class Char {
 		)
 	}
 
+	get interval(): number {
+		let interval = this.writer.options.genInterval
+		if (this.isWhitespace) interval /= 2
+		return interval
+	}
+
 	private writeToElement() {
-		if (!this.els) return
-		const { ghostsBeforeEl, ghostsAfterEl, letterEl } = this.els
+		if (!this.letterize) return
+		const { ghostsBeforeEl, ghostsAfterEl, letterEl } = this.letterize
 
 		letterEl.innerHTML = this.l
 		ghostsBeforeEl.textContent = this.ghostsBefore.join('')
@@ -121,16 +112,18 @@ export default class Char {
 	}
 
 	set spanElement(el: HTMLSpanElement) {
-		if (!this.els) return
-		this.els.charEl = el
-
+		if (!this.letterize) return
+		this.letterize.charEl = el
 		this.appendChildren()
 	}
 
-	get interval(): number {
-		let interval = this.writer.options.genInterval
-		if (this.isWhitespace) interval /= 2
-		return interval
+	private appendChildren() {
+		this.letterize?.charEl?.append(
+			this.letterize.ghostsBeforeEl,
+			this.letterize.letterEl,
+			this.letterize.ghostsAfterEl,
+		)
+		this.writeToElement()
 	}
 
 	async type() {
@@ -148,17 +141,14 @@ export default class Char {
 
 		!this.isTag && (await wait(this.writer.options.genInitDelay))
 
-		this.els?.charEl.classList.add('gw-typing')
-
 		await promiseWhile(
 			() => !this.finished && !this.writer.state.isPaused && !this.stop,
 			loop,
 		)
 
 		if (this.finished) {
-			this.els?.charEl.classList.add('gw-finished')
-			this.els?.charEl.classList.remove('gw-typing')
-			this.els?.letterEl.classList.remove('gw-glitched')
+			this.letterize?.charEl?.classList.add('gw-finished')
+			this.letterize?.letterEl.classList.remove('gw-glitched')
 		}
 		return this.finished
 	}
@@ -178,14 +168,14 @@ export default class Char {
 				else this.removeGhost()
 			}
 			if (coinFlip(changeChance)) {
-				this.els?.letterEl.classList.add('gw-glitched')
+				this.letterize?.letterEl.classList.add('gw-glitched')
 				this.l = this.writer.options.genGhost
 			}
 		} else if (!this.finished) {
 			/**
 			 * IS SHRINKING
 			 */
-			this.els?.letterEl.classList.remove('gw-glitched')
+			this.letterize?.letterEl.classList.remove('gw-glitched')
 			this.l = this.gl
 			this.removeGhost()
 		}

@@ -50,7 +50,7 @@ export const presets = {
 		startFrom: 'erase',
 	} as ConstructorOptions,
 	terminal: {
-		interval: [25, 35],
+		interval: [25, 30],
 		initialDelay: [0, 0],
 		steps: 0,
 		changeChance: 0.5,

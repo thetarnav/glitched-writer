@@ -10,7 +10,7 @@ const textEl = document.getElementById('glitch_this'),
 
 const writer = new GlitchedWriter(
 	'#glitch_this',
-	{ ...presets.zalgo, html: true, letterize: true },
+	{ html: true },
 	// 'terminal',
 	// string => console.log(string),
 )

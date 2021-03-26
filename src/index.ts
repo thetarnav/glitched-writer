@@ -23,7 +23,7 @@ import {
 import { presets, glyphs, PresetName } from './presets'
 
 export default class GlitchedWriter {
-	htmlElement?: HTMLElement | Element | null
+	htmlElement?: HTMLElement | Element
 	options: Options
 	state: State
 	emiter: Emiter
@@ -41,15 +41,15 @@ export default class GlitchedWriter {
 	 * @param onFinishCallback Callback, that will be triggered when each writing finishes. Params passed: string & writer data.
 	 */
 	constructor(
-		htmlElement?: HTMLElement | Element | string,
+		htmlElement?: HTMLElement | Element | null | string,
 		options?: ConstructorOptions | PresetName | null,
 		onStepCallback?: Callback,
 		onFinishCallback?: Callback,
 	) {
 		if (typeof htmlElement === 'string') {
 			if (typeof document !== 'undefined')
-				this.htmlElement = document.querySelector(htmlElement)
-		} else this.htmlElement = htmlElement
+				this.htmlElement = document.querySelector(htmlElement) ?? undefined
+		} else this.htmlElement = htmlElement ?? undefined
 		this.options = new Options(this, options)
 		this.state = new State(this)
 		this.emiter = new Emiter(this, onStepCallback, onFinishCallback)
@@ -67,23 +67,6 @@ export default class GlitchedWriter {
 		prev = prev.trim()
 		return prev
 	}
-
-	// get previousStringFromTable(): string {
-	// 	let prev = flattenDeep(
-	// 		this.charTable.map(({ ghostsBefore, l, ghostsAfter }) => [
-	// 			ghostsBefore,
-	// 			l,
-	// 			ghostsAfter,
-	// 		]),
-	// 	).join('')
-
-	// 	console.log(prev)
-
-	// 	if (this.options.html) prev = filterHtml(prev)
-
-	// 	prev = prev.trim()
-	// 	return prev
-	// }
 
 	/**
 	 * All the data, about current state of the writer instance.
@@ -120,6 +103,14 @@ export default class GlitchedWriter {
 		// this.logCharTable()
 		this.letterize()
 
+		// console.log(
+		// 	this.charTable.map(char => [
+		// 		char.gl,
+		// 		char.isTag,
+		// 		char.letterize?.charEl?.outerHTML,
+		// 	]),
+		// )
+
 		this.pause()
 		return this.play({
 			reverse: this.options.oneAtATime && writeOptions?.erase,
@@ -153,13 +144,15 @@ export default class GlitchedWriter {
 
 	// private logCharTable() {
 	// 	console.table(
-	// 		this.charTable.map(({ ghostsBefore, ghostsAfter, l, gl, instant }) => [
-	// 			ghostsBefore.join(''),
-	// 			ghostsAfter.join(''),
-	// 			l,
-	// 			gl,
-	// 			instant && 'HTML',
-	// 		]),
+	// 		this.charTable.map(
+	// 			({ ghostsBefore, ghostsAfter, l, gl, isTag, isWhitespace }) => [
+	// 				ghostsBefore.join(''),
+	// 				ghostsAfter.join(''),
+	// 				l,
+	// 				gl,
+	// 				(isTag && 'TAG') || (isWhitespace && 'Whitespace'),
+	// 			],
+	// 		),
 	// 	)
 	// }
 
@@ -276,10 +269,9 @@ export default class GlitchedWriter {
 	private letterize() {
 		if (!this.options.letterize || !this.htmlElement) return
 
-		const htmlArray: string[] = this.charTable.map(({ isTag: instant, gl }) =>
-				instant ? gl : '<span class="gw-char"></span>' ?? '',
-			),
-			html: string = htmlArray.join('')
+		const html: string = this.charTable
+			.map(({ isTag, gl }) => (isTag ? gl : '<span class="gw-char"></span>'))
+			.join('')
 		this.htmlElement.innerHTML = html
 
 		const spans = this.htmlElement.querySelectorAll(
@@ -372,10 +364,19 @@ export default class GlitchedWriter {
 	}
 }
 
+/**
+ * One time use, standalone write function. Used to order a temporary Glitched Writer instance to animate content of html element to chosen text.
+ * @param string text, that will get written.
+ * @param htmlElement HTML Element OR a Selector string (eg. '.text')
+ * @param options Options object (eg. { html: true, ... }) OR preset name (eg. 'zalgo').
+ * @param onStepCallback Callback, that will be triggered on every step. Params passed: string & writer data.
+ * @param onFinishCallback Callback, that will be triggered when each writing finishes. Params passed: string & writer data.
+ * @returns Promise, with writer data result
+ */
 export async function glitchWrite(
 	string: string,
-	htmlElement?: HTMLElement | Element,
-	options?: ConstructorOptions | PresetName,
+	htmlElement?: HTMLElement | Element | null | string,
+	options?: ConstructorOptions | PresetName | null,
 	onStepCallback?: Callback,
 	onFinishCallback?: Callback,
 ): Promise<WriterDataResponse> {
