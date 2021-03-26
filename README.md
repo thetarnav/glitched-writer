@@ -31,7 +31,7 @@
 
 ### SEE DEMOS:
 
-#### [Default (interactive)](https://codepen.io/thetarnav/pen/MWWyPzY) --- [Terminal](https://codepen.io/thetarnav/pen/mdRyqga) --- [Simple Scramble Effect](https://codepen.io/thetarnav/pen/vYgYWbb)
+#### [Default (interactive)](https://codepen.io/thetarnav/pen/MWWyPzY) --- [Terminal](https://codepen.io/thetarnav/pen/mdRyqga) --- [Simple Scramble Effect](https://codepen.io/thetarnav/pen/vYgYWbb) --- [Nier Auromata Effect](https://codepen.io/thetarnav/pen/OJWNRor)
 
 ---
 
@@ -241,7 +241,7 @@ Available presets as for now:
 
 -  **[default](https://codepen.io/thetarnav/pen/MWWyPzY)** - Loaded automatically, featured on the GIF up top.
 
--  **nier** - Imitating the way text was appearing in the _NieR: Automata's UI_.
+-  **[nier](https://codepen.io/thetarnav/pen/OJWNRor)** - Imitating the way text was appearing in the _NieR: Automata's UI_.
 
 -  **typewriter** - One letter at a time, only slightly glitched.
 
