@@ -7,7 +7,7 @@ import {
 	getRandom,
 } from './utils'
 import { ConstructorOptions, OptionsFields, RangeOrNumber } from './types'
-import GlitchedWriter from '.'
+import GlitchedWriter from './index'
 import { presets, PresetName } from './presets'
 
 export default class Options implements OptionsFields {

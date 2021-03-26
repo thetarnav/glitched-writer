@@ -6,7 +6,7 @@ const config = {}
 function generateConfig(name) {
 	const compress = name.indexOf('min') > -1
 	const innerConfig = {
-		entry: './lib/index.js',
+		entry: './lib/esm/index.js',
 		output: {
 			path: `${__dirname}/lib/`,
 			filename: `${name}.js`,

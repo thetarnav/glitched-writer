@@ -1,4 +1,4 @@
-import GlitchedWriter from '.'
+import GlitchedWriter from './index'
 import Options from './options'
 import State from './state'
 

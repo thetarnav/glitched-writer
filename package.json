@@ -9,18 +9,24 @@
     "url": "git+https://github.com/thetarnav/glitched-writer.git"
   },
   "homepage": "https://github.com/thetarnav/glitched-writer#readme",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "types": "./lib/cjs/index.d.ts",
   "jsdelivr": "lib/index.min.js",
   "unpkg": "lin/index.min.js",
   "files": [
     "lib/**/*"
   ],
+  "exports": {
+    "require": "./lib/cjs/index.js",
+    "import": "./lib/esm/index.js",
+    "default": "./lib/esm/index.js"
+  },
   "scripts": {
     "start": "nodemon test/index.ts",
     "dev": "parcel dev/index.html --dist-dir dev/dist",
-    "build": "tsc && grunt build",
-    "publish": "npm version patch && npm publish && git push && git push --tags"
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && grunt build",
+    "prepublishOnly": "npm run build && npm version patch",
+    "publish": "git push && git push --tags"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.0.0-beta.2",

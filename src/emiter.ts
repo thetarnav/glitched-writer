@@ -1,4 +1,4 @@
-import GlitchedWriter from '.'
+import GlitchedWriter from './index'
 import { Callback } from './types'
 import { filterHtml } from './utils'
 

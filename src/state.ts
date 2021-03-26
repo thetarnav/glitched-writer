@@ -1,4 +1,4 @@
-import GlitchedWriter from '.'
+import GlitchedWriter from './index'
 import { animateWithClass } from './utils'
 
 export default class State {

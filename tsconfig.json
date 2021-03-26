@@ -1,17 +1,22 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
+		// "module": "commonjs",
 		"lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
 		"downlevelIteration": true,
-		"outDir": "./lib",
+		"outDir": "./lib/esm",
 		"declaration": true,
 		"sourceMap": true,
 		"strict": true,
-		"target": "es2017"
+		// "target": "es2017",
+		"moduleResolution": "node",
+		"target": "ES6",
+		"module": "ESNext",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true
 	},
 	"compileOnSave": true,
-	"include": ["src"],
+	"include": ["./src"],
 	"exclude": ["node_modules", "dev", "lib", "test"]
 }
