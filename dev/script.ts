@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import debounce from 'lodash.debounce'
 
-import GlitchedWriter, { wait, presets } from '../lib'
+import GlitchedWriter, { wait, presets } from '../src'
 // import GlitchedWriter, { wait } from '../lib'
 
 const textEl = document.getElementById('glitch_this'),
@@ -10,7 +10,7 @@ const textEl = document.getElementById('glitch_this'),
 
 const writer = new GlitchedWriter(
 	'#glitch_this',
-	{ ...presets.terminal, html: true },
+	{ ...presets.zalgo, html: true, letterize: true },
 	// 'terminal',
 	// string => console.log(string),
 )

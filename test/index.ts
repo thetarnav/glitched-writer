@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom'
-import GlitchedWriter, { wait, presets } from '../src'
+import GlitchedWriter, { wait } from '../src'
 
 const dom = new JSDOM(
 	`<!DOCTYPE html><div id="glitch_this">Girls &#38; Bois</div>`,
@@ -9,7 +9,7 @@ const el = dom.window.document.querySelector('#glitch_this')
 
 const Writer = new GlitchedWriter(
 	el || undefined,
-	{ ...presets.zalgo, html: true, letterize: true },
+	{ html: true },
 	string => console.log(`"${el?.textContent}"`),
 	string => console.log('FIN', `"${el?.textContent}"`),
 )

@@ -5,9 +5,16 @@ const outputEl = document.querySelector(`#output`),
 	Writer = new GlitchedWriter(outputEl, {
 		...presets.terminal,
 		html: true,
+		letterize: true,
 	})
 
 const date = new Date()
+
+// setTimeout(() => {
+// 	console.log('PAUSE')
+
+// 	Writer.pause()
+// }, 5000)
 
 ;(async function () {
 	await Writer.write('script: Compiling.')

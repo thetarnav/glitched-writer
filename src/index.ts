@@ -118,10 +118,7 @@ export default class GlitchedWriter {
 		else this.createPreviousCharTable()
 
 		// this.logCharTable()
-		if (this.options.letterize) {
-			if (this.htmlElement) this.htmlElement.innerHTML = ''
-			this.charTable.forEach(char => char.appendChild())
-		}
+		this.letterize()
 
 		this.pause()
 		return this.play({
@@ -239,7 +236,7 @@ export default class GlitchedWriter {
 
 			if (gl.type === 'tag') {
 				pi--
-				this.setChar(gi, '', gl.value, undefined, true)
+				this.setChar(gi, '', gl)
 				return
 			}
 
@@ -247,23 +244,10 @@ export default class GlitchedWriter {
 
 			if (fi !== -1 && fi - pi <= maxDist) {
 				const appendedText = previous.substring(pi, fi)
-				this.setChar(
-					gi,
-					gl.value,
-					gl.value,
-					appendedText,
-					gl.type === 'whitespace',
-				)
+				this.setChar(gi, gl.value, gl, appendedText)
 				pi = fi
 				this.state.nGhosts += appendedText.length
-			} else
-				this.setChar(
-					gi,
-					pl || this.options.space,
-					gl.value || this.options.space,
-					undefined,
-					gl.type === 'whitespace',
-				)
+			} else this.setChar(gi, pl || this.options.space, gl)
 		})
 
 		this.removeExtraChars(goalStringArray.length)
@@ -279,58 +263,75 @@ export default class GlitchedWriter {
 
 			if (gl.type === 'tag') {
 				pi--
-				this.setChar(gi, '', gl.value, undefined, true)
+				this.setChar(gi, '', gl)
 				return
 			}
 
-			this.setChar(gi, pl, gl.value)
+			this.setChar(gi, pl, gl)
 		})
 
 		this.removeExtraChars(goalStringArray.length)
 	}
 
-	private removeExtraChars(from: number) {
-		const { charTable } = this
-		// for (let i = charTable.length - 1; i >= from; i--) {
-		// 	charTable[i].destroy()
-		// }
-		charTable.splice(from, charTable.length - from)
+	private letterize() {
+		if (!this.options.letterize || !this.htmlElement) return
+
+		const htmlArray: string[] = this.charTable.map(({ isTag: instant, gl }) =>
+				instant ? gl : '<span class="gw-char"></span>' ?? '',
+			),
+			html: string = htmlArray.join('')
+		this.htmlElement.innerHTML = html
+
+		const spans = this.htmlElement.querySelectorAll(
+			'span.gw-char',
+		) as NodeListOf<HTMLSpanElement>
+
+		let i = 0
+		this.charTable.forEach(char => {
+			if (char.isTag) return
+			char.spanElement = spans[i]
+			i++
+		})
 	}
 
-	// private removeSpecialChars() {
-	// 	let i: number = findLastIndex(this.charTable, 'special')
-	// 	while (i !== -1) {
-	// 		this.charTable.splice(i, 1)
-	// 		i = findLastIndex(this.charTable, 'special')
-	// 	}
-	// }
+	private removeExtraChars(from: number) {
+		const { charTable } = this
+		charTable.splice(from, charTable.length - from)
+	}
 
 	private setChar(
 		ci: number,
 		pl: string,
-		gl: string,
+		gl: LetterItem,
 		appendedText?: string,
-		instant: boolean = false,
 	) {
 		const { charTable } = this,
 			char: Char | undefined = charTable[ci]
 
-		// if (instant) {
-		// 	charTable.splice(ci, 0, new Char(this, pl, gl, appendedText, true))
-		// 	return
-		// }
-
 		char
-			? char.reset(pl, gl, appendedText, instant)
-			: charTable.push(new Char(this, pl, gl, appendedText, instant))
+			? char.reset(
+					pl,
+					gl.value || this.options.space,
+					appendedText,
+					gl.type === 'tag',
+			  )
+			: charTable.push(
+					new Char(
+						this,
+						pl,
+						gl.value || this.options.space,
+						appendedText,
+						gl.type === 'tag',
+					),
+			  )
 	}
 
 	private get goalStringArray(): LetterItem[] {
-		const { goalString: goal, previousString: previous, options } = this,
+		const { goalString: goal, previousString, options } = this,
 			goalArray = options.html
 				? htmlToArray(goal)
 				: stringToLetterItems(goal),
-			prevGtGoal = Math.max(previous.length - goalArray.length, 0)
+			prevGtGoal = Math.max(previousString.length - goalArray.length, 0)
 
 		goalArray.push(...stringToLetterItems(arrayOfTheSame('', prevGtGoal)))
 

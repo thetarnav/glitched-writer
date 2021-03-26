@@ -1,6 +1,13 @@
 // eslint-disable-next-line import/no-cycle
 import GlitchedWriter from './index'
-import { random, deleteRandom, wait, promiseWhile, coinFlip } from './utils'
+import {
+	random,
+	deleteRandom,
+	wait,
+	promiseWhile,
+	coinFlip,
+	isSpecialChar,
+} from './utils'
 
 export default class Char {
 	l!: string
@@ -11,8 +18,8 @@ export default class Char {
 	writer: GlitchedWriter
 
 	stop: boolean = false
-	instant: boolean = false
-	isSpace: boolean = false
+	isTag: boolean = false
+	isWhitespace: boolean = false
 
 	afterGlitchChance: number = 0
 
@@ -28,13 +35,13 @@ export default class Char {
 		l: string,
 		gl: string,
 		initialGhosts: string = '',
-		instant: boolean = false,
+		isTag: boolean = false,
 	) {
 		this.writer = writer
 
-		this.setProps(l, gl, initialGhosts, instant)
+		this.setProps(l, gl, initialGhosts, isTag)
 
-		if (writer.options.letterize) {
+		if (writer.options.letterize && !isTag) {
 			this.els = {
 				charEl: document.createElement('span'),
 				ghostsBeforeEl: document.createElement('span'),
@@ -45,12 +52,6 @@ export default class Char {
 			this.els.ghostsBeforeEl.className = 'gw-ghosts'
 			this.els.ghostsAfterEl.className = 'gw-ghosts'
 			this.els.letterEl.className = 'gw-letter'
-			this.els.charEl.append(
-				this.els.ghostsBeforeEl,
-				this.els.letterEl,
-				this.els.ghostsAfterEl,
-			)
-			this.writeToElement()
 		}
 	}
 
@@ -58,21 +59,31 @@ export default class Char {
 		l: string,
 		gl: string,
 		initialGhosts: string = '',
-		instant: boolean = false,
+		isTag: boolean = false,
 	) {
 		const { options } = this.writer
 		this.l = l
 		this.gl = gl
-		this.instant = instant
+		this.isTag = isTag
 		this.ghostsBefore = [...initialGhosts]
 
 		this.stepsLeft = options.stepsLeft
-		if (instant) this.stepsLeft = 0
+		if (isTag) this.stepsLeft = 0
 
-		this.isSpace = [' ', ''].includes(l)
+		this.isWhitespace = isSpecialChar(gl)
 
 		this.afterGlitchChance =
-			(options.ghostChance + options.changeChance) / 3.5
+			(options.ghostChance + options.changeChance) / 3.7
+	}
+
+	private appendChildren() {
+		if (this.els)
+			this.els.charEl.append(
+				this.els.ghostsBeforeEl,
+				this.els.letterEl,
+				this.els.ghostsAfterEl,
+			)
+		this.writeToElement()
 	}
 
 	reset(
@@ -82,7 +93,6 @@ export default class Char {
 		instant: boolean = false,
 	) {
 		this.setProps(l, gl, initialGhosts, instant)
-		this.writeToElement()
 		if (this.els) {
 			this.els.charEl.className = 'gw-char'
 			this.els.letterEl.className = 'gw-letter'
@@ -103,7 +113,6 @@ export default class Char {
 
 	private writeToElement() {
 		if (!this.els) return
-
 		const { ghostsBeforeEl, ghostsAfterEl, letterEl } = this.els
 
 		letterEl.innerHTML = this.l
@@ -111,19 +120,22 @@ export default class Char {
 		ghostsAfterEl.textContent = this.ghostsAfter.join('')
 	}
 
-	appendChild() {
-		if (this.els) this.writer.htmlElement?.appendChild(this.els.charEl)
+	set spanElement(el: HTMLSpanElement) {
+		if (!this.els) return
+		this.els.charEl = el
+
+		this.appendChildren()
 	}
 
 	get interval(): number {
 		let interval = this.writer.options.genInterval
-		if (this.isSpace) interval /= 2
+		if (this.isWhitespace) interval /= 2
 		return interval
 	}
 
 	async type() {
 		const loop = async () => {
-			!this.instant && (await wait(this.interval))
+			!this.isTag && (await wait(this.interval))
 
 			const lastString = this.string
 			this.step()
@@ -134,7 +146,7 @@ export default class Char {
 			this.stepsLeft--
 		}
 
-		!this.instant && (await wait(this.writer.options.genInitDelay))
+		!this.isTag && (await wait(this.writer.options.genInitDelay))
 
 		this.els?.charEl.classList.add('gw-typing')
 
@@ -154,7 +166,7 @@ export default class Char {
 	step() {
 		if (
 			(this.stepsLeft > 0 && this.l !== this.gl) ||
-			(coinFlip(this.afterGlitchChance) && !this.instant)
+			(coinFlip(this.afterGlitchChance) && !this.isTag && !this.isWhitespace)
 		) {
 			/**
 			 * IS GROWING
