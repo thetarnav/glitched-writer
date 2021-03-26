@@ -7,25 +7,31 @@
 
 ### What it Glitched Writer:
 
-> A lightweight, glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text. For web and node.
+> **A lightweight, glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text. For web and node.**
 
 ### Features:
 
--  Writes your text, by glitching or spelling it out.
+-  Manage text animation of **HTML Element**. Write, pause, play, add, remove and write more!
 
--  **Highly customizable** behavior. Set of options will help you achieve the effect you desire.
+-  **Highly customizable** behavior. Set of options let you animate the text the way is suits your design.
 
 -  Can be attached to a **HTML Element** for automatic text-displaying.
 
 -  Callback functions firing on finish and every step.
 
--  Custom Event **gw-finished** are dispatched on the HTML Element.
+-  Custom Event **gw-finished** will be dispatched on the HTML Element.
 
 -  For styling purposes writer attatches **gw-writing** class to the HTML Element and **data-gw-string attribute** with current string.
 
 -  Possible to write text with **html tags** in it or letterize string into many **span** elements.
 
--  Written in **Typescript**.
+-  Written fully in **Typescript**.
+
+---
+
+### SEE DEMOS:
+
+#### [Default (interactive)](https://codepen.io/thetarnav/pen/MWWyPzY) --- [Terminal](https://codepen.io/thetarnav/pen/mdRyqga) --- [Simple Scramble Effect](https://codepen.io/thetarnav/pen/vYgYWbb)
 
 ---
 
@@ -60,16 +66,16 @@ npm i glitched-writer
 import GlitchedWriter from 'glitched-writer'
 ```
 
-Or use Skypack
+Or use [Skypack](https://www.skypack.dev/view/glitched-writer) to import without need to install the package.
 
 ```js
-import glitchedWriter from 'https://cdn.skypack.dev/glitched-writer'
+import GlitchedWriter from 'https://cdn.skypack.dev/glitched-writer'
 ```
 
 Or use [JsDelivr](https://www.jsdelivr.com/package/npm/glitched-writer) and attach this script link to your html document.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.10/lib/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.14/lib/index.min.js"></script>
 ```
 
 ## Usage:
@@ -81,10 +87,10 @@ Creating writer class instance:
 ```js
 // Calling GlitchedWriter constructor:
 const Writer = new GlitchedWriter(
-	htmlElement, // Element or Selector string
-	options, // {...} or Preset name
-	onStepCallback, // (string, data) => {}
-	onFinishCallback, // (string, data) => {}
+	htmlElement, // Element / Selector string / undefined
+	options, // {...} / Preset name / undefined
+	onStepCallback, // (string, data) => {} / undefined
+	onFinishCallback, // (string, data) => {} / undefined
 )
 
 // Custom options:
@@ -185,8 +191,7 @@ Writer.remove(9)
 
 ### Writing HTML
 
-(**! experimental & potentially dangerous !**) Let's you write text with html tags in it.
-Can be enabled along with "letterize" option, but the "double tags", like <b> ... </b> won't show up.
+(**! Potentially dangerous !**) Let's you write text with html tags in it.
 
 ```js
 // You need to enable html option.
@@ -197,7 +202,7 @@ Writer.write('<b>Be sure to click <a href="...">this!</a></b>')
 
 ### Letterize
 
-(**Experimental!**) Splits written text into series of <span> elements. Then writing letters seperately into these child-elements.
+Splits written text into series of span elements. Then writing letters seperately into these child-elements. _Now can be used fully with HTML option!_
 
 ```js
 // You need to enable html option.
@@ -206,7 +211,7 @@ const Writer = new GlitchedWriter(htmlElement, { letterize: true })
 Writer.write('Hello there!')
 /**
  * The shape of one character:
- * span.gw-char (state classes: .gw-typing or .gw-finished)
+ * span.gw-char (and .gw-finished when finish typing)
  * 	span.gw-ghosts
  * 	span.gw-letter (also .gw-glitched when it is a "glitched" char.)
  * 	span.gw-ghosts
@@ -316,9 +321,9 @@ new GlitchedWriter(htmlElement, presets.typewriter)
 
 -  **oneAtATime** - If writing should take place from left-to-right, letter-by-letter or normally: all-at-once.
 
--  **html** - _Potentially dangerous option._ If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to not enable it on user-provided content.
+-  **html** - _Potentially dangerous option._ If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to NOT enable it on user-provided content.
 
--  **letterize** - _Experimental option._ Instead of injecting written text to "textContent" or "innerHTML", it appends every letter of that text as a child <span> element. Then changing textContent of that span to current letter. It gives a lot of styling possibilities, as you can style ghosts, letters, and whole chars seperately, depending on current writer and char state.
+-  **letterize** - Instead of injecting written text to "textContent" or "innerHTML", it appends every letter of that text as a child span element. Then changing textContent of that span to current letter. It gives a lot of styling possibilities, as you can style ghosts, letters, and whole chars seperately, depending on current writer and char state.
 
 -  **fillSpace** - Normally if letter gets erased it actually gets replaced with space instead - to make words appear from and disappear into space, rather then sticking to the rest of the words. Set to false if you want to disable this.
 
