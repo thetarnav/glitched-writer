@@ -46,6 +46,7 @@
    -  [Add & Remove](#add--remove)
    -  [Writing HTML](#writing-html)
    -  [Letterize](#letterize)
+   -  [Endless option](#endless-animation)
    -  [Available imports](#available-imports)
 3. **[Presets](#presets)**
 4. **[Options](#customizing-options)**
@@ -73,7 +74,7 @@ import GlitchedWriter from 'https://cdn.skypack.dev/glitched-writer'
 Or use [JsDelivr](https://www.jsdelivr.com/package/npm/glitched-writer) and attach this script link to your html document.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.14/lib/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.18/lib/index.min.js"></script>
 ```
 
 ## Usage:
@@ -314,7 +315,7 @@ new GlitchedWriter(htmlElement, {
 	oneAtATime?: boolean, // false
 	html?: boolean, // false
 	letterize?: boolean, // false
-	fillSpace?: boolean // true
+	fillSpace?: boolean, // true
 	endless?: boolean // false
 }
 ```
