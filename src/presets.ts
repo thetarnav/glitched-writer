@@ -9,6 +9,7 @@ export const glyphs = {
 		'ABCDĐEFGHIJKLMNOPQRSTUVWXYZabcdđefghijklmnopqrstuvwxyzĄąĆćŻżŹźŃńóŁłАБВГҐДЂЕЁЄЖЗЅИІЇЙЈКЛЉМНЊОПРСТЋУЎФХЦЧЏШЩЪЫЬЭЮЯабвгґдђеёєжзѕиіїйјклљмнњопрстћуўфхцчџшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωάΆέΈέΉίϊΐΊόΌύΰϋΎΫΏĂÂÊÔƠƯăâêôơưĂÂÊÔƠƯăâêôơư1234567890',
 	zalgo: '̴̵̶̷̸̡̢̧̨̛̖̗̘̙̜̝̞̟̠̣̤̥̦̩̪̫̬̭̮̯̰̱̲̳̹̺̻̼͇͈͉͍͎̀́̂̃̄̅̆̇̈̉̊̋̌̍̎̏̐̑̒̓̔̽̾̿̀́͂̓̈́͆͊͋͌̕̚ͅ ͓͔͕͖͙͚͐͑͒͗͛ͣͤͥͦͧͨͩͪͫͬͭͮͯ͘͜͟͢͝͞͠͡͏҉',
 	neo: '!<>-_\\/[]{}—=+*^?#________',
+	uppercase: '1234567890QWERTYUIOPASDFGHJKLZXCVBNM#$%',
 }
 
 export const presets = {
@@ -25,6 +26,7 @@ export const presets = {
 		html: false,
 		fillSpace: true,
 		letterize: false,
+		endless: false,
 		startFrom: 'matching' as 'matching' | 'previous' | 'erase',
 	},
 	nier: {
@@ -82,6 +84,18 @@ export const presets = {
 		initialDelay: [0, 1300],
 		steps: [4, 7],
 		startFrom: 'previous',
+		letterize: true,
+	} as ConstructorOptions,
+	encrypted: {
+		glyphs: glyphs.uppercase,
+		maxGhosts: 0,
+		ghostChance: 0,
+		changeChance: 1,
+		interval: [50, 90],
+		initialDelay: [0, 1300],
+		steps: [5, 8],
+		startFrom: 'previous',
+		fillSpace: false,
 		letterize: true,
 	} as ConstructorOptions,
 }

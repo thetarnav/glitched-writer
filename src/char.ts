@@ -23,7 +23,7 @@ export default class Char {
 
 	afterGlitchChance: number = 0
 
-	letterize?: {
+	els?: {
 		charEl?: HTMLSpanElement
 		ghostsBeforeEl: HTMLSpanElement
 		letterEl: HTMLSpanElement
@@ -42,14 +42,14 @@ export default class Char {
 		this.setProps(l, gl, initialGhosts, isTag)
 
 		if (writer.options.letterize) {
-			this.letterize = {
+			this.els = {
 				ghostsBeforeEl: document.createElement('span'),
 				letterEl: document.createElement('span'),
 				ghostsAfterEl: document.createElement('span'),
 			}
-			this.letterize.ghostsBeforeEl.className = 'gw-ghosts'
-			this.letterize.ghostsAfterEl.className = 'gw-ghosts'
-			this.letterize.letterEl.className = 'gw-letter'
+			this.els.ghostsBeforeEl.className = 'gw-ghosts'
+			this.els.ghostsAfterEl.className = 'gw-ghosts'
+			this.els.letterEl.className = 'gw-letter'
 		}
 	}
 
@@ -64,6 +64,7 @@ export default class Char {
 		this.gl = gl
 		this.isTag = isTag
 		this.ghostsBefore = [...initialGhosts]
+		this.writer.state.nGhosts += initialGhosts.length
 
 		this.stepsLeft = options.stepsLeft
 		if (isTag) this.stepsLeft = 0
@@ -81,7 +82,7 @@ export default class Char {
 		isTag: boolean = false,
 	) {
 		this.setProps(l, gl, initialGhosts, isTag)
-		if (this.letterize) this.letterize.letterEl.className = 'gw-letter'
+		if (this.els) this.els.letterEl.className = 'gw-letter'
 	}
 
 	get string(): string {
@@ -92,7 +93,10 @@ export default class Char {
 	get finished(): boolean {
 		const { l: char, gl: goal, ghostsBefore, ghostsAfter } = this
 		return (
-			char === goal && ghostsBefore.length === 0 && ghostsAfter.length === 0
+			(char === goal &&
+				ghostsBefore.length === 0 &&
+				ghostsAfter.length === 0) ||
+			this.isTag
 		)
 	}
 
@@ -103,8 +107,8 @@ export default class Char {
 	}
 
 	private writeToElement() {
-		if (!this.letterize) return
-		const { ghostsBeforeEl, ghostsAfterEl, letterEl } = this.letterize
+		if (!this.els) return
+		const { ghostsBeforeEl, ghostsAfterEl, letterEl } = this.els
 
 		letterEl.innerHTML = this.l
 		ghostsBeforeEl.textContent = this.ghostsBefore.join('')
@@ -112,70 +116,84 @@ export default class Char {
 	}
 
 	set spanElement(el: HTMLSpanElement) {
-		if (!this.letterize) return
-		this.letterize.charEl = el
+		if (!this.els) return
+		this.els.charEl = el
 		this.appendChildren()
 	}
 
 	private appendChildren() {
-		this.letterize?.charEl?.append(
-			this.letterize.ghostsBeforeEl,
-			this.letterize.letterEl,
-			this.letterize.ghostsAfterEl,
+		this.els?.charEl?.append(
+			this.els.ghostsBeforeEl,
+			this.els.letterEl,
+			this.els.ghostsAfterEl,
 		)
 		this.writeToElement()
 	}
 
 	async type() {
+		const { writer } = this
+
+		if (this.isTag) {
+			this.l = this.gl
+			writer.emiter.call('step')
+			return true
+		}
+
 		const loop = async () => {
-			!this.isTag && (await wait(this.interval))
+			await wait(this.interval)
 
 			const lastString = this.string
 			this.step()
 			if (lastString !== this.string) {
-				this.writer.emiter.call('step')
+				writer.emiter.call('step')
 				this.writeToElement()
 			}
-			this.stepsLeft--
+
+			!writer.options.endless && this.stepsLeft--
 		}
 
-		!this.isTag && (await wait(this.writer.options.genInitDelay))
+		await wait(writer.options.genInitDelay)
 
 		await promiseWhile(
-			() => !this.finished && !this.writer.state.isPaused && !this.stop,
+			() =>
+				(!this.finished || writer.options.endless) &&
+				!writer.state.isPaused &&
+				!this.stop,
 			loop,
 		)
 
 		if (this.finished) {
-			this.letterize?.charEl?.classList.add('gw-finished')
-			this.letterize?.letterEl.classList.remove('gw-glitched')
+			this.els?.charEl?.classList.add('gw-finished')
+			this.els?.letterEl.classList.remove('gw-glitched')
 		}
 		return this.finished
 	}
 
 	step() {
+		const { writer } = this
 		if (
 			(this.stepsLeft > 0 && this.l !== this.gl) ||
-			(coinFlip(this.afterGlitchChance) && !this.isTag && !this.isWhitespace)
+			(coinFlip(this.afterGlitchChance) && !this.isWhitespace) ||
+			writer.options.endless
 		) {
 			/**
 			 * IS GROWING
 			 */
-			const { ghostChance, changeChance } = this.writer.options
+			const { ghostChance, changeChance } = writer.options
 
 			if (coinFlip(ghostChance)) {
-				if (this.writer.state.ghostsInLimit) this.addGhost()
+				if (writer.state.ghostsInLimit) this.addGhost()
 				else this.removeGhost()
 			}
 			if (coinFlip(changeChance)) {
-				this.letterize?.letterEl.classList.add('gw-glitched')
-				this.l = this.writer.options.genGhost
+				this.els?.letterEl.classList.add('gw-glitched')
+				this.l = writer.options.genGhost
 			}
 		} else if (!this.finished) {
 			/**
 			 * IS SHRINKING
 			 */
-			this.letterize?.letterEl.classList.remove('gw-glitched')
+			this.els?.letterEl.classList.remove('gw-glitched')
 			this.l = this.gl
 			this.removeGhost()
 		}
@@ -190,10 +208,12 @@ export default class Char {
 	}
 
 	private removeGhost() {
-		this.writer.state.nGhosts--
-		coinFlip() && this.ghostsBefore.length > 0
-			? deleteRandom(this.ghostsBefore)
-			: deleteRandom(this.ghostsAfter)
+		const deleted =
+			coinFlip() && this.ghostsBefore.length > 0
+				? deleteRandom(this.ghostsBefore)
+				: deleteRandom(this.ghostsAfter)
+
+		if (deleted) this.writer.state.nGhosts--
 	}
 }
 

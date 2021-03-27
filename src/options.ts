@@ -23,6 +23,7 @@ export default class Options implements OptionsFields {
 	oneAtATime: boolean
 	html: boolean
 	letterize: boolean
+	endless: boolean
 	startFrom: 'matching' | 'previous' | 'erase'
 	writer: GlitchedWriter
 	space: string
@@ -48,6 +49,7 @@ export default class Options implements OptionsFields {
 		this.oneAtATime = options.oneAtATime ?? presets.default.oneAtATime
 		this.html = options.html ?? presets.default.html
 		this.letterize = options.letterize ?? presets.default.letterize
+		this.endless = options.endless ?? presets.default.endless
 		if (typeof document === 'undefined') this.letterize = false
 		this.startFrom = options.startFrom ?? presets.default.startFrom
 

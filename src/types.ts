@@ -23,6 +23,7 @@ export interface OptionsFields {
 	oneAtATime: boolean
 	html: boolean
 	letterize: boolean
+	endless: boolean
 	startFrom: 'matching' | 'previous' | 'erase'
 }
 

@@ -21,10 +21,11 @@ export function random(
 	return result
 }
 
-export function deleteRandom(array: any[]): void {
-	const { length } = array
-	array.splice(random(0, length, 'floor'), 1)
-}
+export const clamp = (min: number, value: number, max: number) =>
+	Math.min(Math.max(value, min), max)
+
+export const deleteRandom = (array: any[]): boolean =>
+	array.splice(random(0, array.length, 'floor'), 1).length > 0
 
 export function getRandom<T>(iterable: Array<T>): T
 export function getRandom(iterable: string): string
@@ -155,4 +156,27 @@ export function filterHtml(string: string): string {
 	const reg = new RegExp(findHTMLPattern, 'g')
 
 	return string.replace(reg, '')
+}
+
+export function trim(str: string, l: string): string {
+	if (!l || l.length > 1 || !str) return str
+	if (l === ' ') return str.trim()
+
+	const reg = new RegExp(`${l}+`, 'g')
+
+	let find: RegExpExecArray | null,
+		result = str
+
+	// eslint-disable-next-line no-cond-assign
+	while ((find = reg.exec(str))) {
+		const from = find.index,
+			to = reg.lastIndex,
+			length = to - from
+
+		if (from === 0) result = result.substring(to)
+		else if (to === str.length)
+			result = result.substring(result.length - length)
+	}
+
+	return result
 }

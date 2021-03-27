@@ -64,6 +64,7 @@ export default class GlitchedWriter {
 		let prev = this.htmlElement?.textContent
 		if (typeof prev !== 'string')
 			prev = this.options.html ? filterHtml(this.string) : this.string
+
 		prev = prev.trim()
 		return prev
 	}
@@ -95,7 +96,6 @@ export default class GlitchedWriter {
 		this.goalString = string
 		this.state.nGhosts = 0
 		this.options.setCharset()
-		// this.removeSpecialChars()
 
 		if (this.options.startFrom === 'matching') this.createMatchingCharTable()
 		else this.createPreviousCharTable()
@@ -225,7 +225,6 @@ export default class GlitchedWriter {
 		let pi = -1
 		goalStringArray.forEach((gl, gi) => {
 			pi++
-			const pl: string | undefined = previous[pi]
 
 			if (gl.type === 'tag') {
 				pi--
@@ -239,8 +238,7 @@ export default class GlitchedWriter {
 				const appendedText = previous.substring(pi, fi)
 				this.setChar(gi, gl.value, gl, appendedText)
 				pi = fi
-				this.state.nGhosts += appendedText.length
-			} else this.setChar(gi, pl || this.options.space, gl)
+			} else this.setChar(gi, previous[pi], gl)
 		})
 
 		this.removeExtraChars(goalStringArray.length)
@@ -252,7 +250,6 @@ export default class GlitchedWriter {
 		let pi = -1
 		goalStringArray.forEach((gl, gi) => {
 			pi++
-			const pl = previous[pi] || this.options.space
 
 			if (gl.type === 'tag') {
 				pi--
@@ -260,7 +257,7 @@ export default class GlitchedWriter {
 				return
 			}
 
-			this.setChar(gi, pl, gl)
+			this.setChar(gi, previous[pi], gl)
 		})
 
 		this.removeExtraChars(goalStringArray.length)
@@ -302,7 +299,7 @@ export default class GlitchedWriter {
 
 		char
 			? char.reset(
-					pl,
+					pl ?? '',
 					gl.value || this.options.space,
 					appendedText,
 					gl.type === 'tag',
@@ -310,7 +307,7 @@ export default class GlitchedWriter {
 			: charTable.push(
 					new Char(
 						this,
-						pl,
+						pl ?? '',
 						gl.value || this.options.space,
 						appendedText,
 						gl.type === 'tag',
@@ -319,15 +316,18 @@ export default class GlitchedWriter {
 	}
 
 	private get goalStringArray(): LetterItem[] {
-		const { goalString: goal, previousString, options } = this,
+		const { goalString: goal, options, previousString } = this,
 			goalArray = options.html
 				? htmlToArray(goal)
 				: stringToLetterItems(goal),
-			prevGtGoal = Math.max(previousString.length - goalArray.length, 0)
+			diff = Math.max(0, previousString.length - goalArray.length),
+			nBefore = Math.ceil(diff / 2),
+			nAfter = Math.floor(diff / 2)
 
-		goalArray.push(...stringToLetterItems(arrayOfTheSame('', prevGtGoal)))
-
-		return goalArray
+		return stringToLetterItems(arrayOfTheSame('', nBefore)).concat(
+			goalArray,
+			stringToLetterItems(arrayOfTheSame('', nAfter)),
+		)
 	}
 
 	private getWriterData(
