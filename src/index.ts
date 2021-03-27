@@ -100,7 +100,7 @@ export default class GlitchedWriter {
 		if (this.options.startFrom === 'matching') this.createMatchingCharTable()
 		else this.createPreviousCharTable()
 
-		// this.logCharTable()
+		this.logCharTable()
 		this.letterize()
 
 		// console.log(
@@ -142,19 +142,19 @@ export default class GlitchedWriter {
 		return this.write(array.join(''), { erase: true })
 	}
 
-	// private logCharTable() {
-	// 	console.table(
-	// 		this.charTable.map(
-	// 			({ ghostsBefore, ghostsAfter, l, gl, isTag, isWhitespace }) => [
-	// 				ghostsBefore.join(''),
-	// 				ghostsAfter.join(''),
-	// 				l,
-	// 				gl,
-	// 				(isTag && 'TAG') || (isWhitespace && 'Whitespace'),
-	// 			],
-	// 		),
-	// 	)
-	// }
+	private logCharTable() {
+		console.table(
+			this.charTable.map(
+				({ ghostsBefore, ghostsAfter, l, gl, isTag, isWhitespace }) => [
+					ghostsBefore.join(''),
+					ghostsAfter.join(''),
+					l,
+					gl,
+					(isTag && 'TAG') || (isWhitespace && 'Whitespace'),
+				],
+			),
+		)
+	}
 
 	/**
 	 * Resume last writing order.
@@ -320,8 +320,12 @@ export default class GlitchedWriter {
 			goalArray = options.html
 				? htmlToArray(goal)
 				: stringToLetterItems(goal),
-			diff = Math.max(0, previousString.length - goalArray.length),
-			nBefore = Math.ceil(diff / 2),
+			diff = Math.max(0, previousString.length - goalArray.length)
+
+		if (this.options.oneAtATime)
+			return goalArray.concat(stringToLetterItems(arrayOfTheSame('', diff)))
+
+		const nBefore = Math.ceil(diff / 2),
 			nAfter = Math.floor(diff / 2)
 
 		return stringToLetterItems(arrayOfTheSame('', nBefore)).concat(

@@ -2,11 +2,15 @@ import GlitchedWriter, { wait, presets } from '../src'
 import { random } from '../src/utils'
 
 const outputEl = document.querySelector(`#output`),
-	Writer = new GlitchedWriter(outputEl, {
-		...presets.terminal,
-		html: true,
-		letterize: true,
-	})
+	Writer = new GlitchedWriter(
+		outputEl,
+		{
+			...presets.terminal,
+			html: true,
+			letterize: true,
+		},
+		// string => console.log(string),
+	)
 
 const date = new Date()
 
