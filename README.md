@@ -7,7 +7,7 @@
 
 ### What it Glitched Writer:
 
-> **A lightweight, glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text. For web and node.**
+> **A lightweight, glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text.**
 
 ### Features:
 
@@ -23,7 +23,7 @@
 
 -  For styling purposes writer attatches **gw-writing** class to the HTML Element and **data-gw-string attribute** with current string.
 
--  Possible to write text with **html tags** in it or letterize string into many **span** elements.
+-  Possible to write text with **html tags** in it and letterize it into many **span** elements.
 
 -  Written fully in **Typescript**.
 
@@ -216,6 +216,32 @@ Writer.write('Hello there!')
  */
 ```
 
+### Endless animation
+
+New option "endless" let's you run the text animation until you disable that function.
+
+This opens the door for some additional effects, like: **Show on hover** (e.g. on secret fields) or **refreshing text** to give it user attention.
+
+```js
+// SHOW ON HOVER
+// First make the password scramble forever
+Writer.options.endless = true
+Writer.write('PASSWORD')
+
+// And disable endless option on hover
+passEl.addEventListener('mouseover', () => {
+	Writer.options.endless = true
+})
+
+// REFRESHING:
+// let's say you already have el with text 'LOOK AT ME'
+// and you want to make it pop
+Writer.options.endless = true
+Writer.write('LOOK AT ME')
+await wait(1500)
+Writer.options.endless = false
+```
+
 ### Available imports
 
 List of all things that can be imported from glitched-writer module.
@@ -249,8 +275,10 @@ Available presets as for now:
 
 -  **[neo](https://codepen.io/thetarnav/pen/vYgYWbb)** - Recreated: _Justin Windle's ["Text Scramble Effect"](https://codepen.io/soulwire/pen/mErPAK)_
 
+-  **encrypted** - Simple Text Scramble effect, suits well displaying secret data, like passwords or card numbers.
+
 ```js
-new GlitchedWriter(htmlElement, 'nier')
+new GlitchedWriter(htmlElement, 'terminal')
 ```
 
 ### Importing preset objects
@@ -260,7 +288,11 @@ You can import the option object of mentioned presets and tweak them, as well as
 ```js
 import { presets, glyphs } from 'glitched-writer'
 
-new GlitchedWriter(htmlElement, presets.typewriter)
+// Extend preset for your needs:
+new GlitchedWriter(htmlElement, {
+	...presets.typewriter,
+	letterize: true,
+})
 ```
 
 ## Customizing options
@@ -283,6 +315,7 @@ new GlitchedWriter(htmlElement, presets.typewriter)
 	html?: boolean, // false
 	letterize?: boolean, // false
 	fillSpace?: boolean // true
+	endless?: boolean // false
 }
 ```
 
@@ -324,6 +357,8 @@ new GlitchedWriter(htmlElement, presets.typewriter)
 -  **letterize** - Instead of injecting written text to "textContent" or "innerHTML", it appends every letter of that text as a child span element. Then changing textContent of that span to current letter. It gives a lot of styling possibilities, as you can style ghosts, letters, and whole chars seperately, depending on current writer and char state.
 
 -  **fillSpace** - Normally if letter gets erased it actually gets replaced with space instead - to make words appear from and disappear into space, rather then sticking to the rest of the words. Set to false if you want to disable this.
+
+-  **endless** - It will make the animation endless. _But why?_ Well, you can disable this option while the animation is running _(writer.options.endless = false)_ and finish the animation.
 
 ## Links:
 
