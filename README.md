@@ -29,9 +29,9 @@
 
 ---
 
-### SEE DEMOS:
+### >>> [CODEPEN DEMOS](https://codepen.io/collection/XWVEEa) <<< | >>> [NPM](https://www.npmjs.com/package/glitched-writer) <<<
 
-#### [Default (interactive)](https://codepen.io/thetarnav/pen/MWWyPzY) --- [Terminal](https://codepen.io/thetarnav/pen/mdRyqga) --- [Simple Scramble Effect](https://codepen.io/thetarnav/pen/vYgYWbb) --- [Nier Automata Effect](https://codepen.io/thetarnav/pen/OJWNRor)
+---
 
 ## Table Of Contents
 
