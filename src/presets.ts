@@ -38,6 +38,7 @@ export const presets = {
 		initialDelay: 0,
 		glyphs: glyphs.nier,
 		oneAtATime: true,
+		fillSpace: false,
 		startFrom: 'erase',
 		glyphsFromString: true,
 	} as ConstructorOptions,
@@ -50,6 +51,7 @@ export const presets = {
 		glyphs: '',
 		glyphsFromString: true,
 		oneAtATime: true,
+		fillSpace: false,
 		startFrom: 'erase',
 	} as ConstructorOptions,
 	terminal: {
