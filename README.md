@@ -231,7 +231,7 @@ Writer.write('PASSWORD')
 
 // And disable endless option on hover
 passEl.addEventListener('mouseover', () => {
-	Writer.options.endless = true
+	Writer.options.endless = false
 })
 
 // REFRESHING:
