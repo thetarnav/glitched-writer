@@ -5,7 +5,7 @@
 
 [![glitched-writer-preview](https://user-images.githubusercontent.com/24491503/67164275-06ab6900-f379-11e9-81ac-cab76dbc8dcd.gif)](https://codepen.io/thetarnav/pen/MWWyPzY)
 
-### What it Glitched Writer:
+### What is Glitched Writer:
 
 > **A lightweight, glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text.**
 
@@ -74,7 +74,7 @@ import GlitchedWriter from 'https://cdn.skypack.dev/glitched-writer'
 Or use [JsDelivr](https://www.jsdelivr.com/package/npm/glitched-writer) and attach this script link to your html document.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/glitched-writer@2.0.18/lib/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/glitched-writer/lib/index.min.js"></script>
 ```
 
 ## Usage:
