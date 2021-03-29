@@ -7,15 +7,13 @@
 
 ### What is Glitched Writer:
 
-> **A lightweight, glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling text.**
+> **A lightweight, glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling out text.**
 
 ### Features:
 
--  Manage text animation of **HTML Element**. Write, pause, play, add, remove and write more!
+-  Manages text animation of **HTML Element**. Write, pause, play, add, remove and write some more!
 
 -  **Highly customizable** behavior. Set of options let you animate the text the way is suits your design.
-
--  Can be attached to a **HTML Element** for automatic text-displaying.
 
 -  Callback functions firing on finish and every step.
 
@@ -222,6 +220,8 @@ Writer.write('Hello there!')
 New option "endless" let's you run the text animation until you disable that function.
 
 This opens the door for some additional effects, like: **Show on hover** (e.g. on secret fields) or **refreshing text** to give it user attention.
+
+Here is a [live example](https://codepen.io/thetarnav/pen/oNBLpxb).
 
 ```js
 // SHOW ON HOVER
