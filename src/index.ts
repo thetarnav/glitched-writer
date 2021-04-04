@@ -25,7 +25,7 @@ import { presets, glyphs, PresetName } from './presets'
 
 export default class GlitchedWriter {
 	htmlElement?: HTMLWriterElement
-	private optionsObject!: Options
+	options!: Options
 	state: State
 	emiter: Emiter
 	charTable: Char[] = []
@@ -54,15 +54,11 @@ export default class GlitchedWriter {
 		if (this.htmlElement) this.htmlElement.$writer = this
 
 		if (typeof options === 'string') this.preset = options
-		else this.options = options ?? {}
+		else this.setOptions(options ?? {})
 
 		this.state = new State(this)
 		this.emiter = new Emiter(this, onStepCallback, onFinishCallback)
 		this.string = this.previousString
-	}
-
-	set options(options: ConstructorOptions) {
-		this.optionsObject = new Options(this, options)
 	}
 
 	/**
@@ -70,18 +66,18 @@ export default class GlitchedWriter {
 	 * @param options Options object, with fields you want to change.
 	 */
 	extendOptions(options: ConstructorOptions) {
-		this.options = {
+		this.setOptions({
 			...this.options,
 			...options,
-		}
+		})
+	}
+
+	setOptions(options: ConstructorOptions) {
+		this.options = new Options(this, options)
 	}
 
 	set preset(preset: PresetName) {
-		this.optionsObject = new Options(this, presets[preset])
-	}
-
-	get options(): Options {
-		return this.optionsObject
+		this.options = new Options(this, presets[preset])
 	}
 
 	updateString(): void {

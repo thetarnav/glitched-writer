@@ -260,11 +260,11 @@ Writer.extendOptions({
 })
 
 // 3. Reseting options
-Writer.options = {
+Writer.setOptions({
 	endless: true,
 	maxGhosts: 10,
 	// the rest will be set to default value
-}
+})
 ```
 
 ### Available imports
