@@ -48,7 +48,7 @@
     "terser-webpack-plugin": "^5.1.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3",
-    "webpack": "^5.30.0"
+    "webpack": "^5.28.0"
   },
   "keywords": [
     "glitch",
