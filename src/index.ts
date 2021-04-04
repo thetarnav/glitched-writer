@@ -9,6 +9,7 @@ import {
 	PlayOptions,
 	WriterDataResponse,
 	Callback,
+	HTMLWriterElement,
 } from './types'
 import {
 	wait,
@@ -23,8 +24,8 @@ import {
 import { presets, glyphs, PresetName } from './presets'
 
 export default class GlitchedWriter {
-	htmlElement?: HTMLElement | Element
-	options: Options
+	htmlElement?: HTMLWriterElement
+	private optionsObject!: Options
 	state: State
 	emiter: Emiter
 	charTable: Char[] = []
@@ -47,13 +48,40 @@ export default class GlitchedWriter {
 		onFinishCallback?: Callback,
 	) {
 		if (typeof htmlElement === 'string') {
-			if (typeof document !== 'undefined')
-				this.htmlElement = document.querySelector(htmlElement) ?? undefined
+			this.htmlElement = document.querySelector(htmlElement) ?? undefined
 		} else this.htmlElement = htmlElement ?? undefined
-		this.options = new Options(this, options)
+
+		if (this.htmlElement) this.htmlElement.$writer = this
+
+		if (typeof options === 'string') this.preset = options
+		else this.options = options ?? {}
+
 		this.state = new State(this)
 		this.emiter = new Emiter(this, onStepCallback, onFinishCallback)
 		this.string = this.previousString
+	}
+
+	set options(options: ConstructorOptions) {
+		this.optionsObject = new Options(this, options)
+	}
+
+	/**
+	 * Function for updating multiple options at once. Unlike options setter, it doesn't reset not-passed fields to default state.
+	 * @param options Options object, with fields you want to change.
+	 */
+	extendOptions(options: ConstructorOptions) {
+		this.options = {
+			...this.options,
+			...options,
+		}
+	}
+
+	set preset(preset: PresetName) {
+		this.optionsObject = new Options(this, presets[preset])
+	}
+
+	get options(): Options {
+		return this.optionsObject
 	}
 
 	updateString(): void {

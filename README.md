@@ -27,7 +27,7 @@
 
 ---
 
-### >>> [CODEPEN DEMOS](https://codepen.io/collection/XWVEEa) <<< | >>> [NPM](https://www.npmjs.com/package/glitched-writer) <<<
+### >>> [CODEPEN DEMOS](https://codepen.io/collection/XWVEEa) <<< | >>> [NPM](https://www.npmjs.com/package/glitched-writer) <<< | >>> [Vue.js component](https://www.npmjs.com/package/vue-glitched-writer) <<<
 
 ---
 

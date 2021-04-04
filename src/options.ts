@@ -8,7 +8,7 @@ import {
 } from './utils'
 import { ConstructorOptions, OptionsFields, RangeOrNumber } from './types'
 import GlitchedWriter from './index'
-import { presets, PresetName } from './presets'
+import { presets } from './presets'
 
 export default class Options implements OptionsFields {
 	steps: RangeOrNumber
@@ -17,44 +17,46 @@ export default class Options implements OptionsFields {
 	changeChance: number
 	ghostChance: number
 	maxGhosts: number
-	glyphs: string
 	glyphsFromString: boolean
-	ghostCharset: string[]
 	oneAtATime: boolean
 	html: boolean
 	letterize: boolean
 	endless: boolean
 	startFrom: 'matching' | 'previous' | 'erase'
-	writer: GlitchedWriter
-	space: string
 
-	constructor(
-		writer: GlitchedWriter,
-		options?: ConstructorOptions | PresetName | null,
-	) {
-		if (typeof options === 'string') options = presets[options]
+	space!: string
+	private ghostCharset!: string[]
+	private glyphsString!: string
+	private writer: GlitchedWriter
 
-		options ||= {}
-
+	constructor(writer: GlitchedWriter, options: ConstructorOptions) {
 		this.steps = options.steps ?? presets.default.steps
 		this.interval = options.interval ?? presets.default.interval
 		this.initialDelay = options.initialDelay ?? presets.default.initialDelay
 		this.changeChance = options.changeChance ?? presets.default.changeChance
 		this.ghostChance = options.ghostChance ?? presets.default.ghostChance
 		this.maxGhosts = options.maxGhosts ?? presets.default.maxGhosts
-		this.glyphs = parseCharset(options.glyphs) ?? presets.default.glyphs
+		this.glyphs = options.glyphs ?? presets.default.glyphs
 		this.glyphsFromString =
 			options.glyphsFromString ?? presets.default.glyphsFromString
-		this.ghostCharset = [...this.glyphs]
 		this.oneAtATime = options.oneAtATime ?? presets.default.oneAtATime
 		this.html = options.html ?? presets.default.html
 		this.letterize = options.letterize ?? presets.default.letterize
-		this.endless = options.endless ?? presets.default.endless
 		if (typeof document === 'undefined') this.letterize = false
+		this.endless = options.endless ?? presets.default.endless
 		this.startFrom = options.startFrom ?? presets.default.startFrom
 
 		this.writer = writer
-		this.space = options.fillSpace ?? presets.default.fillSpace ? ' ' : ''
+		this.fillSpace = options.fillSpace ?? presets.default.fillSpace
+	}
+
+	set glyphs(glyphs: string | string[] | Set<string>) {
+		this.glyphsString = parseCharset(glyphs)
+		this.setCharset()
+	}
+
+	set fillSpace(doFillSpace: boolean) {
+		this.space = doFillSpace ? ' ' : ''
 	}
 
 	get stepsLeft(): number {
@@ -76,12 +78,12 @@ export default class Options implements OptionsFields {
 
 		return Math.round((length || 20) * this.maxGhosts)
 	}
-	get genGhost(): string {
+	get ghost(): string {
 		return getRandom(this.ghostCharset) ?? ''
 	}
 
 	setCharset() {
-		let charset = this.glyphs
+		let charset = this.glyphsString
 
 		if (this.glyphsFromString)
 			charset += filterDuplicates(

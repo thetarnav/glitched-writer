@@ -187,7 +187,7 @@ export default class Char {
 			}
 			if (coinFlip(changeChance)) {
 				this.els?.letterEl.classList.add('gw-glitched')
-				this.l = writer.options.genGhost
+				this.l = writer.options.ghost
 			}
 		} else if (!this.finished) {
 			/**
@@ -200,7 +200,7 @@ export default class Char {
 	}
 
 	private addGhost() {
-		const l = this.writer.options.genGhost
+		const l = this.writer.options.ghost
 		this.writer.state.nGhosts++
 		coinFlip()
 			? insertGhost(this.ghostsBefore, l)

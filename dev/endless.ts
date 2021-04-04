@@ -28,3 +28,12 @@ function hide() {
 	secretWriter.write(numbers.join(''))
 	infoEl.classList.remove('hide')
 }
+
+setTimeout(() => {
+	// secretWriter.extendOptions({
+	// 	glyphs: '/*-+-=!@#%^&*(({}[],<>/?:"',
+	// })
+	secretWriter.options = {
+		glyphs: '/*-+-=!@#%^&*(({}[],<>/?:"',
+	}
+}, 5000)

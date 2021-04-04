@@ -18,7 +18,6 @@ export interface OptionsFields {
 	changeChance: number
 	ghostChance: number
 	maxGhosts: number
-	glyphs: string
 	glyphsFromString: boolean
 	oneAtATime: boolean
 	html: boolean
@@ -34,6 +33,10 @@ export type ConstructorOptions = ModifyInterface<
 		fillSpace?: boolean
 	}
 >
+
+export interface HTMLWriterElement extends Element {
+	$writer?: GlitchedWriter
+}
 
 export interface WriteOptions {
 	erase?: boolean
@@ -54,4 +57,4 @@ export interface WriterDataResponse {
 }
 
 // eslint-disable-next-line no-unused-vars
-export type Callback = (string: string, writerData?: WriterDataResponse) => any
+export type Callback = (string: string, writerData: WriterDataResponse) => any

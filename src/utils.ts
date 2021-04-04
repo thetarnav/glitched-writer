@@ -42,10 +42,7 @@ export function filterDuplicates(iterable: any[] | string): any {
 	return isString ? result.join('') : result
 }
 
-export function parseCharset(
-	input?: string | string[] | Set<string>,
-): string | undefined {
-	if (input === undefined) return undefined
+export function parseCharset(input: string | string[] | Set<string>): string {
 	let result: string
 	// Charset is a string
 	if (typeof input === 'string') result = input
