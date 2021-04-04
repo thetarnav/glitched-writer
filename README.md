@@ -45,9 +45,10 @@
    -  [Writing HTML](#writing-html)
    -  [Letterize](#letterize)
    -  [Endless option](#endless-animation)
+   -  [Changing options after creation](#changing-options-post-initialization)
    -  [Available imports](#available-imports)
 3. **[Presets](#presets)**
-4. **[Options](#customizing-options)**
+4. **[Options](#customizing-behavior)**
 
 ---
 
@@ -243,6 +244,29 @@ await wait(1500)
 Writer.options.endless = false
 ```
 
+### Changing options post initialization
+
+Options can be changed in 3 ways after initial Writer instance creation.
+
+```js
+// 1. Changing single option propery
+Writer.options.endless = true
+
+// 2. Extending current options
+Writer.extendOptions({
+	endless: true,
+	maxGhosts: 10,
+	// the rest will stay the same
+})
+
+// 3. Reseting options
+Writer.options = {
+	endless: true,
+	maxGhosts: 10,
+	// the rest will be set to default value
+}
+```
+
 ### Available imports
 
 List of all things that can be imported from glitched-writer module.
@@ -258,6 +282,8 @@ import GlitchedWriter, { // <-- GlitchedWriter class
 	wait, // <-- Ulitity async function, that can be used to wait some time
 } from 'glitched-writer'
 ```
+
+---
 
 ## Presets
 
@@ -296,7 +322,9 @@ new GlitchedWriter(htmlElement, {
 })
 ```
 
-## Customizing options
+---
+
+## Customizing behavior
 
 ### Types and defaults:
 
