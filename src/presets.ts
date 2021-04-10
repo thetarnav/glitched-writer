@@ -22,7 +22,7 @@ export const presets = {
 		maxGhosts: 0.2,
 		glyphs: glyphs.full + glyphs.zalgo,
 		glyphsFromString: false,
-		oneAtATime: false,
+		oneAtATime: 0,
 		html: false,
 		fillSpace: true,
 		letterize: false,

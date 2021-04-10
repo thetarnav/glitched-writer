@@ -21,7 +21,9 @@
 
 -  For styling purposes writer attatches **gw-writing** class to the HTML Element and **data-gw-string attribute** with current string.
 
--  Possible to write text with **html tags** in it and letterize it into many **span** elements.
+-  Handles **html tags** & **html entities** (e.g. \<br/\>, \<a href="#"\>link\</a\>, \&#59;, \&amp;).
+
+-  Can letterize string it into many **span** elements inside the parent element.
 
 -  Written fully in **Typescript**.
 
@@ -340,7 +342,7 @@ new GlitchedWriter(htmlElement, {
 	glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
 	glyphsFromString?: boolean, // false
 	startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
-	oneAtATime?: boolean, // false
+	oneAtATime?: boolean | number, // false
 	html?: boolean, // false
 	letterize?: boolean, // false
 	fillSpace?: boolean, // true
@@ -379,22 +381,15 @@ new GlitchedWriter(htmlElement, {
    -  'previous' - _Wont do any matching, just converts starting string into character map._
    -  'erase' - _First Erases entire string and then writes from blank space._
 
--  **oneAtATime** - If writing should take place from left-to-right, letter-by-letter or normally: all-at-once.
+-  **oneAtATime** - Without this option enabled, letters in your string will animate all at once. Enabling this option, by setting it to **true** or any **intiger larger than 0**, will cause the string to be written from left to right (startFrom: 'erase', will make it go form right to left - when erasing). Number value, signifies number of letters being typed at one time.
 
 -  **html** - _Potentially dangerous option._ If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to NOT enable it on user-provided content.
 
 -  **letterize** - Instead of injecting written text to "textContent" or "innerHTML", it appends every letter of that text as a child span element. Then changing textContent of that span to current letter. It gives a lot of styling possibilities, as you can style ghosts, letters, and whole chars seperately, depending on current writer and char state.
 
--  **fillSpace** - Normally if letter gets erased it actually gets replaced with space instead - to make words appear from and disappear into space, rather then sticking to the rest of the words. Set to false if you want to disable this.
+-  **fillSpace** - With this **enabled** if letter gets erased ny replacing with space - to keep the same "width" of previous string, and to make letters _"disappear in space"_. If **disabled**, every letter will "stick" to the rest. To make it more clear (hopefully), here is an example "frame" of writing: **"Something farely long"** -> **"Short String"**.
 
--  **endless** - It will make the animation endless. _But why?_ Well, you can disable this option while the animation is running _(writer.options.endless = false)_ and finish the animation.
+   -  false - "XOSh8rt S3rinFv"
+   -  true - " X OSh8rt S3rinF v "
 
-## Links:
-
--  [GitHub](https://github.com/thetarnav/glitched-writer 'GitHub')
-
--  [npm](https://www.npmjs.com/package/glitched-writer 'npm')
-
--  [JSDelivr](https://www.jsdelivr.com/package/npm/glitched-writer 'JSDelivr')
-
--  [Codepen DEMO](https://codepen.io/thetarnav/pen/MWWyPzY 'Codepen DEMO')
+-  **endless** - It will make the animation endless. _But why?_ Well, you can disable this option while the animation is running _(writer.options.endless = false)_ and finish the animation when you want.

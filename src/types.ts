@@ -19,7 +19,7 @@ export interface OptionsFields {
 	ghostChance: number
 	maxGhosts: number
 	glyphsFromString: boolean
-	oneAtATime: boolean
+	oneAtATime: number
 	html: boolean
 	letterize: boolean
 	endless: boolean
@@ -31,6 +31,7 @@ export type ConstructorOptions = ModifyInterface<
 	{
 		glyphs?: string | string[] | Set<string>
 		fillSpace?: boolean
+		oneAtATime?: number | boolean
 	}
 >
 

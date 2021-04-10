@@ -14,7 +14,6 @@ import {
 import {
 	wait,
 	promiseWhile,
-	isInRange,
 	htmlToArray,
 	LetterItem,
 	filterHtml,
@@ -137,7 +136,7 @@ export default class GlitchedWriter {
 
 		this.pause()
 		return this.play({
-			reverse: this.options.oneAtATime && writeOptions?.erase,
+			reverse: this.options.oneAtATime !== 0 && writeOptions?.erase,
 		})
 	}
 
@@ -186,8 +185,7 @@ export default class GlitchedWriter {
 	 */
 	async play(playOptions?: PlayOptions): Promise<WriterDataResponse> {
 		const playList: Promise<boolean>[] = [],
-			{ charTable } = this,
-			{ length } = charTable
+			{ charTable } = this
 
 		if (this.state.isTyping)
 			return this.getWriterData(
@@ -197,24 +195,44 @@ export default class GlitchedWriter {
 
 		this.state.play()
 
-		if (this.options.oneAtATime) {
-			const reverse = playOptions?.reverse ?? false
+		/**
+		 * ONE AT A TIME
+		 */
+		if (this.options.oneAtATime > 0) {
+			const reverse = playOptions?.reverse ?? false,
+				charTableCopy = reverse ? [...charTable] : [...charTable].reverse()
 
-			let i = reverse ? length - 1 : 0,
-				lastResult: boolean = true
+			// Char executor - runs a loop, typing one char at a time
+			// It is possible to run multiple of them at the same time
+			const executor = async () => {
+				let lastResult: boolean = true,
+					ended = false
 
-			const loop = async (): Promise<void> => {
-				lastResult = await charTable[i].type()
-				reverse ? i-- : i++
+				const loop = async () => {
+					const lastChar = charTableCopy.pop()
+					if (!lastChar) ended = true
+					else lastResult = (await lastChar.type()) ?? false
+				}
+
+				await promiseWhile(
+					() => !ended && lastResult && !this.state.isPaused,
+					loop,
+				)
+
+				return lastResult
 			}
-			await promiseWhile(
-				() => isInRange(0, i, length) && lastResult && !this.state.isPaused,
-				loop,
-			)
 
-			return this.returnResult(lastResult)
+			// Add as many executors as needed to the playList
+			for (let n = 0; n < this.options.oneAtATime; n++) {
+				playList.push(executor())
+			}
 		}
-		charTable.forEach(char => playList.push(char.type()))
+
+		/**
+		 * NORMAL
+		 */
+		// Add every char .type() at once.
+		else charTable.forEach(char => playList.push(char.type()))
 
 		try {
 			const finished = (await Promise.all(playList)).every(result => result)

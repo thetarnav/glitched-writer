@@ -10,21 +10,19 @@ const textEl = document.getElementById('glitch_this'),
 
 const writer = new GlitchedWriter(
 	'#glitch_this',
-	{ ...presets.encrypted, letterize: true, html: true },
+	{ ...presets.encrypted, fillSpace: true },
 	// 'encrypted',
-	// string => console.log(string),
+	string => console.log(string),
 )
 
 ;(async function () {
-	await wait(800)
-	await writer.write('<b>MY PASSWORD</b>')
-	await wait(1000)
-
-	writer.options.endless = true
-	writer.write('<b>MY PASSWORD</b>')
-	await wait(1500)
-	writer.options.endless = false
-
+	// await wait(800)
+	// await writer.write('<b>MY PASSWORD</b>')
+	// await wait(1000)
+	// writer.options.endless = true
+	// writer.write('<b>MY PASSWORD</b>')
+	// await wait(1500)
+	// writer.options.endless = false
 	// await writer.write('<b>This is</b> the\n<strong>MONEY</strong>: &#163;')
 	// await wait(1200)
 	// await writer.write('my old friend.')
@@ -38,18 +36,20 @@ const writer = new GlitchedWriter(
 // console.log(writer)
 
 // // eslint-disable-next-line func-names
-// ;(async function () {
-// 	await wait(1200)
-// 	// await writer.write('This is the only the only the begining')
-// 	await writer.write('<b>This is</b> the\n<strong>MONEY</strong>: &#163;')
-// 	await wait(1200)
-// 	// await writer.write('my old friend.')
-// 	await writer.write('Please,\n<i>say something</i>...')
-// 	await wait(1500)
-// 	// await writer.write('Please, say something')
-// 	await writer.write('<u>my old</u> friend.')
-// 	inputEl.removeAttribute('disabled')
-// })()
+;(async function () {
+	await wait(1200)
+	// await writer.write('This is the only the only the begining')
+	await writer.write('Something farely long')
+	// await writer.write('<b>This is</b> the\n<strong>MONEY</strong>: &#163;')
+	await wait(1200)
+	// await writer.write('my old friend.')
+	await writer.write('Short String')
+	// await writer.write('Please,\n<i>say something</i>...')
+	await wait(1500)
+	// await writer.write('Please, say something')
+	await writer.write('<u>my old</u> friend.')
+	inputEl.removeAttribute('disabled')
+})()
 
 inputEl.addEventListener(
 	'input',

@@ -25,7 +25,7 @@
     "start": "nodemon test/index.ts",
     "dev": "parcel dev/index.html --dist-dir dev/dist",
     "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && grunt build",
-    "prepublish": "npm run build && npm version patch",
+    "prepublishOnly": "npm run build && npm version patch",
     "postpublish": "git push && git push --tags"
   },
   "devDependencies": {
