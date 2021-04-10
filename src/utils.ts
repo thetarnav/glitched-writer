@@ -109,10 +109,10 @@ export const isSpecialChar = (l: string): boolean =>
 	['\t', '\n', '\r', '\f', '\v', '', ' '].includes(l)
 
 const findHTMLPattern =
-	'(&#?[0-9a-zA-Z]{2,6};)|(<style.+?>.+?</style>|<script.+?>.+?</script>|<(?:!|/?[a-zA-Z]+).*?/?>)'
+	'(&(?:[a-z0-9]+|#[0-9]{1,6}|#x[0-9a-fA-F]{1,6});)|(<style.+?>.+?</style>|<script.+?>.+?</script>|<(?:!|/?[a-zA-Z]+).*?/?>)'
 
 export function htmlToArray(string: string): LetterItem[] {
-	const reg = new RegExp(findHTMLPattern, 'g'),
+	const reg = new RegExp(findHTMLPattern, 'gi'),
 		resultArray: LetterItem[] = []
 
 	let find: RegExpExecArray | null,

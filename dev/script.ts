@@ -10,7 +10,7 @@ const textEl = document.getElementById('glitch_this'),
 
 const writer = new GlitchedWriter(
 	'#glitch_this',
-	{ ...presets.encrypted, fillSpace: true },
+	{ ...presets.encrypted, html: true },
 	// 'encrypted',
 	string => console.log(string),
 )
@@ -39,12 +39,12 @@ const writer = new GlitchedWriter(
 ;(async function () {
 	await wait(1200)
 	// await writer.write('This is the only the only the begining')
-	await writer.write('Something farely long')
-	// await writer.write('<b>This is</b> the\n<strong>MONEY</strong>: &#163;')
+	// await writer.write('Something farely long')
+	await writer.write('<b>This is</b> the\n<strong>MONEY</strong>: &#163;')
 	await wait(1200)
 	// await writer.write('my old friend.')
-	await writer.write('Short String')
-	// await writer.write('Please,\n<i>say something</i>...')
+	// await writer.write('Short String')
+	await writer.write('Please,\n<i>say &colon; something</i>...')
 	await wait(1500)
 	// await writer.write('Please, say something')
 	await writer.write('<u>my old</u> friend.')
