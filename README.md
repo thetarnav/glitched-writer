@@ -304,7 +304,7 @@ Available presets as for now:
 
 -  **[neo](https://codepen.io/thetarnav/pen/vYgYWbb)** - Recreated: _Justin Windle's ["Text Scramble Effect"](https://codepen.io/soulwire/pen/mErPAK)_
 
--  **encrypted** - Simple Text Scramble effect, suits well displaying secret data, like passwords or card numbers.
+-  **[encrypted](https://codepen.io/thetarnav/pen/oNBLpxb)** - Simple Text Scramble effect, suits well displaying secret data, like passwords or card numbers.
 
 ```js
 new GlitchedWriter(htmlElement, 'terminal')
