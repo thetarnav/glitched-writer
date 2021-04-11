@@ -296,7 +296,7 @@ Available presets as for now:
 
 -  **[nier](https://codepen.io/thetarnav/pen/OJWNRor)** - Imitating the way text was appearing in the _NieR: Automata's UI_.
 
--  **typewriter** - One letter at a time, only slightly glitched.
+-  **[typewriter](https://codepen.io/thetarnav/pen/qBRpQpQ)** - One letter at a time, only slightly glitched.
 
 -  **[terminal](https://codepen.io/thetarnav/pen/mdRyqga)** - Imitating being typed by a machine or a computer.
 
