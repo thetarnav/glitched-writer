@@ -10,7 +10,7 @@
   },
   "homepage": "https://github.com/thetarnav/glitched-writer#readme",
   "main": "./lib/cjs/index.js",
-  "types": "./lib/cjs/index.d.ts",
+  "types": "./lib/esm/index.d.ts",
   "jsdelivr": "lib/index.min.js",
   "unpkg": "lin/index.min.js",
   "files": [

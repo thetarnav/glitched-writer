@@ -11,7 +11,7 @@ function generateConfig(name) {
 			path: `${__dirname}/lib/`,
 			filename: `${name}.js`,
 			sourceMapFilename: `${name}.map`,
-			library: 'glitched-writer',
+			library: 'GlitchedWriter',
 			libraryTarget: 'umd',
 		},
 		// node: {

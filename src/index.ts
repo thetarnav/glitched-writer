@@ -435,6 +435,21 @@ export async function glitchWrite(
 	return writer.write(string)
 }
 
+/**
+ * A way to create new Writer without having to rely on defult export.
+ * @param htmlElement HTML Element OR a Selector string (eg. '.text')
+ * @param options Options object (eg. { html: true, ... }) OR preset name (eg. 'zalgo').
+ * @param onStepCallback Callback, that will be triggered on every step. Params passed: string & writer data.
+ * @param onFinishCallback Callback, that will be triggered when each writing finishes. Params passed: string & writer data.
+ * @returns GlitchedWriter Class Instance
+ */
+export const create = (
+	htmlElement?: HTMLElement | Element | null | string,
+	options?: ConstructorOptions | PresetName | null,
+	onStepCallback?: Callback,
+	onFinishCallback?: Callback,
+) => new GlitchedWriter(htmlElement, options, onStepCallback, onFinishCallback)
+
 export {
 	presets,
 	glyphs,
