@@ -72,10 +72,19 @@ Or use [Skypack](https://www.skypack.dev/view/glitched-writer) to import without
 import GlitchedWriter from 'https://cdn.skypack.dev/glitched-writer'
 ```
 
-Or use [JsDelivr](https://www.jsdelivr.com/package/npm/glitched-writer) and attach this script link to your html document.
+## CDN
+
+You can also attach script tag with src pointing to CDN, like [JsDelivr](https://www.jsdelivr.com/package/npm/glitched-writer).
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/glitched-writer/lib/index.min.js"></script>
+```
+
+In result, the **GlitchedWriter** object will be available in your code, this object contains all named exports, [listed here](#available-imports).
+
+```js
+// use create method to create new instance.
+const writer = GlitchedWriter.create(Element, options, stepCB, finishCB)
 ```
 
 ## Usage:
@@ -282,6 +291,7 @@ import GlitchedWriter, { // <-- GlitchedWriter class
 	presets, // <-- Object with all prepared presets of options
 	glyphs, // <-- Same but for glyph charsets
 	wait, // <-- Ulitity async function, that can be used to wait some time
+	create, // <-- Function serving as an alternative way to create GlitchedWriter instance.
 } from 'glitched-writer'
 ```
 
