@@ -10,9 +10,12 @@ const textEl = document.getElementById('glitch_this'),
 
 const writer = new GlitchedWriter(
 	'#glitch_this',
-	{ ...presets.encrypted, html: true },
+	// { ...presets.encrypted, html: true },
+	{ startFrom: 'erase', html: true },
 	// 'encrypted',
-	string => console.log(string),
+	// string => console.log(string),
+	undefined,
+	string => console.log('FINISHED', string),
 )
 
 ;(async function () {
