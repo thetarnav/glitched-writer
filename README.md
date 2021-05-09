@@ -29,7 +29,7 @@
 
 ---
 
-### >>> [PLAYGROUND](https://glitched-writer-app-thetarnav.vercel.app/) <<< | >>> [CODEPEN DEMOS](https://codepen.io/collection/XWVEEa) <<< | >>> [NPM](https://www.npmjs.com/package/glitched-writer) <<< | >>> [Vue component](https://www.npmjs.com/package/vue-glitched-writer) <<<
+### >>> [PLAYGROUND](https://glitched-writer-app-thetarnav.vercel.app/) <<< | >>> [DEMOS](https://codepen.io/collection/XWVEEa) <<< | >>> [NPM](https://www.npmjs.com/package/glitched-writer) <<< | >>> [Vue component](https://www.npmjs.com/package/vue-glitched-writer) <<<
 
 ---
 
