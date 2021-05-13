@@ -244,7 +244,7 @@ export default class GlitchedWriter {
 					loop,
 				)
 
-				return lastResult
+				return ended && lastResult && !this.state.isPaused
 			}
 
 			// Add as many executors as needed to the playList
