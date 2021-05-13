@@ -111,45 +111,6 @@ export default class GlitchedWriter {
 		return this.manageWriting(string)
 	}
 
-	private async manageWriting(text: string): Promise<WriterDataResponse> {
-		this.lastText = text
-
-		// Erasing first
-		if (this.options.startFrom === 'erase') {
-			this.state.erasing = true
-			const eraseTo = this.genGoalStringToErase(text)
-			this.preparePropertiesBeforeWrite(eraseTo)
-			setupCharTable.call(this)
-			letterize.call(this)
-
-			await this.play({
-				reverse: this.options.oneAtATime !== 0,
-			})
-
-			// If erasing did not finish for some reason
-			// Like it was paused
-			if (!this.state.finished)
-				return this.getWriterData('ERROR', 'Erasing did not finish.')
-
-			this.state.erasing = false
-		}
-
-		this.preparePropertiesBeforeWrite(text)
-		setupCharTable.call(this)
-		// this.logCharTable()
-		letterize.call(this)
-
-		this.pause()
-		return this.play()
-	}
-
-	private preparePropertiesBeforeWrite(text: string) {
-		/* PREPARE PROPERTIES */
-		this.goalText = text
-		this.state.nGhosts = 0
-		this.options.setCharset()
-	}
-
 	/**
 	 * Add text to end method. Orders writer to write same string as previous, but with this added at the end.
 	 * @param string text that will get added
@@ -194,7 +155,64 @@ export default class GlitchedWriter {
 	 * Resume last writing order.
 	 * @returns Promise, with writer data result
 	 */
-	async play(playOptions?: PlayOptions): Promise<WriterDataResponse> {
+	async play(): Promise<WriterDataResponse> {
+		return this.manageWriting(null)
+	}
+
+	/**
+	 * Pause current writer task.
+	 */
+	pause() {
+		this.state.pause()
+	}
+
+	private async manageWriting(
+		text: string | null,
+	): Promise<WriterDataResponse> {
+		if (text) this.lastText = text
+
+		// Erasing first
+		if (
+			this.options.startFrom === 'erase' &&
+			(this.state.finished || this.state.erasing)
+		) {
+			this.state.erasing = true
+			const eraseTo = this.genGoalStringToErase(this.lastText)
+			this.preparePropertiesBeforeWrite(eraseTo)
+			setupCharTable.call(this)
+			letterize.call(this)
+
+			await this.playChT({
+				reverse: this.options.oneAtATime !== 0,
+			})
+
+			// If erasing did not finish for some reason
+			// Like it was paused
+			if (!this.state.finished)
+				return this.getWriterData('ERROR', 'Erasing did not finish.')
+
+			this.state.erasing = false
+		}
+
+		this.preparePropertiesBeforeWrite(this.lastText)
+		setupCharTable.call(this)
+		// this.logCharTable()
+		letterize.call(this)
+
+		this.pause()
+		return this.playChT()
+	}
+
+	private preparePropertiesBeforeWrite(text: string) {
+		/* PREPARE PROPERTIES */
+		this.goalText = text
+		this.state.nGhosts = 0
+		this.options.setCharset()
+	}
+
+	private async playChT(
+		playOptions?: PlayOptions,
+	): Promise<WriterDataResponse> {
 		const playList: Promise<boolean>[] = [],
 			{ charTable } = this
 
@@ -242,6 +260,9 @@ export default class GlitchedWriter {
 		// Add every char .type() at once.
 		else charTable.forEach(char => playList.push(char.type()))
 
+		/**
+		 * Return result
+		 */
 		try {
 			const finished = (await Promise.all(playList)).every(result => result)
 			return this.returnResult(finished)
@@ -252,13 +273,6 @@ export default class GlitchedWriter {
 				error,
 			)
 		}
-	}
-
-	/**
-	 * Pause current writer task.
-	 */
-	pause() {
-		this.state.pause()
 	}
 
 	private returnResult(finished: boolean): WriterDataResponse {

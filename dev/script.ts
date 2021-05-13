@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
+/* eslint-disable func-names */
+/* eslint-disable no-console */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import debounce from 'lodash.debounce'
 
@@ -15,7 +19,7 @@ const writer = new GlitchedWriter(
 	// 'encrypted',
 	// string => console.log(string),
 	undefined,
-	string => console.log('FINISH', string),
+	afterFinish,
 )
 
 ;(async function () {
@@ -39,20 +43,39 @@ const writer = new GlitchedWriter(
 // console.log(writer)
 
 // // eslint-disable-next-line func-names
-;(async function () {
-	await wait(1200)
-	// await writer.write('This is the only the only the begining')
-	// await writer.write('Something farely long')
-	await writer.write('<b>This is</b> the\n<strong>MONEY</strong>: &#163;')
-	await wait(1200)
-	// await writer.write('my old friend.')
-	// await writer.write('Short String')
-	await writer.write('Please,\n<i>say &colon; something</i>...')
-	await wait(1500)
-	// await writer.write('Please, say something')
-	await writer.write('<u>my old</u> friend.')
-	inputEl.removeAttribute('disabled')
-})()
+// ;(async function () {
+// 	await wait(1200)
+// 	// await writer.write('This is the only the only the begining')
+// 	// await writer.write('Something farely long')
+// 	await writer.write('<b>This is</b> the\n<strong>MONEY</strong>: &#163;')
+// 	await wait(1200)
+// 	// await writer.write('my old friend.')
+// 	// await writer.write('Short String')
+// 	await writer.write('Please,\n<i>say &colon; something</i>...')
+// 	await wait(1500)
+// 	// await writer.write('Please, say something')
+// 	await writer.write('<u>my old</u> friend.')
+// 	inputEl.removeAttribute('disabled')
+// })()
+
+let queueIndex = 0
+const queue = [
+	'This is the only the only the begining',
+	'Something farely long',
+	'<b>This is</b> the\n<strong>MONEY</strong>: &#163;',
+	'my old friend.',
+	'Short String',
+	'Please,\n<i>say &colon; something</i>...',
+]
+writer.write(queue[0])
+async function afterFinish(string) {
+	console.log('FINISHED', string)
+
+	await wait(1000)
+	queueIndex++
+	if (queueIndex >= queue.length) queueIndex = -1
+	writer.write(queue[queueIndex])
+}
 
 inputEl.addEventListener(
 	'input',

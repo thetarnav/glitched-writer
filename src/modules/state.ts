@@ -7,7 +7,7 @@ export default class State {
 	maxGhosts: number
 	isTyping: boolean = false
 	isPaused: boolean = false
-	finished: boolean = false
+	finished: boolean = true
 	erasing: boolean = false
 
 	constructor(writer: GlitchedWriter) {
