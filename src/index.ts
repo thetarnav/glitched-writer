@@ -5,7 +5,6 @@ import Char from './modules/char'
 import Emiter from './modules/emiter'
 import {
 	ConstructorOptions,
-	WriteOptions,
 	PlayOptions,
 	WriterDataResponse,
 	Callback,
