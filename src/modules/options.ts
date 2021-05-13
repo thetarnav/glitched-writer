@@ -5,10 +5,10 @@ import {
 	getRandomFromRange,
 	filterHtml,
 	getRandom,
-} from './utils'
-import { ConstructorOptions, OptionsFields, RangeOrNumber } from './types'
-import GlitchedWriter from './index'
-import { presets } from './presets'
+} from '../utils'
+import { ConstructorOptions, OptionsFields, RangeOrNumber } from '../types'
+import GlitchedWriter from '../index'
+import { presets } from '../presets'
 
 export default class Options implements OptionsFields {
 	steps: RangeOrNumber
@@ -77,8 +77,8 @@ export default class Options implements OptionsFields {
 
 		let length: number
 		if (this.writer.options.html)
-			length = filterHtml(this.writer.goalString).length
-		else length = this.writer.goalString.length
+			length = filterHtml(this.writer.goalText).length
+		else length = this.writer.goalText.length
 
 		return Math.round((length || 20) * this.maxGhosts)
 	}
@@ -93,8 +93,8 @@ export default class Options implements OptionsFields {
 			charset += filterDuplicates(
 				this.writer.previousString +
 					(this.writer.options.html
-						? filterHtml(this.writer.goalString)
-						: this.writer.goalString),
+						? filterHtml(this.writer.goalText)
+						: this.writer.goalText),
 			)
 
 		this.ghostCharset = [...charset].filter(

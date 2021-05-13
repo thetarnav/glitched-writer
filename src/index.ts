@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import Options from './options'
-import State from './state'
-import Char from './char'
-import Emiter from './emiter'
+import Options from './modules/options'
+import State from './modules/state'
+import Char from './modules/char'
+import Emiter from './modules/emiter'
 import {
 	ConstructorOptions,
 	WriteOptions,
@@ -11,16 +11,10 @@ import {
 	Callback,
 	HTMLWriterElement,
 } from './types'
-import {
-	wait,
-	promiseWhile,
-	htmlToArray,
-	LetterItem,
-	filterHtml,
-	arrayOfTheSame,
-	stringToLetterItems,
-} from './utils'
+import { wait, promiseWhile, LetterItem, filterHtml } from './utils'
 import { presets, glyphs, PresetName } from './presets'
+import setupCharTable from './functions/setupCharTable'
+import letterize from './functions/letterize'
 
 export default class GlitchedWriter {
 	htmlElement?: HTMLWriterElement
@@ -29,7 +23,8 @@ export default class GlitchedWriter {
 	emiter: Emiter
 	charTable: Char[] = []
 
-	goalString: string = ''
+	goalText: string = ''
+	lastText: string = ''
 	string: string = ''
 
 	/**
@@ -112,32 +107,47 @@ export default class GlitchedWriter {
 	 * @param string text, that will get written.
 	 * @returns Promise, with writer data result
 	 */
-	async write(string: string, writeOptions?: WriteOptions) {
-		if (this.options.startFrom === 'erase' && !writeOptions?.erase)
-			await this.write(this.genGoalStringToErase(string), { erase: true })
+	async write(string: string) {
+		return this.manageWriting(string)
+	}
 
-		this.goalString = string
-		this.state.nGhosts = 0
-		this.options.setCharset()
+	private async manageWriting(text: string): Promise<WriterDataResponse> {
+		this.lastText = text
 
-		if (this.options.startFrom === 'matching') this.createMatchingCharTable()
-		else this.createPreviousCharTable()
+		// Erasing first
+		if (this.options.startFrom === 'erase') {
+			this.state.erasing = true
+			const eraseTo = this.genGoalStringToErase(text)
+			this.preparePropertiesBeforeWrite(eraseTo)
+			setupCharTable.call(this)
+			letterize.call(this)
 
+			await this.play({
+				reverse: this.options.oneAtATime !== 0,
+			})
+
+			// If erasing did not finish for some reason
+			// Like it was paused
+			if (!this.state.finished)
+				return this.getWriterData('ERROR', 'Erasing did not finish.')
+
+			this.state.erasing = false
+		}
+
+		this.preparePropertiesBeforeWrite(text)
+		setupCharTable.call(this)
 		// this.logCharTable()
-		this.letterize()
-
-		// console.log(
-		// 	this.charTable.map(char => [
-		// 		char.gl,
-		// 		char.isTag,
-		// 		char.letterize?.charEl?.outerHTML,
-		// 	]),
-		// )
+		letterize.call(this)
 
 		this.pause()
-		return this.play({
-			reverse: this.options.oneAtATime !== 0 && writeOptions?.erase,
-		})
+		return this.play()
+	}
+
+	private preparePropertiesBeforeWrite(text: string) {
+		/* PREPARE PROPERTIES */
+		this.goalText = text
+		this.state.nGhosts = 0
+		this.options.setCharset()
 	}
 
 	/**
@@ -162,7 +172,8 @@ export default class GlitchedWriter {
 
 		array.splice(-n)
 
-		return this.write(array.join(''), { erase: true })
+		// return this.write(array.join(''), { erase: true })
+		return this.write(array.join(''))
 	}
 
 	// private logCharTable() {
@@ -188,10 +199,7 @@ export default class GlitchedWriter {
 			{ charTable } = this
 
 		if (this.state.isTyping)
-			return this.getWriterData(
-				'ERROR',
-				`The writer is already typing "${this.goalString}".`,
-			)
+			return this.getWriterData('ERROR', `The writer is already typing.`)
 
 		this.state.play()
 
@@ -260,82 +268,12 @@ export default class GlitchedWriter {
 			: this.getWriterData('ERROR', `Writer failed to finish typing.`)
 	}
 
-	private createMatchingCharTable(): void {
-		const { goalStringArray, previousString: previous } = this,
-			maxDist = Math.min(Math.ceil(this.options.genMaxGhosts / 2), 5)
-
-		let pi = -1
-		goalStringArray.forEach((gl, gi) => {
-			pi++
-
-			if (gl.type === 'tag') {
-				pi--
-				this.setChar(gi, '', gl)
-				return
-			}
-
-			const fi = gl.value !== '' ? previous.indexOf(gl.value, pi) : -1
-
-			if (fi !== -1 && fi - pi <= maxDist) {
-				const appendedText = previous.substring(pi, fi)
-				this.setChar(gi, gl.value, gl, appendedText)
-				pi = fi
-			} else this.setChar(gi, previous[pi], gl)
-		})
-
-		this.removeExtraChars(goalStringArray.length)
-	}
-
-	private createPreviousCharTable(): void {
-		const { goalStringArray, previousString: previous } = this
-
-		let pi = -1
-		goalStringArray.forEach((gl, gi) => {
-			pi++
-
-			if (gl.type === 'tag') {
-				pi--
-				this.setChar(gi, '', gl)
-				return
-			}
-
-			this.setChar(gi, previous[pi], gl)
-		})
-
-		this.removeExtraChars(goalStringArray.length)
-	}
-
-	private letterize() {
-		if (!this.options.letterize || !this.htmlElement) return
-
-		const html: string = this.charTable
-			.map(({ isTag, gl }) => (isTag ? gl : '<span class="gw-char"></span>'))
-			.join('')
-		this.htmlElement.innerHTML = html
-
-		const spans = this.htmlElement.querySelectorAll(
-			'span.gw-char',
-		) as NodeListOf<HTMLSpanElement>
-
-		let i = 0
-		this.charTable.forEach(char => {
-			if (char.isTag) return
-			char.spanElement = spans[i]
-			i++
-		})
-	}
-
-	private removeExtraChars(from: number) {
+	removeExtraChars(from: number) {
 		const { charTable } = this
 		charTable.splice(from, charTable.length - from)
 	}
 
-	private setChar(
-		ci: number,
-		pl: string,
-		gl: LetterItem,
-		appendedText?: string,
-	) {
+	setChar(ci: number, pl: string, gl: LetterItem, appendedText?: string) {
 		const { charTable } = this,
 			char: Char | undefined = charTable[ci]
 
@@ -355,25 +293,6 @@ export default class GlitchedWriter {
 						gl.type === 'tag',
 					),
 			  )
-	}
-
-	private get goalStringArray(): LetterItem[] {
-		const { goalString: goal, options, previousString } = this,
-			goalArray = options.html
-				? htmlToArray(goal)
-				: stringToLetterItems(goal),
-			diff = Math.max(0, previousString.length - goalArray.length)
-
-		if (this.options.oneAtATime)
-			return goalArray.concat(stringToLetterItems(arrayOfTheSame('', diff)))
-
-		const nBefore = Math.ceil(diff / 2),
-			nAfter = Math.floor(diff / 2)
-
-		return stringToLetterItems(arrayOfTheSame('', nBefore)).concat(
-			goalArray,
-			stringToLetterItems(arrayOfTheSame('', nAfter)),
-		)
 	}
 
 	private getWriterData(

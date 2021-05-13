@@ -1,6 +1,6 @@
-import GlitchedWriter from './index'
-import { Callback } from './types'
-import { filterHtml } from './utils'
+import GlitchedWriter from '../index'
+import { Callback } from '../types'
+import { filterHtml } from '../utils'
 
 export default class {
 	writer: GlitchedWriter
@@ -30,15 +30,16 @@ export default class {
 			this.writer.options.html ? filterHtml(string) : string,
 		)
 
-		if (eventType === 'finish') {
-			// ON FINISH
-			this.writer.state.finish()
-			this.onFinishCallback?.(string, writerData)
-			this.emitEvent()
-		} else {
-			// ON STEP
-			this.onStepCallback?.(string, writerData)
-		}
+		// ON STEP
+		if (eventType === 'step') return this.onStepCallback?.(string, writerData)
+
+		// ON FINISH
+		this.writer.state.finish()
+
+		// change state to finished but do not fire callbacks
+		if (this.writer.state.erasing) return
+		this.onFinishCallback?.(string, writerData)
+		this.emitEvent()
 	}
 
 	private emitEvent() {

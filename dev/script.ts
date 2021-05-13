@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import debounce from 'lodash.debounce'
 
-// import GlitchedWriter, { wait, presets } from '../src'
-import GlitchedWriter, { wait, presets } from '../lib/esm'
+import GlitchedWriter, { wait, presets } from '../src'
+// import GlitchedWriter, { wait, presets } from '../lib/esm'
 
 const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input') as HTMLInputElement,
@@ -15,7 +15,7 @@ const writer = new GlitchedWriter(
 	// 'encrypted',
 	// string => console.log(string),
 	undefined,
-	string => console.log('FINISHED', string),
+	string => console.log('FINISH', string),
 )
 
 ;(async function () {
@@ -65,6 +65,18 @@ textEl.addEventListener(
 	'gw-finished',
 	e => (logsEl.innerHTML += `<p>${(e as any).detail.string}</p>`),
 )
+
+const pause = (() => {
+	let paused = false
+	return () => {
+		paused = !paused
+		paused ? writer.pause() : writer.play()
+	}
+})()
+
+window.addEventListener('keypress', e => {
+	e.code === 'Space' && pause()
+})
 
 // function logString({ string }: WriterDataResponse) {
 // 	logsEl.innerHTML += `<p>${string}</p>`

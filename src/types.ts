@@ -1,6 +1,6 @@
 import GlitchedWriter from './index'
-import Options from './options'
-import State from './state'
+import Options from './modules/options'
+import State from './modules/state'
 
 export type ModifyInterface<T, R> = Omit<T, keyof R> & R
 

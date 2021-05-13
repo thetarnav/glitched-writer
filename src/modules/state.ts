@@ -1,5 +1,5 @@
-import GlitchedWriter from './index'
-import { animateWithClass } from './utils'
+import GlitchedWriter from '../index'
+import { animateWithClass } from '../utils'
 
 export default class State {
 	writer: GlitchedWriter
@@ -8,6 +8,7 @@ export default class State {
 	isTyping: boolean = false
 	isPaused: boolean = false
 	finished: boolean = false
+	erasing: boolean = false
 
 	constructor(writer: GlitchedWriter) {
 		this.writer = writer
