@@ -21,11 +21,11 @@ export default class {
 		this.writer.updateString()
 		const { htmlElement, writerData, string } = this.writer
 
-		if (htmlElement && !this.writer.options.letterize) {
+		if (!this.writer.options.letterize) {
 			if (this.writer.options.html) htmlElement.innerHTML = string
 			else htmlElement.textContent = string
 		}
-		htmlElement?.setAttribute(
+		htmlElement.setAttribute(
 			'data-gw-string',
 			this.writer.options.html ? filterHtml(string) : string,
 		)
@@ -45,8 +45,8 @@ export default class {
 	private emitEvent() {
 		const { htmlElement, writerData } = this.writer
 
-		if (!htmlElement || typeof CustomEvent === 'undefined') return
-		htmlElement?.dispatchEvent(
+		if (typeof CustomEvent === 'undefined') return
+		htmlElement.dispatchEvent(
 			new CustomEvent('gw-finished', { detail: writerData }),
 		)
 	}

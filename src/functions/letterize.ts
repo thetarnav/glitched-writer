@@ -2,7 +2,7 @@
 import GlitchedWriter from '..'
 
 export default function letterize(this: GlitchedWriter) {
-	if (!this.options.letterize || !this.htmlElement) return
+	if (!this.options.letterize) return
 
 	const html: string = this.charTable
 		.map(({ isTag, gl }) => (isTag ? gl : '<span class="gw-char"></span>'))

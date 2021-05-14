@@ -42,7 +42,6 @@ export default class State {
 	toggleClass(enable: boolean): void {
 		const el = this.writer.htmlElement,
 			className = 'gw-writing'
-		if (!el) return
 
 		enable ? animateWithClass(el, className) : el.classList.remove(className)
 	}

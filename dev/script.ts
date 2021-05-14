@@ -15,7 +15,7 @@ const textEl = document.getElementById('glitch_this'),
 const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
-	{ html: true },
+	{ ...presets.nier, html: true, letterize: true },
 	// 'encrypted',
 	// string => console.log(string),
 	undefined,

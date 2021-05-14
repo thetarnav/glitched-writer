@@ -4,11 +4,6 @@ import State from './modules/state'
 
 export type ModifyInterface<T, R> = Omit<T, keyof R> & R
 
-export interface AppendedText {
-	value: string
-	display: 'always' | 'when-typing' | 'when-not-typing'
-}
-
 export type RangeOrNumber = [number, number] | number
 
 export interface OptionsFields {
@@ -23,7 +18,7 @@ export interface OptionsFields {
 	html: boolean
 	letterize: boolean
 	endless: boolean
-	startFrom: 'matching' | 'previous' | 'erase'
+	mode: 'matching' | 'normal' | 'erase' | 'clear'
 }
 
 export type ConstructorOptions = ModifyInterface<

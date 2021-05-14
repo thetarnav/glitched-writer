@@ -22,7 +22,7 @@ export default class Options implements OptionsFields {
 	html: boolean
 	letterize: boolean
 	endless: boolean
-	startFrom: 'matching' | 'previous' | 'erase'
+	mode: OptionsFields['mode']
 
 	space!: string
 	private ghostCharset!: string[]
@@ -48,7 +48,7 @@ export default class Options implements OptionsFields {
 		this.letterize = options.letterize ?? presets.default.letterize
 		if (typeof document === 'undefined') this.letterize = false
 		this.endless = options.endless ?? presets.default.endless
-		this.startFrom = options.startFrom ?? presets.default.startFrom
+		this.mode = options.mode ?? presets.default.mode
 
 		this.writer = writer
 		this.fillSpace = options.fillSpace ?? presets.default.fillSpace

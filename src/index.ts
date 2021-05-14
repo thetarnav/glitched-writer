@@ -16,7 +16,7 @@ import setupCharTable from './functions/setupCharTable'
 import letterize from './functions/letterize'
 
 export default class GlitchedWriter {
-	htmlElement?: HTMLWriterElement
+	htmlElement: HTMLWriterElement
 	options!: Options
 	state: State
 	emiter: Emiter
@@ -40,9 +40,12 @@ export default class GlitchedWriter {
 		onStepCallback?: Callback,
 		onFinishCallback?: Callback,
 	) {
-		if (typeof htmlElement === 'string') {
-			this.htmlElement = document.querySelector(htmlElement) ?? undefined
-		} else this.htmlElement = htmlElement ?? undefined
+		if (!htmlElement) this.htmlElement = document.createElement('span')
+		else if (typeof htmlElement === 'string') {
+			this.htmlElement =
+				document.querySelector(htmlElement) ??
+				document.createElement('span')
+		} else this.htmlElement = htmlElement
 
 		if (this.htmlElement) this.htmlElement.$writer = this
 
@@ -78,7 +81,7 @@ export default class GlitchedWriter {
 	}
 
 	get previousString(): string {
-		let prev = this.htmlElement?.textContent
+		let prev = this.htmlElement.textContent
 		if (typeof prev !== 'string')
 			prev = this.options.html ? filterHtml(this.string) : this.string
 
@@ -172,7 +175,7 @@ export default class GlitchedWriter {
 
 		// Erasing first
 		if (
-			this.options.startFrom === 'erase' &&
+			this.options.mode === 'erase' &&
 			(this.state.finished || this.state.erasing)
 		) {
 			this.state.erasing = true
