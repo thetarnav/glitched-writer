@@ -7,7 +7,7 @@
 
 ### What is Glitched Writer:
 
-> **A lightweight, glitched, text writing module. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling out text.**
+> **A lightweight npm module for writing text to HTML elements. Highly customizable settings. Decoding, decrypting, scrambling, and simply spelling out text.**
 
 ### Features:
 
@@ -48,6 +48,7 @@
    -  [Letterize](#letterize)
    -  [Endless option](#endless-animation)
    -  [Changing options after creation](#changing-options-post-initialization)
+   -  [CSS Tricks](#optimizing-css---preventing-layour-shifts)
    -  [Available imports](#available-imports)
 3. **[Presets](#presets)**
 4. **[Options](#customizing-behavior)**
@@ -278,6 +279,38 @@ Writer.setOptions({
 })
 ```
 
+### Optimizing CSS - Preventing Layour Shifts
+
+Changing text rapidly can cause a lot of layout shift. These are few css tricks worth considering when using this package:
+
+```css
+// 1. "Warn" the browser that the text-content
+// will be changing
+.gw {
+	will-change: contents;
+}
+
+// 2. It's good to make the element position absolute or fixed
+// so it wont influence the rest of the layout
+.gw {
+	position: fixed;
+}
+
+// 3. Make the width and height constant,
+// so it doesn't shift while writing
+.gw {
+	width: 80ch;
+	height: 6rem;
+}
+
+// 4. If you can't or don't want to,
+// then you should tell css that it will change,
+// so it can prepare resources to handle it
+.gw {
+	will-change: contents, height, width;
+}
+```
+
 ### Available imports
 
 List of all things that can be imported from glitched-writer module.
@@ -306,15 +339,15 @@ Available presets as for now:
 
 -  **[nier](https://codepen.io/thetarnav/pen/OJWNRor)** - Imitating the way text was appearing in the _NieR: Automata's UI_.
 
--  **[typewriter](https://codepen.io/thetarnav/pen/qBRpQpQ)** - One letter at a time, only slightly glitched.
+-  **[typewriter](https://codepen.io/thetarnav/pen/qBRpQpQ)** - Simple but feels like being written by a human: one letter at a time, with erasing enabled by default.
 
--  **[terminal](https://codepen.io/thetarnav/pen/mdRyqga)** - Imitating being typed by a machine or a computer.
+-  **[terminal](https://codepen.io/thetarnav/pen/mdRyqga)** - Similar to the typewriter preset but more "robotic". Characters flow smoothly (with stable interval), but with little "stutering" here and there.
 
--  **zalgo** - Inspired by the _"zalgo"_ or _"cursed text"_, Ghost characters mostly includes the unicode combining characters, which makes the text glitch vertically.
+-  **zalgo** - Inspired by the _"zalgo"_ or _"cursed text"_, Ghost characters mostly includes the unicode combining characters, which makes the text glitch vertically. Requires high "maxGhosts" to look good.
 
 -  **[neo](https://codepen.io/thetarnav/pen/vYgYWbb)** - Recreated: _Justin Windle's ["Text Scramble Effect"](https://codepen.io/soulwire/pen/mErPAK)_
 
--  **[encrypted](https://codepen.io/thetarnav/pen/oNBLpxb)** - Simple Text Scramble effect, suits well displaying secret data, like passwords or card numbers.
+-  **[encrypted](https://codepen.io/thetarnav/pen/oNBLpxb)** - Simple Text Scramble effect, suits well displaying secret data, like passwords or card numbers. And generally looks good for more "casual" usecases - where you don't want too much "layout shifting", caused by rapid characters number changing.
 
 ```js
 new GlitchedWriter(htmlElement, 'terminal')
@@ -338,6 +371,8 @@ new GlitchedWriter(htmlElement, {
 
 ## Customizing behavior
 
+There are many options you can tweak to customize the writting effect. Check ou the [playground website](https://glitched-writer.site/) I've made, where you can test both presets and options.
+
 ### Types and defaults:
 
 ```ts
@@ -349,14 +384,14 @@ new GlitchedWriter(htmlElement, {
 	changeChance?: number, // 0.6
 	ghostChance?: number, // 0.2
 	maxGhosts?: number, // '0.2'
+	oneAtATime?: boolean | number, // 0 | false
 	glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
 	glyphsFromString?: boolean, // false
-	startFrom?: 'matching' | 'previous' | 'erase', // 'matching'
-	oneAtATime?: boolean | number, // false
-	html?: boolean, // false
-	letterize?: boolean, // false
 	fillSpace?: boolean, // true
 	endless?: boolean // false
+	html?: boolean, // false
+	letterize?: boolean, // false
+	mode?: 'normal' | 'matching' | 'erase' | 'clear', // 'matching'
 }
 ```
 
@@ -385,13 +420,14 @@ new GlitchedWriter(htmlElement, {
 
 -  **glyphsFromString** - If you want to add letters from written string to the glyph charset
 
--  **startFrom** - Decides on witch algorithm to use.
+-  **mode** - Writing mode - decides on how to prepare the Char Table.
 
    -  'matching' - _Will scan starting and goal string for matching characters and will try to build character map from that._
-   -  'previous' - _Wont do any matching, just converts starting string into character map._
-   -  'erase' - _First Erases entire string and then writes from blank space._
+   -  'normal' - _Wont do any matching, just converts starting string into character map._
+   -  'erase' - _First Erases entire string and then writes your text._
+   -  'clear' - _Instantly deletes entire textContent and then writes your text._
 
--  **oneAtATime** - Without this option enabled, letters in your string will animate all at once. Enabling this option, by setting it to **true** or any **intiger larger than 0**, will cause the string to be written from left to right (startFrom: 'erase', will make it go form right to left - when erasing). Number value, signifies number of letters being typed at one time.
+-  **oneAtATime** - Without this option enabled, letters in your string will animate all at once. Enabling this option, by setting it to **true** or any **intiger larger than 0**, will cause the string to be written from left to right (mode: 'erase', will make it go form right to left - when erasing). Number value, signifies number of letters being typed at one time.
 
 -  **html** - _Potentially dangerous option._ If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to NOT enable it on user-provided content.
 
