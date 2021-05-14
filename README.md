@@ -349,6 +349,8 @@ Available presets as for now:
 
 -  **[encrypted](https://codepen.io/thetarnav/pen/oNBLpxb)** - Simple Text Scramble effect, suits well displaying secret data, like passwords or card numbers. And generally looks good for more "casual" usecases - where you don't want too much "layout shifting", caused by rapid characters number changing.
 
+-  **bitbybit** - Writes text word by word, in rhythmic but stattering manner.
+
 ```js
 new GlitchedWriter(htmlElement, 'terminal')
 ```
