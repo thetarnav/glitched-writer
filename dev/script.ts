@@ -5,7 +5,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import debounce from 'lodash.debounce'
 
-import GlitchedWriter, { wait, presets } from '../src'
+import GlitchedWriter, { wait, presets, glyphs } from '../src'
 // import GlitchedWriter, { wait, presets } from '../lib/esm'
 
 const textEl = document.getElementById('glitch_this'),
@@ -16,10 +16,7 @@ const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		...presets.encrypted,
-		oneAtATime: 'word',
-		mode: 'erase',
-		initialDelay: [0, 500],
+		...presets.bitbybit,
 		html: true,
 		letterize: true,
 	},
@@ -76,7 +73,7 @@ const queue = [
 	'This is the only &#163; the <strong>only</strong> the begining',
 	'Something farely long',
 	'<b>This is</b> the\n<strong>MONEY</strong>: &#163;',
-	'my old friend.',
+	"Roget's 21st Century Thesaurus, Third Edition Copyright © 2013 by the Philip Lief Group.",
 	'Short String',
 	'Please,\n<i>say &colon; something</i>...',
 ]

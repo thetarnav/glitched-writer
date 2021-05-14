@@ -101,7 +101,7 @@ export default class Char {
 
 	get interval(): number {
 		let interval = this.writer.options.genInterval
-		if (this.specialType === 'whitespace') interval /= 2
+		if (this.specialType === 'whitespace') interval /= 1.8
 		return interval
 	}
 

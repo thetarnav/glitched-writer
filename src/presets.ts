@@ -83,7 +83,6 @@ export const presets = {
 		ghostChance: 0,
 		changeChance: 1,
 		glyphs: glyphs.neo,
-		letterize: true,
 		mode: 'normal',
 	} as ConstructorOptions,
 	encrypted: {
@@ -95,8 +94,20 @@ export const presets = {
 		changeChance: 1,
 		glyphs: glyphs.uppercase,
 		fillSpace: false,
-		letterize: true,
 		mode: 'normal',
+	} as ConstructorOptions,
+	bitbybit: {
+		interval: [35, 65],
+		initialDelay: 180,
+		steps: 1,
+		maxGhosts: 1,
+		ghostChance: 0.1,
+		changeChance: 0.7,
+		oneAtATime: 'word',
+		glyphs: '',
+		glyphsFromString: true,
+		fillSpace: false,
+		mode: 'erase',
 	} as ConstructorOptions,
 }
 

@@ -140,6 +140,8 @@ body {
 	font-size: 35px;
 	color: $light-blue;
 
+	will-change: contents, width;
+
 	@include font-family;
 	// font-family: monospace;
 	@include text-shadow($light-blue);
@@ -163,6 +165,7 @@ body {
 	&::before {
 		content: attr(data-gw-string);
 		position: absolute;
+		will-change: contents, width;
 		opacity: 0;
 		left: 0;
 		top: 0;
