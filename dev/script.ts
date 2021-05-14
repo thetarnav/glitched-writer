@@ -15,7 +15,15 @@ const textEl = document.getElementById('glitch_this'),
 const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
-	{ ...presets.typewriter, html: true, letterize: true },
+	{
+		...presets.encrypted,
+		oneAtATime: 'word',
+		mode: 'erase',
+		initialDelay: [0, 500],
+		html: true,
+		letterize: true,
+	},
+	// { html: true, letterize: true },
 	// 'encrypted',
 	// (string, data) => {
 	// 	const { done, todo, percent } = data.writer.state.progress
@@ -50,11 +58,13 @@ const writer = new GlitchedWriter(
 // 	await wait(1200)
 // 	// await writer.write('This is the only the only the begining')
 // 	// await writer.write('Something farely long')
-// 	await writer.write('<b>This is</b> the\n<strong>MONEY</strong>: &#163;')
+// 	await writer.write(
+// 		'<b>This is</b> the\n<strong>MONEY</strong>: &#163; + <br/>',
+// 	)
 // 	await wait(1200)
 // 	// await writer.write('my old friend.')
 // 	// await writer.write('Short String')
-// 	await writer.write('Please,\n<i>say &colon; something</i>...')
+// 	await writer.write('')
 // 	await wait(1500)
 // 	// await writer.write('Please, say something')
 // 	await writer.write('<u>my old</u> friend.')
@@ -63,7 +73,7 @@ const writer = new GlitchedWriter(
 
 let queueIndex = 0
 const queue = [
-	'This is the only the only the begining',
+	'This is the only &#163; the <strong>only</strong> the begining',
 	'Something farely long',
 	'<b>This is</b> the\n<strong>MONEY</strong>: &#163;',
 	'my old friend.',
@@ -78,7 +88,7 @@ async function afterFinish(string, data) {
 
 	await wait(1000)
 	queueIndex++
-	if (queueIndex >= queue.length) queueIndex = -1
+	if (queueIndex >= queue.length) queueIndex = 0
 	writer.write(queue[queueIndex])
 }
 
@@ -89,10 +99,10 @@ inputEl.addEventListener(
 	}, 500),
 )
 
-textEl.addEventListener(
-	'gw-finished',
-	e => (logsEl.innerHTML += `<p>${(e as any).detail.string}</p>`),
-)
+// textEl.addEventListener(
+// 	'gw-finished',
+// 	e => (logsEl.innerHTML += `<p>${(e as any).detail.string}</p>`),
+// )
 
 const pause = (() => {
 	let paused = false

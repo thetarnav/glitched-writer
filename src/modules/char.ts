@@ -7,6 +7,7 @@ import {
 	promiseWhile,
 	coinFlip,
 	isSpecialChar,
+	LetterItem,
 } from '../utils'
 
 export default class Char {
@@ -18,8 +19,7 @@ export default class Char {
 	writer: GlitchedWriter
 
 	stop: boolean = false
-	isTag: boolean = false
-	isWhitespace: boolean = false
+	specialType: LetterItem['type']
 
 	afterGlitchChance: number = 0
 
@@ -35,11 +35,11 @@ export default class Char {
 		l: string,
 		gl: string,
 		initialGhosts: string = '',
-		isTag: boolean = false,
+		specialType: LetterItem['type'],
 	) {
 		this.writer = writer
 
-		this.setProps(l, gl, initialGhosts, isTag)
+		this.setProps(l, gl, initialGhosts, specialType)
 
 		if (writer.options.letterize) {
 			this.els = {
@@ -57,19 +57,18 @@ export default class Char {
 		l: string,
 		gl: string,
 		initialGhosts: string = '',
-		isTag: boolean = false,
+		specialType: LetterItem['type'],
 	) {
 		const { options } = this.writer
 		this.l = l
 		this.gl = gl
-		this.isTag = isTag
+		this.specialType = specialType
 		this.ghostsBefore = [...initialGhosts]
 		this.writer.state.nGhosts += initialGhosts.length
 
 		this.stepsLeft = options.stepsLeft
-		if (isTag) this.stepsLeft = 0
-
-		this.isWhitespace = isSpecialChar(gl)
+		if (specialType === 'tag') this.stepsLeft = 0
+		else if (isSpecialChar(gl)) this.specialType = 'whitespace'
 
 		this.afterGlitchChance =
 			(options.ghostChance + options.changeChance) / 3.7
@@ -79,9 +78,9 @@ export default class Char {
 		l: string,
 		gl: string,
 		initialGhosts: string = '',
-		isTag: boolean = false,
+		specialType: LetterItem['type'],
 	) {
-		this.setProps(l, gl, initialGhosts, isTag)
+		this.setProps(l, gl, initialGhosts, specialType)
 		if (this.els) this.els.letterEl.className = 'gw-letter'
 	}
 
@@ -96,13 +95,13 @@ export default class Char {
 			(char === goal &&
 				ghostsBefore.length === 0 &&
 				ghostsAfter.length === 0) ||
-			this.isTag
+			this.specialType === 'tag'
 		)
 	}
 
 	get interval(): number {
 		let interval = this.writer.options.genInterval
-		if (this.isWhitespace) interval /= 2
+		if (this.specialType === 'whitespace') interval /= 2
 		return interval
 	}
 
@@ -133,7 +132,7 @@ export default class Char {
 	async type() {
 		const { writer } = this
 
-		if (this.isTag) {
+		if (this.specialType === 'tag') {
 			this.l = this.gl
 			writer.emiter.call('step')
 			writer.state.progress.increase()
@@ -175,7 +174,8 @@ export default class Char {
 		const { writer } = this
 		if (
 			(this.stepsLeft > 0 && this.l !== this.gl) ||
-			(coinFlip(this.afterGlitchChance) && !this.isWhitespace) ||
+			(coinFlip(this.afterGlitchChance) &&
+				this.specialType !== 'whitespace') ||
 			writer.options.endless
 		) {
 			/**

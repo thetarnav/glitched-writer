@@ -111,6 +111,9 @@ export const isSpecialChar = (l: string): boolean =>
 const findHTMLPattern =
 	'(&(?:[a-z0-9]+|#[0-9]{1,6}|#x[0-9a-fA-F]{1,6});)|(<style.+?>.+?</style>|<script.+?>.+?</script>|<(?:!|/?[a-zA-Z]+).*?/?>)'
 
+export const wordsRgx =
+	/(&(?:[a-z0-9]+|#[0-9]{1,6}|#x[0-9a-fA-F]{1,6});)|.\w+,*\.*"*\s?|.+|\s+/gi
+
 export function htmlToArray(string: string): LetterItem[] {
 	const reg = new RegExp(findHTMLPattern, 'gi'),
 		resultArray: LetterItem[] = []

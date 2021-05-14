@@ -10,10 +10,12 @@ import {
 	Callback,
 	HTMLWriterElement,
 } from './types'
-import { wait, promiseWhile, LetterItem, filterHtml } from './utils'
+import { wait, LetterItem, filterHtml } from './utils'
 import { presets, glyphs, PresetName } from './presets'
 import setupCharTable from './functions/setupCharTable'
 import letterize from './functions/letterize'
+import prepWordsPlaylist from './functions/playlist/words'
+import prepLettersPlaylist from './functions/playlist/letters'
 
 export default class GlitchedWriter {
 	htmlElement: HTMLWriterElement
@@ -171,7 +173,7 @@ export default class GlitchedWriter {
 	private async manageWriting(
 		text: string | null,
 	): Promise<WriterDataResponse> {
-		if (text) this.lastText = text
+		if (text !== null) this.lastText = text
 
 		// Erasing first
 		if (
@@ -215,54 +217,25 @@ export default class GlitchedWriter {
 		playOptions?: PlayOptions,
 	): Promise<WriterDataResponse> {
 		const playList: Promise<boolean>[] = [],
-			{ charTable } = this
+			{ charTable, state, options } = this
 
-		if (this.state.isTyping)
+		if (state.isTyping)
 			return this.getWriterData('ERROR', `The writer is already typing.`)
 
-		this.state.play()
+		state.play()
 
-		/**
-		 * ONE AT A TIME
-		 */
-		if (this.options.oneAtATime > 0) {
-			const reverse = playOptions?.reverse ?? false,
-				charTableCopy = reverse ? [...charTable] : [...charTable].reverse()
-
-			// Char executor - runs a loop, typing one char at a time
-			// It is possible to run multiple of them at the same time
-			const executor = async () => {
-				let lastResult: boolean = true,
-					ended = false
-
-				const loop = async () => {
-					const lastChar = charTableCopy.pop()
-					if (!lastChar) ended = true
-					else lastResult = (await lastChar.type()) ?? false
-				}
-
-				await promiseWhile(
-					() => !ended && lastResult && !this.state.isPaused,
-					loop,
-				)
-
-				return ended && lastResult && !this.state.isPaused
-			}
-
-			// Add as many executors as needed to the playList
-			for (let n = 0; n < this.options.oneAtATime; n++) {
-				playList.push(executor())
-			}
-		}
-
-		/**
-		 * NORMAL
-		 */
-		// Add every char .type() at once.
+		// N LETTERS AT A TIME
+		if (options.oneAtATime > 0)
+			prepLettersPlaylist.call(this, playList, playOptions)
+		// BY WORDS
+		else if (options.oneAtATime === 'word')
+			prepWordsPlaylist.call(this, playList)
+		// NORMAL
 		else charTable.forEach(char => playList.push(char.type()))
 
 		/**
-		 * Return result
+		 * Play Playlist
+		 * and return the result
 		 */
 		try {
 			const finished = (await Promise.all(playList)).every(result => result)
@@ -297,7 +270,7 @@ export default class GlitchedWriter {
 					pl ?? '',
 					gl.value || this.options.space,
 					appendedText,
-					gl.type === 'tag',
+					gl.type,
 			  )
 			: charTable.push(
 					new Char(
@@ -305,7 +278,7 @@ export default class GlitchedWriter {
 						pl ?? '',
 						gl.value || this.options.space,
 						appendedText,
-						gl.type === 'tag',
+						gl.type,
 					),
 			  )
 	}

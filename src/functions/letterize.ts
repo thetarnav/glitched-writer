@@ -5,7 +5,9 @@ export default function letterize(this: GlitchedWriter) {
 	if (!this.options.letterize) return
 
 	const html: string = this.charTable
-		.map(({ isTag, gl }) => (isTag ? gl : '<span class="gw-char"></span>'))
+		.map(({ specialType, gl }) =>
+			specialType === 'tag' ? gl : '<span class="gw-char"></span>',
+		)
 		.join('')
 	this.htmlElement.innerHTML = html
 
@@ -15,7 +17,7 @@ export default function letterize(this: GlitchedWriter) {
 
 	let i = 0
 	this.charTable.forEach(char => {
-		if (char.isTag) return
+		if (char.specialType === 'tag') return
 		char.spanElement = spans[i]
 		i++
 	})

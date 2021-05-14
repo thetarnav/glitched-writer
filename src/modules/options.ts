@@ -18,7 +18,7 @@ export default class Options implements OptionsFields {
 	ghostChance: number
 	maxGhosts: number
 	glyphsFromString: boolean
-	oneAtATime: number
+	oneAtATime: OptionsFields['oneAtATime']
 	html: boolean
 	letterize: boolean
 	endless: boolean
@@ -42,6 +42,7 @@ export default class Options implements OptionsFields {
 
 		if (Number.isInteger(options.oneAtATime))
 			this.oneAtATime = options.oneAtATime as number
+		else if (options.oneAtATime === 'word') this.oneAtATime = 'word'
 		else this.oneAtATime = options.oneAtATime ? 1 : 0
 
 		this.html = options.html ?? presets.default.html

@@ -18,7 +18,7 @@ export const presets = {
 		changeChance: 0.6,
 		ghostChance: 0.2,
 		maxGhosts: 0.2,
-		oneAtATime: 0,
+		oneAtATime: 0 as OptionsFields['oneAtATime'],
 		glyphs: glyphs.full + glyphs.zalgo,
 		glyphsFromString: false,
 		html: false,
