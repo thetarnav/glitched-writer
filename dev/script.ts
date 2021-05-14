@@ -15,9 +15,12 @@ const textEl = document.getElementById('glitch_this'),
 const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
-	{ ...presets.nier, html: true, letterize: true },
+	{ ...presets.typewriter, html: true, letterize: true },
 	// 'encrypted',
-	// string => console.log(string),
+	// (string, data) => {
+	// 	const { done, todo, percent } = data.writer.state.progress
+	// 	console.log(`${done}/${todo} - ${Math.round(percent * 100)}`)
+	// },
 	undefined,
 	afterFinish,
 )
@@ -68,7 +71,9 @@ const queue = [
 	'Please,\n<i>say &colon; something</i>...',
 ]
 writer.write(queue[0])
-async function afterFinish(string) {
+async function afterFinish(string, data) {
+	// const { done, todo, percent } = data.writer.state.progress
+	// console.log(`${done}/${todo} - ${Math.round(percent * 100)}`)
 	console.log('FINISHED', string)
 
 	await wait(1000)

@@ -181,8 +181,6 @@ export default class GlitchedWriter {
 			this.state.erasing = true
 			const eraseTo = this.genGoalStringToErase(this.lastText)
 			this.preparePropertiesBeforeWrite(eraseTo)
-			setupCharTable.call(this)
-			letterize.call(this)
 
 			await this.playChT({
 				reverse: this.options.oneAtATime !== 0,
@@ -197,9 +195,7 @@ export default class GlitchedWriter {
 		}
 
 		this.preparePropertiesBeforeWrite(this.lastText)
-		setupCharTable.call(this)
 		// this.logCharTable()
-		letterize.call(this)
 
 		this.pause()
 		return this.playChT()
@@ -210,6 +206,9 @@ export default class GlitchedWriter {
 		this.goalText = text
 		this.state.nGhosts = 0
 		this.options.setCharset()
+		setupCharTable.call(this)
+		this.state.progress.reset(this.charTable.length)
+		letterize.call(this)
 	}
 
 	private async playChT(

@@ -136,6 +136,7 @@ export default class Char {
 		if (this.isTag) {
 			this.l = this.gl
 			writer.emiter.call('step')
+			writer.state.progress.increase()
 			return true
 		}
 
@@ -163,6 +164,7 @@ export default class Char {
 		)
 
 		if (this.finished) {
+			writer.state.progress.increase()
 			this.els?.charEl?.classList.add('gw-finished')
 			this.els?.letterEl.classList.remove('gw-glitched')
 		}

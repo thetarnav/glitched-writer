@@ -3,12 +3,37 @@ import { animateWithClass } from '../utils'
 
 export default class State {
 	writer: GlitchedWriter
-	nGhosts: number = 0
+	nGhosts = 0
 	maxGhosts: number
-	isTyping: boolean = false
-	isPaused: boolean = false
-	finished: boolean = true
-	erasing: boolean = false
+	/**
+	 * Numerical data about progress of writing
+	 */
+	progress = {
+		percent: 0,
+		done: 0,
+		todo: 0,
+
+		increase() {
+			this.done++
+			this.percent = this.done / this.todo
+		},
+
+		reset(todo: number) {
+			this.percent = 0
+			this.done = 0
+			this.todo = todo
+		},
+
+		finish() {
+			this.done = this.todo
+			this.percent = 1
+		},
+	}
+
+	isTyping = false
+	isPaused = false
+	finished = true
+	erasing = false
 
 	constructor(writer: GlitchedWriter) {
 		this.writer = writer
@@ -34,6 +59,7 @@ export default class State {
 	}
 
 	finish() {
+		this.progress.finish()
 		this.isTyping = false
 		this.finished = true
 		this.toggleClass(false)
