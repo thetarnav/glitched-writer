@@ -384,7 +384,7 @@ There are many options you can tweak to customize the writting effect. Check ou 
 	changeChance?: number, // 0.6
 	ghostChance?: number, // 0.2
 	maxGhosts?: number, // '0.2'
-	oneAtATime?: boolean | number, // 0 | false
+	oneAtATime?: boolean | number | 'word', // 0 | false
 	glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
 	glyphsFromString?: boolean, // false
 	fillSpace?: boolean, // true
@@ -416,6 +416,10 @@ There are many options you can tweak to customize the writting effect. Check ou 
    -  **int** - _(eg. 15) -> this will be the limit._
    -  **float** - _(eg. 0.25) -> Limit = maxGhosts \* goalString.length_
 
+-  **oneAtATime** - Without this option enabled, letters in your string will animate all at once. Enabling this option, by setting it to **true** or any **intiger larger than 0**, will cause the string to be written from left to right (mode: 'erase', will make it go form right to left - when erasing). Number value, signifies number of letters being typed at one time.
+
+   -  **"word"** - _now you can also set is to "word". Instead of writing letter by letter, or couple of letters, writer will divide goal text by words._
+
 -  **glyphs** - A set of characters that can appear as ghosts or letters can change into them
 
 -  **glyphsFromString** - If you want to add letters from written string to the glyph charset
@@ -426,8 +430,6 @@ There are many options you can tweak to customize the writting effect. Check ou 
    -  'normal' - _Wont do any matching, just converts starting string into character map._
    -  'erase' - _First Erases entire string and then writes your text._
    -  'clear' - _Instantly deletes entire textContent and then writes your text._
-
--  **oneAtATime** - Without this option enabled, letters in your string will animate all at once. Enabling this option, by setting it to **true** or any **intiger larger than 0**, will cause the string to be written from left to right (mode: 'erase', will make it go form right to left - when erasing). Number value, signifies number of letters being typed at one time.
 
 -  **html** - _Potentially dangerous option._ If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to NOT enable it on user-provided content.
 
