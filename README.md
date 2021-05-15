@@ -212,7 +212,7 @@ Writer.write('<b>Be sure to click <a href="...">this!</a></b>')
 
 ### Letterize
 
-Splits written text into series of span elements. Then writing letters seperately into these child-elements. _Now can be used fully with HTML option!_
+Splits written text into series of span elements. Then writing letters seperately into these child-elements.
 
 ```js
 // You need to enable html option.
@@ -230,7 +230,7 @@ Writer.write('Hello there!')
 
 ### Endless animation
 
-New option "endless" let's you run the text animation until you disable that function.
+Option "endless" let's you run the text animation until you disable that function.
 
 This opens the door for some additional effects, like: **Show on hover** (e.g. on secret fields) or **refreshing text** to give it user attention.
 
@@ -239,40 +239,29 @@ Here is a [live example](https://codepen.io/thetarnav/pen/oNBLpxb).
 ```js
 // SHOW ON HOVER
 // First make the password scramble forever
-Writer.options.endless = true
-Writer.write('PASSWORD')
+writer.options.set({ endless: true })
+writer.write('PASSWORD')
 
 // And disable endless option on hover
-passEl.addEventListener('mouseover', () => {
-	Writer.options.endless = false
-})
-
-// REFRESHING:
-// let's say you already have el with text 'LOOK AT ME'
-// and you want to make it pop
-Writer.options.endless = true
-Writer.write('LOOK AT ME')
-await wait(1500)
-Writer.options.endless = false
+passEl.addEventListener('mouseover', () =>
+	writer.options.extend({ endless: false }),
+)
 ```
 
 ### Changing options post initialization
 
-Options can be changed in 3 ways after initial Writer instance creation.
+Options can be changed in 2 ways after instance creation.
 
 ```js
-// 1. Changing single option propery
-Writer.options.endless = true
-
-// 2. Extending current options
-Writer.extendOptions({
+// Extending current options
+writer.options.extend({
 	endless: true,
 	maxGhosts: 10,
 	// the rest will stay the same
 })
 
-// 3. Reseting options
-Writer.setOptions({
+// Reseting options
+writer.options.set({
 	endless: true,
 	maxGhosts: 10,
 	// the rest will be set to default value
@@ -317,13 +306,13 @@ List of all things that can be imported from glitched-writer module.
 
 ```ts
 import GlitchedWriter, { // <-- GlitchedWriter class
-	ConstructorOptions, // <-- Options type
-	Callback, // <-- Callback type
-	WriterDataResponse, // <-- Type of response in callbacks
+	CustomOptions, // <-- Options type
+	Callback, // <-- Callbacks type
+	WriterDataResponse, // <-- Type of a response in callbacks
 	glitchWrite, // <-- One time write funcion
 	presets, // <-- Object with all prepared presets of options
-	glyphs, // <-- Same but for glyph charsets
-	wait, // <-- Ulitity async function, that can be used to wait some time
+	glyphs, // <-- Some glyph sets
+	wait, // <-- Ulitity promise function, that can be used to wait some time
 	create, // <-- Function serving as an alternative way to create GlitchedWriter instance.
 } from 'glitched-writer'
 ```
@@ -375,34 +364,27 @@ new GlitchedWriter(htmlElement, {
 
 There are many options you can tweak to customize the writting effect. Check ou the [playground website](https://glitched-writer.site/) I've made, where you can test both presets and options.
 
-### Types and defaults:
-
-```ts
-{
-//	name    [min   , max   ] | const   // default
-	steps?: [number, number] | number, // [1, 8]
-	interval?: [number, number] | number, // [60, 170]
-	delay?: [number, number] | number, // [0, 2000]
-	changeChance?: number, // 0.6
-	ghostChance?: number, // 0.2
-	maxGhosts?: number, // '0.2'
-	oneAtATime?: boolean | number | 'word', // 0 | false
-	glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
-	glyphsFromText?: boolean, // false
-	fillSpace?: boolean, // true
-	mode?: 'normal' | 'matching' | 'erase' | 'clear', // 'matching'
-	endless?: boolean // false
-	html?: boolean, // false
-	letterize?: boolean, // false
-	fps?: number, // 60
-}
-```
-
-### Options Description
-
 **Range** values will result in random values for each step for every letter.
 
 **Ghost** are "glitched letters" that gets rendered randomly in the time of writing, but aren't part of final string.
+
+### Stylistic Options:
+
+> \- options that set the visual effect.
+
+```ts
+steps?: [number, number] | number, // [1, 8]
+interval?: [number, number] | number, // [60, 170]
+delay?: [number, number] | number, // [0, 2000]
+changeChance?: number, // 0.6
+ghostChance?: number, // 0.2
+maxGhosts?: number, // '0.2'
+oneAtATime?: boolean | number | 'word', // 0 | false
+glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
+glyphsFromText?: boolean, // false
+fillSpace?: boolean, // true
+mode?: 'normal' | 'matching' | 'erase' | 'clear', // 'matching'
+```
 
 -  **steps** - Number of **minimum** steps it takes one letter to reach it's goal one. Set to 0 if you want them to change to right letter in one step. (int)
 
@@ -410,16 +392,16 @@ There are many options you can tweak to customize the writting effect. Check ou 
 
 -  **delay** - first delay each letter must wait before it starts working (int: ms)
 
--  **changeChance** - Percentage chance for letter to change to glitched one (from glyphs) (p: 0-1)
+-  **changeChance** - Chance of letter being replaced by a glitched character (p: 0-1)
 
--  **ghostChance** - Percentage chance for ghost letter to appear (p: 0-1)
+-  **ghostChance** - Chance for ghost letter to appear (p: 0-1)
 
 -  **maxGhosts** - Maximal number of ghosts to occur
 
    -  **int** - _(eg. 15) -> this will be the limit._
    -  **float** - _(eg. 0.25) -> Limit = maxGhosts \* goalString.length_
 
--  **oneAtATime** - Without this option enabled, letters in your string will animate all at once. Enabling this option, by setting it to **true** or any **intiger larger than 0**, will cause the string to be written from left to right (mode: 'erase', will make it go form right to left - when erasing). Number value, signifies number of letters being typed at one time.
+-  **oneAtATime** - Without this option enabled, letters in your string will animate all at once. Enabling this option, by setting it to **true** or any **intiger larger than 0**, will cause the string to be written from letter by letter, left to right. Number value, signifies how many letters will be typed at once.
 
    -  **"word"** - _now you can also set is to "word". Instead of writing letter by letter, or couple of letters, writer will divide goal text by words._
 
@@ -439,6 +421,17 @@ There are many options you can tweak to customize the writting effect. Check ou 
    -  'erase' - _First Erases entire string and then writes your text._
    -  'clear' - _Instantly deletes entire textContent and then writes your text._
 
+### Control Options:
+
+> \- options that control writer behavior.
+
+```ts
+html?: boolean, // false
+letterize?: boolean, // false
+endless?: boolean // false
+fps?: number, // 60
+```
+
 -  **html** - _Potentially dangerous option._ If true, written string will be injected as html, not text content. It provides advanced text formating with html tags and more. But be sure to NOT enable it on user-provided content.
 
 -  **letterize** - Instead of injecting written text to "textContent" or "innerHTML", it appends every letter of that text as a child span element. Then changing textContent of that span to current letter. It gives a lot of styling possibilities, as you can style ghosts, letters, and whole chars seperately, depending on current writer and char state.
@@ -446,3 +439,14 @@ There are many options you can tweak to customize the writting effect. Check ou 
 -  **endless** - It will make the animation endless. _But why?_ Well, you can disable this option while the animation is running _(writer.options.endless = false)_ and finish the animation when you want.
 
 -  **fps** - Animation loop is done using requestAnimationFrame, with fps you can controll the maximum framerate of writing animation. Only actually matters for high refresh monitors. _(! wont have an effect with letterize enabled !_)
+
+### Additional Options:
+
+> \- misc options
+
+-  **genGlyph** - function that will be used to generate a ghost/glitched char. Can be used to control which and when different characters will be used, instead of it being a random sample from glyphs list. _E.g. numbers "9" to "1" depending on writing progress._
+
+```ts
+// type:
+genGlyph?: (char: Char, writer: GlitchedWriter) => string
+```

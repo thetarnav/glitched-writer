@@ -339,11 +339,4 @@ export const create = (
 	onFinishCallback?: Callback,
 ) => new GlitchedWriter(htmlElement, options, onStepCallback, onFinishCallback)
 
-export {
-	presets,
-	glyphs,
-	wait,
-	CustomOptions as ConstructorOptions,
-	WriterDataResponse,
-	Callback,
-}
+export { presets, glyphs, wait, CustomOptions, WriterDataResponse, Callback }
