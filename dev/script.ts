@@ -16,9 +16,10 @@ const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		...presets.bitbybit,
+		// ...presets.bitbybit,
 		html: true,
-		letterize: true,
+		// fps: 14,
+		// letterize: true,
 	},
 	// { html: true, letterize: true },
 	// 'encrypted',

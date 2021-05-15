@@ -390,10 +390,11 @@ There are many options you can tweak to customize the writting effect. Check ou 
 	glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
 	glyphsFromString?: boolean, // false
 	fillSpace?: boolean, // true
+	mode?: 'normal' | 'matching' | 'erase' | 'clear', // 'matching'
 	endless?: boolean // false
 	html?: boolean, // false
 	letterize?: boolean, // false
-	mode?: 'normal' | 'matching' | 'erase' | 'clear', // 'matching'
+	fps?: number, // 60
 }
 ```
 
@@ -426,6 +427,11 @@ There are many options you can tweak to customize the writting effect. Check ou 
 
 -  **glyphsFromString** - If you want to add letters from written string to the glyph charset
 
+-  **fillSpace** - With this **enabled** if letter gets erased ny replacing with space - to keep the same "width" of previous string, and to make letters _"disappear in space"_. If **disabled**, every letter will "stick" to the rest. To make it more clear (hopefully), here is an example "frame" of writing: **"Something farely long"** -> **"Short String"**.
+
+   -  false - "XOSh8rt S3rinFv"
+   -  true - " X OSh8rt S3rinF v "
+
 -  **mode** - Writing mode - decides on how to prepare the Char Table.
 
    -  'matching' - _Will scan starting and goal string for matching characters and will try to build character map from that._
@@ -437,9 +443,6 @@ There are many options you can tweak to customize the writting effect. Check ou 
 
 -  **letterize** - Instead of injecting written text to "textContent" or "innerHTML", it appends every letter of that text as a child span element. Then changing textContent of that span to current letter. It gives a lot of styling possibilities, as you can style ghosts, letters, and whole chars seperately, depending on current writer and char state.
 
--  **fillSpace** - With this **enabled** if letter gets erased ny replacing with space - to keep the same "width" of previous string, and to make letters _"disappear in space"_. If **disabled**, every letter will "stick" to the rest. To make it more clear (hopefully), here is an example "frame" of writing: **"Something farely long"** -> **"Short String"**.
-
-   -  false - "XOSh8rt S3rinFv"
-   -  true - " X OSh8rt S3rinF v "
-
 -  **endless** - It will make the animation endless. _But why?_ Well, you can disable this option while the animation is running _(writer.options.endless = false)_ and finish the animation when you want.
+
+-  **fps** - Animation loop is done using requestAnimationFrame, with fps you can controll the maximum framerate of writing animation. Only actually matters for high refresh monitors. _(! wont have an effect with letterize enabled !_)

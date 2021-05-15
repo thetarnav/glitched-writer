@@ -17,12 +17,13 @@ export default class Options implements OptionsFields {
 	changeChance: number
 	ghostChance: number
 	maxGhosts: number
-	glyphsFromString: boolean
 	oneAtATime: OptionsFields['oneAtATime']
+	glyphsFromString: boolean
+	mode: OptionsFields['mode']
 	html: boolean
 	letterize: boolean
 	endless: boolean
-	mode: OptionsFields['mode']
+	fps: number
 
 	space!: string
 	private ghostCharset!: string[]
@@ -50,6 +51,7 @@ export default class Options implements OptionsFields {
 		if (typeof document === 'undefined') this.letterize = false
 		this.endless = options.endless ?? presets.default.endless
 		this.mode = options.mode ?? presets.default.mode
+		this.fps = options.fps ?? presets.default.fps
 
 		this.writer = writer
 		this.fillSpace = options.fillSpace ?? presets.default.fillSpace

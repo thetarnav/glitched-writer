@@ -16,12 +16,14 @@ import setupCharTable from './functions/setupCharTable'
 import letterize from './functions/letterize'
 import prepWordsPlaylist from './functions/playlist/words'
 import prepLettersPlaylist from './functions/playlist/letters'
+import Animator from './modules/animator'
 
 export default class GlitchedWriter {
 	htmlElement: HTMLWriterElement
 	options!: Options
 	state: State
 	emiter: Emiter
+	animator: Animator
 	charTable: Char[] = []
 
 	goalText: string = ''
@@ -56,6 +58,7 @@ export default class GlitchedWriter {
 
 		this.state = new State(this)
 		this.emiter = new Emiter(this, onStepCallback, onFinishCallback)
+		this.animator = new Animator(this)
 		this.string = this.previousString
 	}
 

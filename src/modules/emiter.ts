@@ -18,26 +18,25 @@ export default class {
 	}
 
 	call(eventType: 'step' | 'finish') {
-		this.writer.updateString()
-		const { htmlElement, writerData, string } = this.writer
+		const { writer } = this
+		writer.updateString()
+		const { writerData, string } = writer
 
-		if (!this.writer.options.letterize) {
-			if (this.writer.options.html) htmlElement.innerHTML = string
-			else htmlElement.textContent = string
-		}
-		htmlElement.setAttribute(
-			'data-gw-string',
-			this.writer.options.html ? filterHtml(string) : string,
-		)
+		// for letterize: update data attribute every step
+		if (writer.options.letterize)
+			writer.htmlElement.setAttribute(
+				'data-gw-string',
+				writer.options.html ? filterHtml(string) : string,
+			)
 
 		// ON STEP
 		if (eventType === 'step') return this.onStepCallback?.(string, writerData)
 
 		// ON FINISH
-		this.writer.state.finish()
+		writer.state.finish()
 
 		// change state to finished but do not fire callbacks
-		if (this.writer.state.erasing) return
+		if (writer.state.erasing) return
 		this.onFinishCallback?.(string, writerData)
 		this.emitEvent()
 	}

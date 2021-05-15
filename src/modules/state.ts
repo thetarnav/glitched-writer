@@ -50,6 +50,7 @@ export default class State {
 		this.finished = false
 		this.toggleClass(true)
 		this.maxGhosts = this.writer.options.genMaxGhosts
+		this.writer.animator.run()
 	}
 
 	pause() {

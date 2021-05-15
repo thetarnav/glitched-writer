@@ -13,12 +13,13 @@ export interface OptionsFields {
 	changeChance: number
 	ghostChance: number
 	maxGhosts: number
-	glyphsFromString: boolean
 	oneAtATime: number | 'word'
+	glyphsFromString: boolean
+	mode: 'matching' | 'normal' | 'erase' | 'clear'
 	html: boolean
 	letterize: boolean
 	endless: boolean
-	mode: 'matching' | 'normal' | 'erase' | 'clear'
+	fps: number
 }
 
 export type ConstructorOptions = ModifyInterface<
