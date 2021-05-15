@@ -9,11 +9,11 @@ import {
 import { AllCustomOptions, CustomOptions, OptionsFields } from '../types'
 import GlitchedWriter from '../index'
 import { PresetName, presets } from '../presets'
+import Char from './char'
 
 export default class Options {
 	private writer: GlitchedWriter
-
-	options!: AllCustomOptions
+	private options!: AllCustomOptions
 
 	glyphs!: string
 	charset!: string[]
@@ -30,21 +30,25 @@ export default class Options {
 	}
 
 	set(options?: CustomOptions | PresetName | null) {
-		if (typeof options === 'string') options = presets[options] ?? {}
 		this.options = {
 			...presets.default,
-			...options,
+			...this.parseOptions(options),
 		}
 		this.updateInternal()
 	}
 
 	extend(options?: CustomOptions | PresetName | null) {
-		if (typeof options === 'string') options = presets[options] ?? {}
 		this.options = {
 			...this.options,
-			...options,
+			...this.parseOptions(options),
 		}
 		this.updateInternal()
+	}
+
+	parseOptions(options?: CustomOptions | PresetName | null): CustomOptions {
+		if (!options) return {}
+		if (typeof options === 'string') return presets[options] ?? {}
+		return options
 	}
 
 	private updateInternal() {
@@ -90,7 +94,8 @@ export default class Options {
 		this.maxGhosts = Math.round((length || 20) * maxGhosts)
 	}
 
-	get ghost(): string {
+	genGhost(char: Char): string {
+		if (this.options.genGlyph) return this.options.genGlyph(char, this.writer)
 		return getRandom(this.charset) ?? ''
 	}
 

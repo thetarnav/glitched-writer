@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import GlitchedWriter from './index'
+import Char from './modules/char'
 import Options from './modules/options'
 import State from './modules/state'
 
@@ -28,6 +30,8 @@ export type AllCustomOptions = ModifyInterface<
 		glyphs: string | string[] | Set<string>
 		fillSpace: boolean
 		oneAtATime: OptionsFields['oneAtATime'] | boolean
+
+		genGlyph?: (char: Char, writer: GlitchedWriter) => string
 	}
 >
 

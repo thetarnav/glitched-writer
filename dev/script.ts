@@ -6,6 +6,7 @@
 import debounce from 'lodash.debounce'
 
 import GlitchedWriter, { wait, presets, glyphs } from '../src'
+import { clamp } from '../src/utils'
 // import GlitchedWriter, { wait, presets } from '../lib/esm'
 
 const textEl = document.getElementById('glitch_this'),
@@ -16,10 +17,18 @@ const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		// ...presets.bitbybit,
+		...presets.encrypted,
 		html: true,
 		// fps: 14,
-		// letterize: true,
+		letterize: true,
+		genGlyph: ({ stepsLeft }) => {
+			let l: string
+			if (stepsLeft > 6) l = '.'
+			else if (stepsLeft > 4) l = '_'
+			else if (stepsLeft >= 2) l = '/'
+			else l = '#'
+			return l
+		},
 	},
 	// { html: true, letterize: true },
 	// 'encrypted',
