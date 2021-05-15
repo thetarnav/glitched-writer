@@ -1,4 +1,4 @@
-import { ConstructorOptions, OptionsFields, RangeOrNumber } from './types'
+import { CustomOptions, OptionsFields, RangeOrNumber } from './types'
 
 export const glyphs = {
 	nier: '一二三四五六七八九十百千上下左右中大小月日年早木林山川土空田天生花草虫犬人名女男子目耳口手足見音力気円入出立休先夕本文字学校村町森正水火玉王石竹糸貝車金雨赤青白数多少万半形太細広長点丸交光角計直線矢弱強高同親母父姉兄弟妹自友体毛頭顔首心時曜朝昼夜分週春夏秋冬今新古間方北南東西遠近前後内外場地国園谷野原里市京風雪雲池海岩星室戸家寺通門道話言答声聞語読書記紙画絵図工教晴思考知才理算作元食肉馬牛魚鳥羽鳴麦米茶色黄黒来行帰歩走止活店買売午汽弓回会組船明社切電毎合当台楽公引科歌刀番用何',
@@ -40,7 +40,7 @@ export const presets = {
 		fillSpace: false,
 		glyphsFromText: true,
 		mode: 'clear',
-	} as ConstructorOptions,
+	} as CustomOptions,
 	typewriter: {
 		interval: [50, 150],
 		delay: 0,
@@ -52,7 +52,7 @@ export const presets = {
 		glyphsFromText: false,
 		fillSpace: false,
 		mode: 'erase',
-	} as ConstructorOptions,
+	} as CustomOptions,
 	terminal: {
 		interval: [25, 30],
 		delay: [0, 0],
@@ -64,7 +64,7 @@ export const presets = {
 		fillSpace: false,
 		glyphsFromText: false,
 		mode: 'clear',
-	} as ConstructorOptions,
+	} as CustomOptions,
 	zalgo: {
 		delay: [0, 3000],
 		interval: [10, 35],
@@ -75,7 +75,7 @@ export const presets = {
 		glyphs: glyphs.zalgo,
 		glyphsFromText: true,
 		fillSpace: false,
-	} as ConstructorOptions,
+	} as CustomOptions,
 	neo: {
 		interval: [30, 100],
 		delay: [0, 1300],
@@ -85,7 +85,7 @@ export const presets = {
 		changeChance: 1,
 		glyphs: glyphs.neo,
 		mode: 'normal',
-	} as ConstructorOptions,
+	} as CustomOptions,
 	encrypted: {
 		interval: [50, 90],
 		delay: [0, 1300],
@@ -96,7 +96,7 @@ export const presets = {
 		glyphs: glyphs.uppercase,
 		fillSpace: false,
 		mode: 'normal',
-	} as ConstructorOptions,
+	} as CustomOptions,
 	bitbybit: {
 		interval: [35, 65],
 		delay: 180,
@@ -109,7 +109,7 @@ export const presets = {
 		glyphsFromText: true,
 		fillSpace: false,
 		mode: 'erase',
-	} as ConstructorOptions,
+	} as CustomOptions,
 }
 
 export type PresetName = keyof typeof presets

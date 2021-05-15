@@ -37,7 +37,7 @@ export default class State {
 
 	constructor(writer: GlitchedWriter) {
 		this.writer = writer
-		this.maxGhosts = this.writer.options.genMaxGhosts
+		this.maxGhosts = this.writer.options.maxGhosts
 	}
 
 	get ghostsInLimit(): boolean {
@@ -49,7 +49,7 @@ export default class State {
 		this.isPaused = false
 		this.finished = false
 		this.toggleClass(true)
-		this.maxGhosts = this.writer.options.genMaxGhosts
+		this.maxGhosts = this.writer.options.maxGhosts
 		this.writer.animator.run()
 	}
 

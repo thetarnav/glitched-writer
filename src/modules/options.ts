@@ -6,102 +6,131 @@ import {
 	filterHtml,
 	getRandom,
 } from '../utils'
-import { ConstructorOptions, OptionsFields, RangeOrNumber } from '../types'
+import { AllCustomOptions, CustomOptions, OptionsFields } from '../types'
 import GlitchedWriter from '../index'
-import { presets } from '../presets'
+import { PresetName, presets } from '../presets'
 
-export default class Options implements OptionsFields {
-	steps: RangeOrNumber
-	interval: RangeOrNumber
-	delay: RangeOrNumber
-	changeChance: number
-	ghostChance: number
-	maxGhosts: number
-	oneAtATime: OptionsFields['oneAtATime']
-	glyphsFromText: boolean
-	mode: OptionsFields['mode']
-	html: boolean
-	letterize: boolean
-	endless: boolean
-	fps: number
-
-	space!: string
-	private ghostCharset!: string[]
-	private glyphsString!: string
+export default class Options {
 	private writer: GlitchedWriter
 
-	constructor(writer: GlitchedWriter, options: ConstructorOptions) {
-		this.steps = options.steps ?? presets.default.steps
-		this.interval = options.interval ?? presets.default.interval
-		this.delay = options.delay ?? presets.default.delay
-		this.changeChance = options.changeChance ?? presets.default.changeChance
-		this.ghostChance = options.ghostChance ?? presets.default.ghostChance
-		this.maxGhosts = options.maxGhosts ?? presets.default.maxGhosts
-		this.glyphs = options.glyphs ?? presets.default.glyphs
-		this.glyphsFromText =
-			options.glyphsFromText ?? presets.default.glyphsFromText
+	options!: AllCustomOptions
+
+	glyphs!: string
+	charset!: string[]
+	space!: string
+	oneAtATime!: OptionsFields['oneAtATime']
+	maxGhosts!: number
+
+	constructor(
+		writer: GlitchedWriter,
+		options?: CustomOptions | PresetName | null,
+	) {
+		this.writer = writer
+		this.set(options)
+	}
+
+	set(options?: CustomOptions | PresetName | null) {
+		if (typeof options === 'string') options = presets[options] ?? {}
+		this.options = {
+			...presets.default,
+			...options,
+		}
+		this.updateInternal()
+	}
+
+	extend(options?: CustomOptions | PresetName | null) {
+		if (typeof options === 'string') options = presets[options] ?? {}
+		this.options = {
+			...this.options,
+			...options,
+		}
+		this.updateInternal()
+	}
+
+	private updateInternal() {
+		const { options } = this
+
+		this.glyphs = parseCharset(options.glyphs)
+		this.setCharset()
+
+		this.space = options.fillSpace ? ' ' : ''
 
 		if (Number.isInteger(options.oneAtATime))
 			this.oneAtATime = options.oneAtATime as number
 		else if (options.oneAtATime === 'word') this.oneAtATime = 'word'
 		else this.oneAtATime = options.oneAtATime ? 1 : 0
-
-		this.html = options.html ?? presets.default.html
-		this.letterize = options.letterize ?? presets.default.letterize
-		if (typeof document === 'undefined') this.letterize = false
-		this.endless = options.endless ?? presets.default.endless
-		this.mode = options.mode ?? presets.default.mode
-		this.fps = options.fps ?? presets.default.fps
-
-		this.writer = writer
-		this.fillSpace = options.fillSpace ?? presets.default.fillSpace
-	}
-
-	set glyphs(glyphs: string | string[] | Set<string>) {
-		this.glyphsString = parseCharset(glyphs)
-		this.setCharset()
-	}
-
-	set fillSpace(doFillSpace: boolean) {
-		this.space = doFillSpace ? ' ' : ''
-	}
-
-	get stepsLeft(): number {
-		return getRandomFromRange(this.steps)
-	}
-	get genInterval(): number {
-		return getRandomFromRange(this.interval)
-	}
-	get genDelay(): number {
-		return getRandomFromRange(this.delay)
-	}
-	get genMaxGhosts(): number {
-		if (Number.isInteger(this.maxGhosts)) return this.maxGhosts
-
-		let length: number
-		if (this.writer.options.html)
-			length = filterHtml(this.writer.goalText).length
-		else length = this.writer.goalText.length
-
-		return Math.round((length || 20) * this.maxGhosts)
-	}
-	get ghost(): string {
-		return getRandom(this.ghostCharset) ?? ''
 	}
 
 	setCharset() {
-		let charset = this.glyphsString
+		const { writer } = this
+		let { glyphs } = this
 
 		if (this.glyphsFromText)
-			charset += filterDuplicates(
-				this.writer.previousString +
-					(this.writer.options.html
-						? filterHtml(this.writer.goalText)
-						: this.writer.goalText),
+			glyphs += filterDuplicates(
+				writer.previousString +
+					(this.html ? filterHtml(writer.goalText) : writer.goalText),
 			)
 
-		this.ghostCharset = [...charset].filter(
+		this.charset = [...glyphs].filter(
 			l => !['\t', '\n', '\r', '\f', '\v'].includes(l),
 		)
+
+		this.setMaxGhosts()
+	}
+
+	setMaxGhosts(): void {
+		const {
+			writer: { charTable },
+			options: { maxGhosts },
+		} = this
+		if (Number.isInteger(maxGhosts)) this.maxGhosts = maxGhosts
+
+		const { length } = charTable.filter(char => char.specialType !== 'tag')
+
+		this.maxGhosts = Math.round((length || 20) * maxGhosts)
+	}
+
+	get ghost(): string {
+		return getRandom(this.charset) ?? ''
+	}
+
+	get steps(): number {
+		return getRandomFromRange(this.options.steps)
+	}
+	get interval(): number {
+		return getRandomFromRange(this.options.interval)
+	}
+	get delay(): number {
+		return getRandomFromRange(this.options.delay)
+	}
+
+	get mode() {
+		return this.options.mode
+	}
+
+	get html() {
+		return this.options.html
+	}
+	get endless() {
+		return this.options.endless
+	}
+	get fps() {
+		return this.options.fps
+	}
+
+	get letterize() {
+		return this.options.letterize
+	}
+
+	get ghostChance() {
+		return this.options.ghostChance
+	}
+
+	get changeChance() {
+		return this.options.changeChance
+	}
+
+	get glyphsFromText() {
+		return this.options.glyphsFromText
 	}
 }

@@ -4,7 +4,7 @@ import State from './modules/state'
 import Char from './modules/char'
 import Emiter from './modules/emiter'
 import {
-	ConstructorOptions,
+	CustomOptions,
 	PlayOptions,
 	WriterDataResponse,
 	Callback,
@@ -40,7 +40,7 @@ export default class GlitchedWriter {
 	 */
 	constructor(
 		htmlElement?: HTMLElement | Element | null | string,
-		options?: ConstructorOptions | PresetName | null,
+		options?: CustomOptions | PresetName | null,
 		onStepCallback?: Callback,
 		onFinishCallback?: Callback,
 	) {
@@ -51,34 +51,13 @@ export default class GlitchedWriter {
 				document.createElement('span')
 		} else this.htmlElement = htmlElement
 
-		if (this.htmlElement) this.htmlElement.$writer = this
+		this.htmlElement.$writer = this
 
-		if (typeof options === 'string') this.preset = options
-		else this.setOptions(options ?? {})
-
+		this.options = new Options(this, options)
 		this.state = new State(this)
 		this.emiter = new Emiter(this, onStepCallback, onFinishCallback)
 		this.animator = new Animator(this)
 		this.string = this.previousString
-	}
-
-	/**
-	 * Function for updating multiple options at once. Unlike options setter, it doesn't reset not-passed fields to default state.
-	 * @param options Options object, with fields you want to change.
-	 */
-	extendOptions(options: ConstructorOptions) {
-		this.setOptions({
-			...this.options,
-			...options,
-		})
-	}
-
-	setOptions(options: ConstructorOptions) {
-		this.options = new Options(this, options)
-	}
-
-	set preset(preset: PresetName) {
-		this.options = new Options(this, presets[preset])
 	}
 
 	updateString(): void {
@@ -332,7 +311,7 @@ export default class GlitchedWriter {
 export async function glitchWrite(
 	string: string,
 	htmlElement?: HTMLElement | Element | null | string,
-	options?: ConstructorOptions | PresetName | null,
+	options?: CustomOptions | PresetName | null,
 	onStepCallback?: Callback,
 	onFinishCallback?: Callback,
 ): Promise<WriterDataResponse> {
@@ -355,7 +334,7 @@ export async function glitchWrite(
  */
 export const create = (
 	htmlElement?: HTMLElement | Element | null | string,
-	options?: ConstructorOptions | PresetName | null,
+	options?: CustomOptions | PresetName | null,
 	onStepCallback?: Callback,
 	onFinishCallback?: Callback,
 ) => new GlitchedWriter(htmlElement, options, onStepCallback, onFinishCallback)
@@ -364,7 +343,7 @@ export {
 	presets,
 	glyphs,
 	wait,
-	ConstructorOptions,
+	CustomOptions as ConstructorOptions,
 	WriterDataResponse,
 	Callback,
 }

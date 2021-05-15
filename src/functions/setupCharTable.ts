@@ -20,7 +20,7 @@ export default function setupCharTable(this: GlitchedWriter) {
 }
 
 function createMatchingCharTable(this: GlitchedWriter, from: string): void {
-	const maxDist = Math.min(Math.ceil(this.options.genMaxGhosts / 2), 5),
+	const maxDist = Math.min(Math.ceil(this.options.maxGhosts / 2), 5),
 		goalStringArray = getGoalStringArray.call(this, from)
 
 	let pi = -1

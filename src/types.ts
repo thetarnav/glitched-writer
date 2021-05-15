@@ -22,14 +22,16 @@ export interface OptionsFields {
 	fps: number
 }
 
-export type ConstructorOptions = ModifyInterface<
-	Partial<OptionsFields>,
+export type AllCustomOptions = ModifyInterface<
+	OptionsFields,
 	{
-		glyphs?: string | string[] | Set<string>
-		fillSpace?: boolean
-		oneAtATime?: OptionsFields['oneAtATime'] | boolean
+		glyphs: string | string[] | Set<string>
+		fillSpace: boolean
+		oneAtATime: OptionsFields['oneAtATime'] | boolean
 	}
 >
+
+export type CustomOptions = Partial<AllCustomOptions>
 
 export interface HTMLWriterElement extends Element {
 	$writer?: GlitchedWriter

@@ -66,7 +66,7 @@ export default class Char {
 		this.ghostsBefore = [...initialGhosts]
 		this.writer.state.nGhosts += initialGhosts.length
 
-		this.stepsLeft = options.stepsLeft
+		this.stepsLeft = options.steps
 		if (specialType === 'tag') this.stepsLeft = 0
 		else if (isSpecialChar(gl)) this.specialType = 'whitespace'
 
@@ -100,7 +100,7 @@ export default class Char {
 	}
 
 	get interval(): number {
-		let interval = this.writer.options.genInterval
+		let { interval } = this.writer.options
 		if (this.specialType === 'whitespace') interval /= 1.8
 		return interval
 	}
@@ -152,7 +152,7 @@ export default class Char {
 			!writer.options.endless && this.stepsLeft--
 		}
 
-		await wait(writer.options.genDelay)
+		await wait(writer.options.delay)
 
 		await promiseWhile(
 			() =>
