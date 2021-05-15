@@ -382,13 +382,13 @@ There are many options you can tweak to customize the writting effect. Check ou 
 //	name    [min   , max   ] | const   // default
 	steps?: [number, number] | number, // [1, 8]
 	interval?: [number, number] | number, // [60, 170]
-	initialDelay?: [number, number] | number, // [0, 2000]
+	delay?: [number, number] | number, // [0, 2000]
 	changeChance?: number, // 0.6
 	ghostChance?: number, // 0.2
 	maxGhosts?: number, // '0.2'
 	oneAtATime?: boolean | number | 'word', // 0 | false
 	glyphs?: string | string[] | Set<string>, // glyphs.full + glyphs.zalgo
-	glyphsFromString?: boolean, // false
+	glyphsFromText?: boolean, // false
 	fillSpace?: boolean, // true
 	mode?: 'normal' | 'matching' | 'erase' | 'clear', // 'matching'
 	endless?: boolean // false
@@ -408,7 +408,7 @@ There are many options you can tweak to customize the writting effect. Check ou 
 
 -  **interval** - Interval between each step, for every letter. (int: ms)
 
--  **initialDelay** - first delay each letter must wait before it starts working (int: ms)
+-  **delay** - first delay each letter must wait before it starts working (int: ms)
 
 -  **changeChance** - Percentage chance for letter to change to glitched one (from glyphs) (p: 0-1)
 
@@ -425,7 +425,7 @@ There are many options you can tweak to customize the writting effect. Check ou 
 
 -  **glyphs** - A set of characters that can appear as ghosts or letters can change into them
 
--  **glyphsFromString** - If you want to add letters from written string to the glyph charset
+-  **glyphsFromText** - If you want to add letters from written text to the glyph charset
 
 -  **fillSpace** - With this **enabled** if letter gets erased ny replacing with space - to keep the same "width" of previous string, and to make letters _"disappear in space"_. If **disabled**, every letter will "stick" to the rest. To make it more clear (hopefully), here is an example "frame" of writing: **"Something farely long"** -> **"Short String"**.
 

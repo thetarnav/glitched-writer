@@ -13,12 +13,12 @@ import { presets } from '../presets'
 export default class Options implements OptionsFields {
 	steps: RangeOrNumber
 	interval: RangeOrNumber
-	initialDelay: RangeOrNumber
+	delay: RangeOrNumber
 	changeChance: number
 	ghostChance: number
 	maxGhosts: number
 	oneAtATime: OptionsFields['oneAtATime']
-	glyphsFromString: boolean
+	glyphsFromText: boolean
 	mode: OptionsFields['mode']
 	html: boolean
 	letterize: boolean
@@ -33,13 +33,13 @@ export default class Options implements OptionsFields {
 	constructor(writer: GlitchedWriter, options: ConstructorOptions) {
 		this.steps = options.steps ?? presets.default.steps
 		this.interval = options.interval ?? presets.default.interval
-		this.initialDelay = options.initialDelay ?? presets.default.initialDelay
+		this.delay = options.delay ?? presets.default.delay
 		this.changeChance = options.changeChance ?? presets.default.changeChance
 		this.ghostChance = options.ghostChance ?? presets.default.ghostChance
 		this.maxGhosts = options.maxGhosts ?? presets.default.maxGhosts
 		this.glyphs = options.glyphs ?? presets.default.glyphs
-		this.glyphsFromString =
-			options.glyphsFromString ?? presets.default.glyphsFromString
+		this.glyphsFromText =
+			options.glyphsFromText ?? presets.default.glyphsFromText
 
 		if (Number.isInteger(options.oneAtATime))
 			this.oneAtATime = options.oneAtATime as number
@@ -72,8 +72,8 @@ export default class Options implements OptionsFields {
 	get genInterval(): number {
 		return getRandomFromRange(this.interval)
 	}
-	get genInitDelay(): number {
-		return getRandomFromRange(this.initialDelay)
+	get genDelay(): number {
+		return getRandomFromRange(this.delay)
 	}
 	get genMaxGhosts(): number {
 		if (Number.isInteger(this.maxGhosts)) return this.maxGhosts
@@ -92,7 +92,7 @@ export default class Options implements OptionsFields {
 	setCharset() {
 		let charset = this.glyphsString
 
-		if (this.glyphsFromString)
+		if (this.glyphsFromText)
 			charset += filterDuplicates(
 				this.writer.previousString +
 					(this.writer.options.html

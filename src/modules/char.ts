@@ -152,7 +152,7 @@ export default class Char {
 			!writer.options.endless && this.stepsLeft--
 		}
 
-		await wait(writer.options.genInitDelay)
+		await wait(writer.options.genDelay)
 
 		await promiseWhile(
 			() =>

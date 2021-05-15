@@ -9,12 +9,12 @@ export type RangeOrNumber = [number, number] | number
 export interface OptionsFields {
 	steps: RangeOrNumber
 	interval: RangeOrNumber
-	initialDelay: RangeOrNumber
+	delay: RangeOrNumber
 	changeChance: number
 	ghostChance: number
 	maxGhosts: number
 	oneAtATime: number | 'word'
-	glyphsFromString: boolean
+	glyphsFromText: boolean
 	mode: 'matching' | 'normal' | 'erase' | 'clear'
 	html: boolean
 	letterize: boolean
