@@ -11,11 +11,11 @@ import {
 } from '../utils'
 
 export default class Char {
+	index!: number
 	l!: string
 	gl!: string
 	stepsLeft!: number
-	ghostsBefore: string[] = []
-	ghostsAfter: string[] = []
+	ghosts: [string[], string[]] = [[], []]
 	writer: GlitchedWriter
 
 	stop: boolean = false
@@ -36,10 +36,11 @@ export default class Char {
 		gl: string,
 		initialGhosts: string = '',
 		specialType: LetterItem['type'],
+		index: number,
 	) {
 		this.writer = writer
 
-		this.setProps(l, gl, initialGhosts, specialType)
+		this.setProps(l, gl, initialGhosts, specialType, index)
 
 		if (writer.options.letterize) {
 			this.els = {
@@ -58,12 +59,14 @@ export default class Char {
 		gl: string,
 		initialGhosts: string = '',
 		specialType: LetterItem['type'],
+		index: number,
 	) {
 		const { options } = this.writer
+		this.index = index
 		this.l = l
 		this.gl = gl
 		this.specialType = specialType
-		this.ghostsBefore = [...initialGhosts]
+		this.ghosts[0] = [...initialGhosts]
 		this.writer.state.nGhosts += initialGhosts.length
 
 		this.stepsLeft = options.steps
@@ -79,22 +82,21 @@ export default class Char {
 		gl: string,
 		initialGhosts: string = '',
 		specialType: LetterItem['type'],
+		index: number,
 	) {
-		this.setProps(l, gl, initialGhosts, specialType)
+		this.setProps(l, gl, initialGhosts, specialType, index)
 		if (this.els) this.els.letterEl.className = 'gw-letter'
 	}
 
 	get string(): string {
-		const { l: char, ghostsAfter, ghostsBefore } = this
-		return ghostsBefore.join('') + char + ghostsAfter.join('')
+		const { l, ghosts } = this
+		return ghosts[0].join('') + l + ghosts[1].join('')
 	}
 
 	get finished(): boolean {
-		const { l: char, gl: goal, ghostsBefore, ghostsAfter } = this
+		const { l, gl, ghosts } = this
 		return (
-			(char === goal &&
-				ghostsBefore.length === 0 &&
-				ghostsAfter.length === 0) ||
+			(l === gl && ghosts[0].length === 0 && ghosts[1].length === 0) ||
 			this.specialType === 'tag'
 		)
 	}
@@ -110,8 +112,8 @@ export default class Char {
 		const { ghostsBeforeEl, ghostsAfterEl, letterEl } = this.els
 
 		letterEl.innerHTML = this.l
-		ghostsBeforeEl.textContent = this.ghostsBefore.join('')
-		ghostsAfterEl.textContent = this.ghostsAfter.join('')
+		ghostsBeforeEl.textContent = this.ghosts[0].join('')
+		ghostsAfterEl.textContent = this.ghosts[1].join('')
 	}
 
 	set spanElement(el: HTMLSpanElement) {
@@ -152,7 +154,7 @@ export default class Char {
 			!writer.options.endless && this.stepsLeft--
 		}
 
-		await wait(writer.options.delay)
+		await wait(writer.options.getDelay(this))
 
 		await promiseWhile(
 			() =>
@@ -202,20 +204,20 @@ export default class Char {
 	}
 
 	private addGhost() {
-		const l = this.writer.options.genGhost(this)
-		this.writer.state.nGhosts++
-		coinFlip()
-			? insertGhost(this.ghostsBefore, l)
-			: insertGhost(this.ghostsAfter, l)
+		const { writer, ghosts } = this,
+			l = writer.options.genGhost(this)
+		writer.state.nGhosts++
+		coinFlip() ? insertGhost(ghosts[0], l) : insertGhost(ghosts[1], l)
 	}
 
 	private removeGhost() {
-		const deleted =
-			coinFlip() && this.ghostsBefore.length > 0
-				? deleteRandom(this.ghostsBefore)
-				: deleteRandom(this.ghostsAfter)
+		const { writer, ghosts } = this,
+			deleted =
+				coinFlip() && ghosts[0].length > 0
+					? deleteRandom(ghosts[0])
+					: deleteRandom(ghosts[1])
 
-		if (deleted) this.writer.state.nGhosts--
+		if (deleted) writer.state.nGhosts--
 	}
 }
 

@@ -52,6 +52,9 @@
    -  [Available imports](#available-imports)
 3. **[Presets](#presets)**
 4. **[Options](#customizing-behavior)**
+   -  [Effect style](#stylistic-options)
+   -  [Control](#control-options)
+   -  [Generators](#generator-options)
 
 ---
 
@@ -187,7 +190,7 @@ textHtmlElement.addEventListener('gw-finished', e =>
 
 ### Add & Remove
 
-.add(string) & .remove(number) are methods usefull for quick, slight changes to the displayed text.
+.add(string) & .remove(number) are methods usefull for quick changes to the displayed text.
 
 ```js
 // Let's say current text content is: "Hello World"
@@ -223,7 +226,7 @@ Writer.write('Hello there!')
  * The shape of one character:
  * span.gw-char (and .gw-finished when finish typing)
  * 	span.gw-ghosts
- * 	span.gw-letter (also .gw-glitched when it is a "glitched" char.)
+ * 	span.gw-letter (also .gw-glitched when it is glitched.)
  * 	span.gw-ghosts
  */
 ```
@@ -239,7 +242,7 @@ Here is a [live example](https://codepen.io/thetarnav/pen/oNBLpxb).
 ```js
 // SHOW ON HOVER
 // First make the password scramble forever
-writer.options.set({ endless: true })
+writer.options.extend({ endless: true })
 writer.write('PASSWORD')
 
 // And disable endless option on hover
@@ -362,7 +365,7 @@ new GlitchedWriter(htmlElement, {
 
 ## Customizing behavior
 
-There are many options you can tweak to customize the writting effect. Check ou the [playground website](https://glitched-writer.site/) I've made, where you can test both presets and options.
+There are many options you can tweak to customize the writting effect. Check out the [playground website](https://glitched-writer.site/) I've made, where you can test both presets and options.
 
 **Range** values will result in random values for each step for every letter.
 
@@ -440,13 +443,18 @@ fps?: number, // 60
 
 -  **fps** - Animation loop is done using requestAnimationFrame, with fps you can controll the maximum framerate of writing animation. Only actually matters for high refresh monitors. _(! wont have an effect with letterize enabled !_)
 
-### Additional Options:
+### Generator Options:
 
-> \- misc options
+> \- custom functions used to generate variables contextually, for use in writing.
 
 -  **genGlyph** - function that will be used to generate a ghost/glitched char. Can be used to control which and when different characters will be used, instead of it being a random sample from glyphs list. _E.g. numbers "9" to "1" depending on writing progress._
 
 ```ts
-// type:
 genGlyph?: (char: Char, writer: GlitchedWriter) => string
+```
+
+-  **genDelay** - Generate custom delay. e.g. relatively to the char index in written text.
+
+```ts
+genDelay?: (char: Char, writer: GlitchedWriter) => number // [ms]
 ```

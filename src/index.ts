@@ -10,7 +10,7 @@ import {
 	Callback,
 	HTMLWriterElement,
 } from './types'
-import { wait, LetterItem, filterHtml } from './utils'
+import { wait, filterHtml } from './utils'
 import { presets, glyphs, PresetName } from './presets'
 import setupCharTable from './functions/setupCharTable'
 import letterize from './functions/letterize'
@@ -236,33 +236,6 @@ export default class GlitchedWriter {
 		return finished
 			? this.getWriterData('SUCCESS', `The writer finished typing.`)
 			: this.getWriterData('ERROR', `Writer failed to finish typing.`)
-	}
-
-	removeExtraChars(from: number) {
-		const { charTable } = this
-		charTable.splice(from, charTable.length - from)
-	}
-
-	setChar(ci: number, pl: string, gl: LetterItem, appendedText?: string) {
-		const { charTable } = this,
-			char: Char | undefined = charTable[ci]
-
-		char
-			? char.reset(
-					pl ?? '',
-					gl.value || this.options.space,
-					appendedText,
-					gl.type,
-			  )
-			: charTable.push(
-					new Char(
-						this,
-						pl ?? '',
-						gl.value || this.options.space,
-						appendedText,
-						gl.type,
-					),
-			  )
 	}
 
 	private getWriterData(

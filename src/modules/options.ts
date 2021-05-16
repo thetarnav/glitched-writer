@@ -105,8 +105,11 @@ export default class Options {
 	get interval(): number {
 		return getRandomFromRange(this.options.interval)
 	}
-	get delay(): number {
-		return getRandomFromRange(this.options.delay)
+	getDelay(char: Char): number {
+		const { options } = this
+		return options.genDelay
+			? options.genDelay(char, this.writer)
+			: getRandomFromRange(options.delay)
 	}
 
 	get mode() {

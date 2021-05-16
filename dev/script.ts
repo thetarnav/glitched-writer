@@ -18,17 +18,22 @@ const writer = new GlitchedWriter(
 	// { ...presets.encrypted, html: true },
 	{
 		...presets.encrypted,
+		// glyphs: glyphs.numbers,
+		steps: [8, 10],
 		html: true,
 		// fps: 14,
 		letterize: true,
-		genGlyph: ({ stepsLeft }) => {
-			let l: string
-			if (stepsLeft > 6) l = '.'
-			else if (stepsLeft > 4) l = '_'
-			else if (stepsLeft >= 2) l = '/'
-			else l = '#'
-			return l
-		},
+		// genGlyph: ({ stepsLeft }, { charTable }) => {
+		// 	let l: string
+		// 	if (stepsLeft > 7) l = '_'
+		// 	else if (stepsLeft > 5) l = '..'
+		// 	else if (stepsLeft >= 3) l = '\\'
+		// 	else l = '#'
+		// 	return l
+		// },
+		genDelay: ({ index }) => index * 50,
+		// oneAtATime: 10,
+		// delay: [0, 200],
 	},
 	// { html: true, letterize: true },
 	// 'encrypted',

@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import GlitchedWriter from '..'
+import Char from '../modules/char'
 import {
 	arrayOfTheSame,
 	htmlToArray,
 	LetterItem,
-	stringToLetterItems,
+	stringToLetterItems as textToLetterItems,
 } from '../utils'
 
 export default function setupCharTable(this: GlitchedWriter) {
@@ -15,70 +16,98 @@ export default function setupCharTable(this: GlitchedWriter) {
 			: this.previousString
 
 	this.options.mode === 'matching'
-		? createMatchingCharTable.call(this, from)
-		: createPreviousCharTable.call(this, from)
+		? createMatching.call(this, from)
+		: createPrevious.call(this, from)
 }
 
-function createMatchingCharTable(this: GlitchedWriter, from: string): void {
+function createMatching(this: GlitchedWriter, from: string): void {
 	const maxDist = Math.min(Math.ceil(this.options.maxGhosts / 2), 5),
-		goalStringArray = getGoalStringArray.call(this, from)
+		goalTextArray = getGoalStringText.call(this, from)
 
 	let pi = -1
-	goalStringArray.forEach((gl, gi) => {
+	goalTextArray.forEach((gl, gi) => {
 		pi++
 
 		if (gl.type === 'tag') {
 			pi--
-			this.setChar(gi, '', gl)
+			setChar.call(this, gi, '', gl)
 			return
 		}
 
 		const fi = gl.value !== '' ? from.indexOf(gl.value, pi) : -1
 
 		if (fi !== -1 && fi - pi <= maxDist) {
-			const appendedText = from.substring(pi, fi)
-			this.setChar(gi, gl.value, gl, appendedText)
+			const ghosts = from.substring(pi, fi)
+			setChar.call(this, gi, gl.value, gl, ghosts)
 			pi = fi
-		} else this.setChar(gi, from[pi], gl)
+		} else setChar.call(this, gi, from[pi], gl)
 	})
 
-	this.removeExtraChars(goalStringArray.length)
+	removeExtraChars(this.charTable, goalTextArray.length)
 }
 
-function createPreviousCharTable(this: GlitchedWriter, from: string): void {
-	const goalStringArray = getGoalStringArray.call(this, from)
+function createPrevious(this: GlitchedWriter, from: string): void {
+	const goalStringText = getGoalStringText.call(this, from)
 
 	let pi = -1
-	goalStringArray.forEach((gl, gi) => {
+	goalStringText.forEach((gl, gi) => {
 		pi++
 
 		if (gl.type === 'tag') {
 			pi--
-			this.setChar(gi, '', gl)
+			setChar.call(this, gi, '', gl)
 			return
 		}
 
-		this.setChar(gi, from[pi], gl)
+		setChar.call(this, gi, from[pi], gl)
 	})
 
-	this.removeExtraChars(goalStringArray.length)
+	removeExtraChars(this.charTable, goalStringText.length)
 }
 
-function getGoalStringArray(this: GlitchedWriter, from: string): LetterItem[] {
+function getGoalStringText(this: GlitchedWriter, from: string): LetterItem[] {
 	const { options, goalText } = this,
 		goalArray = options.html
 			? htmlToArray(goalText)
-			: stringToLetterItems(goalText),
+			: textToLetterItems(goalText),
 		diff = Math.max(0, from.length - goalArray.length)
 
 	if (this.options.oneAtATime)
-		return goalArray.concat(stringToLetterItems(arrayOfTheSame('', diff)))
+		return goalArray.concat(textToLetterItems(arrayOfTheSame('', diff)))
 
 	const nBefore = Math.ceil(diff / 2),
 		nAfter = Math.floor(diff / 2)
 
-	return stringToLetterItems(arrayOfTheSame('', nBefore)).concat(
+	return textToLetterItems(arrayOfTheSame('', nBefore)).concat(
 		goalArray,
-		stringToLetterItems(arrayOfTheSame('', nAfter)),
+		textToLetterItems(arrayOfTheSame('', nAfter)),
 	)
+}
+
+function setChar(
+	this: GlitchedWriter,
+	i: number,
+	l: string,
+	gl: LetterItem,
+	ghosts?: string,
+) {
+	const { charTable, options } = this,
+		char: Char | undefined = charTable[i]
+
+	char
+		? char.reset(l ?? '', gl.value || options.space, ghosts, gl.type, i)
+		: charTable.push(
+				new Char(
+					this,
+					l ?? '',
+					gl.value || options.space,
+					ghosts,
+					gl.type,
+					i,
+				),
+		  )
+}
+
+function removeExtraChars(charTable: Char[], from: number) {
+	charTable.splice(from, charTable.length - from)
 }

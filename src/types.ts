@@ -32,6 +32,7 @@ export type AllCustomOptions = ModifyInterface<
 		oneAtATime: OptionsFields['oneAtATime'] | boolean
 
 		genGlyph?: (char: Char, writer: GlitchedWriter) => string
+		genDelay?: (char: Char, writer: GlitchedWriter) => number
 	}
 >
 
