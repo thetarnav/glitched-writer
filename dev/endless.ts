@@ -17,23 +17,24 @@ const secretWriter = new GlitchedWriter('#secret', 'encrypted'),
 hide()
 
 numbersEl.addEventListener('mouseenter', () => {
-	secretWriter.options.endless = false
+	secretWriter.endless(false)
 	infoEl.classList.add('hide')
 })
 
 numbersEl.addEventListener('mouseleave', hide)
 
 function hide() {
-	secretWriter.options.endless = true
+	secretWriter.endless(true)
 	secretWriter.write(numbers.join(''))
 	infoEl.classList.remove('hide')
 }
 
-setTimeout(() => {
-	// secretWriter.extendOptions({
-	// 	glyphs: '/*-+-=!@#%^&*(({}[],<>/?:"',
-	// })
-	secretWriter.options = {
-		glyphs: '/*-+-=!@#%^&*(({}[],<>/?:"',
-	}
-}, 5000)
+// setTimeout(() => {
+// 	// secretWriter.extendOptions({
+// 	// 	glyphs: '/*-+-=!@#%^&*(({}[],<>/?:"',
+// 	// })
+// 	// secretWriter.
+// 	secretWriter.options = {
+// 		glyphs: '/*-+-=!@#%^&*(({}[],<>/?:"',
+// 	}
+// }, 5000)

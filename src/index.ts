@@ -123,6 +123,14 @@ export default class GlitchedWriter {
 		return this.write(array.join(''))
 	}
 
+	/**
+	 * Shorthand for changing endless option value
+	 * @param bool goal state
+	 */
+	endless(bool: boolean): void {
+		this.options.extend({ endless: bool })
+	}
+
 	// private logCharTable() {
 	// 	console.table(
 	// 		this.charTable.map(

@@ -242,13 +242,11 @@ Here is a [live example](https://codepen.io/thetarnav/pen/oNBLpxb).
 ```js
 // SHOW ON HOVER
 // First make the password scramble forever
-writer.options.extend({ endless: true })
+writer.endless(true)
 writer.write('PASSWORD')
 
 // And disable endless option on hover
-passEl.addEventListener('mouseover', () =>
-	writer.options.extend({ endless: false }),
-)
+passEl.addEventListener('mouseover', () => writer.endless(false))
 ```
 
 ### Changing options post initialization
@@ -258,16 +256,16 @@ Options can be changed in 2 ways after instance creation.
 ```js
 // Extending current options
 writer.options.extend({
-	endless: true,
+	html: true,
 	maxGhosts: 10,
 	// the rest will stay the same
 })
 
 // Reseting options
 writer.options.set({
-	endless: true,
-	maxGhosts: 10,
-	// the rest will be set to default value
+	letterize: true,
+	oneAtATime: 4,
+	// the rest will be set to default
 })
 ```
 
