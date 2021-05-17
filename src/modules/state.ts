@@ -53,7 +53,7 @@ export default class State {
 		this.writer.animator.run()
 		this.writer.emiter.callback(
 			'start',
-			this.writer.string,
+			this.writer.goalText,
 			this.writer.writerData,
 		)
 	}

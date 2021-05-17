@@ -42,7 +42,7 @@
    -  [Pausing & Playing](#pausing--playing)
    -  [One-Time-Use](#one-time-use)
    -  [On Text Input](#on-text-input)
-   -  [Listening For Events](#listening-for-events)
+   -  [Callbacks | Events](#callbacks-|-events)
    -  [Add & Remove](#add--remove)
    -  [Writing HTML](#writing-html)
    -  [Letterize](#letterize)
@@ -102,7 +102,6 @@ Creating writer class instance:
 const Writer = new GlitchedWriter(
 	htmlElement, // Element / Selector string / undefined
 	options, // {...} / Preset name / undefined
-	onStepCallback, // (string, data) => {} / undefined
 	onFinishCallback, // (string, data) => {} / undefined
 )
 
@@ -113,7 +112,7 @@ const Writer = new GlitchedWriter(htmlElement, {
 	letterize: true,
 })
 
-// On-step-callback added:
+// On-finish-callback added:
 const Writer = new GlitchedWriter(htmlElement, {}, (string, writerData) => {
 	console.log(`Current string: ${string}`)
 	console.log('All the class data:', writerData)
@@ -179,13 +178,26 @@ inputEl.addEventListener('input', () => {
 })
 ```
 
-### Listening For Events
+### Callbacks | Events
 
 ```js
-// html element that you passed in writer constructor.
+// your html element:
 textHtmlElement.addEventListener('gw-finished', e =>
 	console.log('finished writing:', e.detail.string),
 )
+
+/**
+ * Adding callbacks: writer.addCallback(type, callback)
+ *
+ * @param type "start" | "step" | "finish"
+ * @param callback your callback function: (string, writerData) => {}
+ */
+
+const startCB = string => console.log('Started writing:', string)
+// add
+writer.addCallback('start', startCB)
+// remove
+writer.removeCallback('start', startCB)
 ```
 
 ### Add & Remove
