@@ -323,7 +323,7 @@ import GlitchedWriter, { // <-- GlitchedWriter class
 ## Presets
 
 To use one of the available presets, You can simply write it's name when creating writer, in the place of options.
-Available presets as for now:
+Available presets, as for now:
 
 -  **[default](https://codepen.io/thetarnav/pen/MWWyPzY)** - Loaded automatically, featured on the GIF up top.
 
@@ -340,6 +340,8 @@ Available presets as for now:
 -  **[encrypted](https://codepen.io/thetarnav/pen/oNBLpxb)** - Simple Text Scramble effect, suits well displaying secret data, like passwords or card numbers. And generally looks good for more "casual" usecases - where you don't want too much "layout shifting", caused by rapid characters number changing.
 
 -  **bitbybit** - Writes text word by word, in rhythmic but stattering manner.
+
+-  **[cosmic](https://codepen.io/thetarnav/pen/ExWgYer)** - Text slowly appears from and vanishes to the hollowness of space. Use with preserved sequences of white space _(white-space: pre-wrap;)_
 
 ```js
 new GlitchedWriter(htmlElement, 'terminal')

@@ -111,6 +111,18 @@ export const presets = {
 		fillSpace: false,
 		mode: 'erase',
 	} as CustomOptions,
+	cosmic: {
+		steps: [0, 1],
+		interval: 30,
+		delay: [400, 2400],
+		ghostChance: 0,
+		changeChance: 0.3,
+		maxGhosts: 0,
+		glyphs: 'QWERTYUIOPASDFGHJKLZXCVBNM',
+		glyphsFromText: false,
+		fillSpace: true,
+		mode: 'erase',
+	} as CustomOptions,
 }
 
 export type PresetName = keyof typeof presets
