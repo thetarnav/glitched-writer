@@ -60,5 +60,7 @@ export interface WriterDataResponse {
 	error?: any
 }
 
+export type CallbackType = 'start' | 'step' | 'finish'
+
 // eslint-disable-next-line no-unused-vars
 export type Callback = (string: string, writerData: WriterDataResponse) => any

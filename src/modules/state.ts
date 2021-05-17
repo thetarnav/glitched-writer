@@ -51,6 +51,11 @@ export default class State {
 		this.toggleClass(true)
 		this.maxGhosts = this.writer.options.maxGhosts
 		this.writer.animator.run()
+		this.writer.emiter.callback(
+			'start',
+			this.writer.string,
+			this.writer.writerData,
+		)
 	}
 
 	pause() {

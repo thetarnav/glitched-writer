@@ -9,6 +9,7 @@ import {
 	WriterDataResponse,
 	Callback,
 	HTMLWriterElement,
+	CallbackType,
 } from './types'
 import { wait, filterHtml } from './utils'
 import { presets, glyphs, PresetName } from './presets'
@@ -41,7 +42,6 @@ export default class GlitchedWriter {
 	constructor(
 		htmlElement?: HTMLElement | Element | null | string,
 		options?: CustomOptions | PresetName | null,
-		onStepCallback?: Callback,
 		onFinishCallback?: Callback,
 	) {
 		if (!htmlElement) this.htmlElement = document.createElement('span')
@@ -55,7 +55,8 @@ export default class GlitchedWriter {
 
 		this.options = new Options(this, options)
 		this.state = new State(this)
-		this.emiter = new Emiter(this, onStepCallback, onFinishCallback)
+		this.emiter = new Emiter(this)
+		if (onFinishCallback) this.emiter.addCallback('finish', onFinishCallback)
 		this.animator = new Animator(this)
 		this.string = this.previousString
 	}
@@ -129,6 +130,26 @@ export default class GlitchedWriter {
 	 */
 	endless(bool: boolean): void {
 		this.options.extend({ endless: bool })
+	}
+
+	/**
+	 * Use this to add callback to one of the writer events
+	 *
+	 * save callback in a variable first if you want to remove it later.
+	 * @param type "start" | "step" | "finish"
+	 * @param callback your callback function: (string, writerData) => {}
+	 */
+	addCallback(type: CallbackType, callback: Callback) {
+		this.emiter.addCallback(type, callback)
+	}
+
+	/**
+	 * Use this to remove added callback
+	 * @param type "start" | "step" | "finish"
+	 * @param callback variable pointing to your function
+	 */
+	removeCallback(type: CallbackType, callback: Callback) {
+		this.emiter.removeCallback(type, callback)
 	}
 
 	// private logCharTable() {
@@ -293,15 +314,9 @@ export async function glitchWrite(
 	string: string,
 	htmlElement?: HTMLElement | Element | null | string,
 	options?: CustomOptions | PresetName | null,
-	onStepCallback?: Callback,
 	onFinishCallback?: Callback,
 ): Promise<WriterDataResponse> {
-	const writer = new GlitchedWriter(
-		htmlElement,
-		options,
-		onStepCallback,
-		onFinishCallback,
-	)
+	const writer = new GlitchedWriter(htmlElement, options, onFinishCallback)
 	return writer.write(string)
 }
 
@@ -316,8 +331,7 @@ export async function glitchWrite(
 export const create = (
 	htmlElement?: HTMLElement | Element | null | string,
 	options?: CustomOptions | PresetName | null,
-	onStepCallback?: Callback,
 	onFinishCallback?: Callback,
-) => new GlitchedWriter(htmlElement, options, onStepCallback, onFinishCallback)
+) => new GlitchedWriter(htmlElement, options, onFinishCallback)
 
 export { presets, glyphs, wait, CustomOptions, WriterDataResponse, Callback }

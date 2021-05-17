@@ -17,9 +17,9 @@ const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		...presets.encrypted,
+		...presets.cosmic,
 		// glyphs: glyphs.numbers,
-		steps: [8, 10],
+		// steps: [8, 10],
 		html: true,
 		// fps: 14,
 		letterize: true,
@@ -31,7 +31,7 @@ const writer = new GlitchedWriter(
 		// 	else l = '#'
 		// 	return l
 		// },
-		genDelay: ({ index }) => index * 50,
+		// genDelay: ({ index }) => index * 50,
 		// oneAtATime: 10,
 		// delay: [0, 200],
 	},
@@ -41,10 +41,12 @@ const writer = new GlitchedWriter(
 	// 	const { done, todo, percent } = data.writer.state.progress
 	// 	console.log(`${done}/${todo} - ${Math.round(percent * 100)}`)
 	// },
-	undefined,
 	afterFinish,
 )
 
+writer.addCallback('start', () => {
+	console.log('Started Writing...')
+})
 ;(async function () {
 	// await wait(800)
 	// await writer.write('<b>MY PASSWORD</b>')

@@ -1,20 +1,34 @@
 import GlitchedWriter from '../index'
-import { Callback } from '../types'
+import { Callback, CallbackType } from '../types'
 import { filterHtml } from '../utils'
 
-export default class {
+export default class Emiter {
 	writer: GlitchedWriter
-	onStepCallback?: Callback
-	onFinishCallback?: Callback
 
-	constructor(
-		writer: GlitchedWriter,
-		onStepCallback?: Callback,
-		onFinishCallback?: Callback,
-	) {
-		this.onStepCallback = onStepCallback
-		this.onFinishCallback = onFinishCallback
+	callbacks = {
+		start: [] as Callback[],
+		step: [] as Callback[],
+		finish: [] as Callback[],
+	}
+
+	constructor(writer: GlitchedWriter) {
 		this.writer = writer
+	}
+
+	addCallback(type: CallbackType, callback: Callback) {
+		this.callbacks[type].push(callback)
+	}
+
+	removeCallback(type: CallbackType, callback: Callback): boolean {
+		const array = this.callbacks[type],
+			i = array.indexOf(callback)
+		if (i === -1) return false
+		array.splice(i, 1)
+		return true
+	}
+
+	callback(type: CallbackType, ...args: Parameters<Callback>) {
+		this.callbacks[type].forEach(cb => cb(...args))
 	}
 
 	call(eventType: 'step' | 'finish') {
@@ -30,14 +44,14 @@ export default class {
 			)
 
 		// ON STEP
-		if (eventType === 'step') return this.onStepCallback?.(string, writerData)
+		if (eventType === 'step') return this.callback('step', string, writerData)
 
 		// ON FINISH
 		writer.state.finish()
 
 		// change state to finished but do not fire callbacks
 		if (writer.state.erasing) return
-		this.onFinishCallback?.(string, writerData)
+		this.callback('finish', string, writerData)
 		this.emitEvent()
 	}
 
