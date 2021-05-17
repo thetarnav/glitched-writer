@@ -88,7 +88,7 @@ In result, the **GlitchedWriter** object will be available in your code, this ob
 
 ```js
 // use create method to create new instance.
-const writer = GlitchedWriter.create(Element, options, stepCB, finishCB)
+const writer = GlitchedWriter.create(Element, options, finishCB)
 ```
 
 ## Usage:
@@ -164,7 +164,7 @@ For quick one-time writing.
 ```js
 import { glitchWrite } from 'glitched-writer'
 
-glitchWrite('Write this and DISAPER!', htmlElement, options, ...)
+glitchWrite('Write this and DISAPER!', htmlElement, options, stepCB, finishCB)
 ```
 
 ### On Text Input
