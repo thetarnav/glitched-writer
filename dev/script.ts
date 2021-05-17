@@ -17,20 +17,20 @@ const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		...presets.cosmic,
+		...presets.encrypted,
 		// glyphs: glyphs.numbers,
 		// steps: [8, 10],
 		html: true,
 		// fps: 14,
 		letterize: true,
-		// genGlyph: ({ stepsLeft }, { charTable }) => {
-		// 	let l: string
-		// 	if (stepsLeft > 7) l = '_'
-		// 	else if (stepsLeft > 5) l = '..'
-		// 	else if (stepsLeft >= 3) l = '\\'
-		// 	else l = '#'
-		// 	return l
-		// },
+		genGlyph: ({ stepsLeft }) => {
+			let l: string
+			if (stepsLeft > 7) l = '_'
+			else if (stepsLeft > 5) l = '..'
+			else if (stepsLeft >= 3) l = '\\'
+			else l = '#'
+			return l
+		},
 		// genDelay: ({ index }) => index * 50,
 		// oneAtATime: 10,
 		// delay: [0, 200],

@@ -191,7 +191,7 @@ export default class Char {
 			}
 			if (coinFlip(changeChance)) {
 				this.els?.letterEl.classList.add('gw-glitched')
-				this.l = writer.options.genGhost(this)
+				this.l = writer.options.getGlyph(this)
 			}
 		} else if (!this.finished) {
 			/**
@@ -205,7 +205,7 @@ export default class Char {
 
 	private addGhost() {
 		const { writer, ghosts } = this,
-			l = writer.options.genGhost(this)
+			l = writer.options.getGlyph(this)
 		writer.state.nGhosts++
 		coinFlip() ? insertGhost(ghosts[0], l) : insertGhost(ghosts[1], l)
 	}

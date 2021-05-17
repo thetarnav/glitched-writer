@@ -31,8 +31,8 @@ export type AllCustomOptions = ModifyInterface<
 		fillSpace: boolean
 		oneAtATime: OptionsFields['oneAtATime'] | boolean
 
-		genGlyph?: (char: Char, writer: GlitchedWriter) => string
-		genDelay?: (char: Char, writer: GlitchedWriter) => number
+		genGlyph?: (char: Char, base: () => string) => string
+		genDelay?: (char: Char, base: () => number) => number
 	}
 >
 

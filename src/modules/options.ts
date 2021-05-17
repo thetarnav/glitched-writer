@@ -94,8 +94,14 @@ export default class Options {
 		this.maxGhosts = Math.round((length || 20) * maxGhosts)
 	}
 
-	genGhost(char: Char): string {
-		if (this.options.genGlyph) return this.options.genGlyph(char, this.writer)
+	getGlyph(char: Char): string {
+		const { options } = this
+
+		return options.genGlyph
+			? options.genGlyph(char, this.baseGetGlyph)
+			: this.baseGetGlyph()
+	}
+	private baseGetGlyph(): string {
 		return getRandom(this.charset) ?? ''
 	}
 
@@ -105,11 +111,15 @@ export default class Options {
 	get interval(): number {
 		return getRandomFromRange(this.options.interval)
 	}
+
 	getDelay(char: Char): number {
 		const { options } = this
 		return options.genDelay
-			? options.genDelay(char, this.writer)
-			: getRandomFromRange(options.delay)
+			? options.genDelay(char, this.baseGetDelay)
+			: this.baseGetDelay()
+	}
+	private baseGetDelay(): number {
+		return getRandomFromRange(this.options.delay)
 	}
 
 	get mode() {

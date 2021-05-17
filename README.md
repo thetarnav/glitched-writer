@@ -15,7 +15,7 @@
 
 -  **Highly customizable** behavior. Set of options let you animate the text the way is suits your design.
 
--  Callback functions firing on finish and every step.
+-  Adding Callback functions to fire on writer events (start, step, finish).
 
 -  Custom Event **gw-finished** will be dispatched on the HTML Element.
 
@@ -459,14 +459,21 @@ fps?: number, // 60
 
 > \- custom functions used to generate variables contextually, for use in writing.
 
+```ts
+/**
+ * @param char - Char for which to generate value
+ * @param base - default function generating that value
+ */
+```
+
 -  **genGlyph** - function that will be used to generate a ghost/glitched char. Can be used to control which and when different characters will be used, instead of it being a random sample from glyphs list. _E.g. numbers "9" to "1" depending on writing progress._
 
 ```ts
-genGlyph?: (char: Char, writer: GlitchedWriter) => string
+genGlyph?: (char: Char, base: Function) => string
 ```
 
 -  **genDelay** - Generate custom delay. e.g. relatively to the char index in written text.
 
 ```ts
-genDelay?: (char: Char, writer: GlitchedWriter) => number // [ms]
+genDelay?: (char: Char, base: Function) => number // [ms]
 ```
