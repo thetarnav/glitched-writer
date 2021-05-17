@@ -25,7 +25,7 @@
 
 -  Can letterize string it into many **span** elements inside the parent element.
 
--  Written fully in **Typescript**.
+-  Written in **Typescript**.
 
 ---
 
@@ -437,7 +437,7 @@ fps?: number, // 60
 
 -  **letterize** - Instead of injecting written text to "textContent" or "innerHTML", it appends every letter of that text as a child span element. Then changing textContent of that span to current letter. It gives a lot of styling possibilities, as you can style ghosts, letters, and whole chars seperately, depending on current writer and char state.
 
--  **endless** - It will make the animation endless. _But why?_ Well, you can disable this option while the animation is running _(writer.options.endless = false)_ and finish the animation when you want.
+-  **endless** - It will make the animation endless. _But why?_ Well, you can disable this option while the animation is running _( writer.endless(false) )_ and finish the animation when you want.
 
 -  **fps** - Animation loop is done using requestAnimationFrame, with fps you can controll the maximum framerate of writing animation. Only actually matters for high refresh monitors. _(! wont have an effect with letterize enabled !_)
 
