@@ -107,8 +107,8 @@ async function afterFinish(string, data) {
 	// writer.write(queue[queueIndex])
 }
 
-// writer.queryWrite('.writer-texts', 1000, true)
-writer.queryWrite(queue, 1000, true)
+// writer.queueWrite('.writer-texts', 1000, true)
+writer.queueWrite(queue, 1000, true)
 
 inputEl.addEventListener(
 	'input',

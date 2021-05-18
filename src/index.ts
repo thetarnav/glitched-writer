@@ -122,7 +122,7 @@ export default class GlitchedWriter {
 		}
 		if (typeof texts === 'string') return this.manageWriting(texts)
 
-		this.queryWrite(texts, queueInterval, loop)
+		this.queueWrite(texts, queueInterval, loop)
 	}
 
 	/**
@@ -138,7 +138,7 @@ export default class GlitchedWriter {
 	 * - Callback -> stop and fire the callback.
 	 * - number -> wait number ms and than continue
 	 */
-	queryWrite(
+	queueWrite(
 		texts: string[] | HTMLElement | Element | string,
 		queueInterval?: number,
 		loop?: boolean | Callback | number,
