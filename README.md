@@ -477,3 +477,11 @@ genGlyph?: (char: Char, base: Function) => string
 ```ts
 genDelay?: (char: Char, base: Function) => number // [ms]
 ```
+
+## The End - couple of final words
+
+Thanks for checking out the Glitched Writer. Let me know, if you are using it somewhere - would love to see it working out there.
+
+If you have any questions, just create new [discusion](https://github.com/thetarnav/glitched-writer/discussions) or [issue](https://github.com/thetarnav/glitched-writer/issues). Or just send me an email at gthetarnav@gmail.com, if you want.
+
+Presets or feature ideas are also welcome :)
