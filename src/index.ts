@@ -143,6 +143,10 @@ export default class GlitchedWriter {
 		queueInterval?: number,
 		loop?: boolean | Callback | number,
 	) {
+		if (this.queue) {
+			this.queue.stop()
+			delete this.queue
+		}
 		this.queue = new Queue(this, texts, queueInterval, loop)
 	}
 
