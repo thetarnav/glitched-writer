@@ -169,9 +169,9 @@ Instead of using the `string` array, you can place an `div` with your queue as `
 This allows bots and search engines, as well as users with JavaScript disabled, to see your text on the page.
 
 ```html
-<div id="phrases">
+<div id="phrases" style="display: none;">
 	<p>Welcome!</p>
-	<p>to my <b>awesome</b> website</p>
+	<p>to my <b>awesome</b> website.</p>
 </div>
 ```
 
