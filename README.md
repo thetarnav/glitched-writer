@@ -462,6 +462,7 @@ mode?: 'normal' | 'matching' | 'erase' | 'clear', // 'matching'
    -  'matching' - _Will scan starting and goal string for matching characters and will try to build character map from that._
    -  'normal' - _Wont do any matching, just converts starting string into character map._
    -  'erase' - _First Erases entire string and then writes your text._
+   -  'erase*smart' - Same as erase, but saves the matching begginging letters*
    -  'clear' - _Instantly deletes entire textContent and then writes your text._
 
 ### Control Options:

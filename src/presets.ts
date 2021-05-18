@@ -52,7 +52,7 @@ export const presets = {
 		glyphs: '',
 		glyphsFromText: false,
 		fillSpace: false,
-		mode: 'erase',
+		mode: 'erase_smart',
 	} as CustomOptions,
 	terminal: {
 		interval: [25, 30],

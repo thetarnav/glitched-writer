@@ -219,7 +219,7 @@ export default class GlitchedWriter {
 
 		// Erasing first
 		if (
-			this.options.mode === 'erase' &&
+			['erase_smart', 'erase'].includes(this.options.mode) &&
 			(this.state.finished || this.state.erasing)
 		) {
 			this.state.erasing = true
@@ -316,12 +316,15 @@ export default class GlitchedWriter {
 		const { previousString: previous } = this
 		let result = ''
 
-		for (let i = 0; i < goal.length; i++) {
-			const gl = goal[i],
-				pl = previous[i] ?? ''
+		if (this.options.mode === 'erase_smart') {
+			// Do not erase matching with previous letters
+			for (let i = 0; i < goal.length; i++) {
+				const gl = goal[i],
+					pl = previous[i] ?? ''
 
-			if (gl === pl) result += pl
-			else break
+				if (gl === pl) result += pl
+				else break
+			}
 		}
 
 		const diff = Math.max(goal.length - result.length, 0)

@@ -17,7 +17,7 @@ export interface OptionsFields {
 	maxGhosts: number
 	oneAtATime: number | 'word'
 	glyphsFromText: boolean
-	mode: 'matching' | 'normal' | 'erase' | 'clear'
+	mode: 'matching' | 'normal' | 'erase' | 'erase_smart' | 'clear'
 	html: boolean
 	letterize: boolean
 	endless: boolean

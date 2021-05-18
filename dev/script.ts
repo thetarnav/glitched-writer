@@ -17,7 +17,7 @@ const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		// ...presets.bitbybit,
+		...presets.typewriter,
 		// glyphs: glyphs.numbers,
 		// steps: [8, 10],
 		html: true,
@@ -89,6 +89,7 @@ writer.addCallback('start', string => {
 const queue = [
 	'This is the only &#163; the <strong>only</strong> the begining',
 	'Something farely long',
+	'Something super mega long, omg!!',
 	'<b>This is</b> the\n<strong>MONEY</strong>: &#163;',
 	"Roget's 21st Century Thesaurus, Third Edition Copyright © 2013 by the Philip Lief Group.",
 	'Short String',
