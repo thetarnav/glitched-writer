@@ -26,7 +26,7 @@ export default class GlitchedWriter {
 	state: State
 	emiter: Emiter
 	animator: Animator
-	queue: Queue
+	queue?: Queue
 	charTable: Char[] = []
 
 	goalText: string = ''
@@ -59,7 +59,6 @@ export default class GlitchedWriter {
 		this.emiter = new Emiter(this)
 		if (onFinishCallback) this.emiter.addCallback('finish', onFinishCallback)
 		this.animator = new Animator(this)
-		this.queue = new Queue(this)
 		this.string = this.previousString
 	}
 
@@ -93,11 +92,37 @@ export default class GlitchedWriter {
 
 	/**
 	 * Main function of Glitched Writer. It orders writer to start typing passed string. Can be called multiple times after each other, or even during writing.
-	 * @param string text, that will get written.
+	 * @param text text, that will get written.
 	 * @returns Promise, with writer data result
 	 */
-	async write(string: string) {
-		return this.manageWriting(string)
+	async write(text: string): Promise<WriterDataResponse>
+	/**
+	 * Order Glitched writer to write sequence of texts. In a loop or not.
+	 * @param texts - Array of strings to write
+	 * @param queueInterval - Time to wait between writing each texts [ms]
+	 * @param loop - boolean | Callback | number - What to do when the queue has ended.
+	 * - false -> stop;
+	 * - true -> continue looping;
+	 * - Callback -> stop and fire the callback.
+	 * - number -> wait number ms and than continue
+	 */
+	async write(
+		texts: string[],
+		queueInterval: number,
+		loop: boolean | Callback | number,
+	): Promise<void>
+	async write(
+		texts: string | string[],
+		queueInterval?: number,
+		loop?: boolean | Callback | number,
+	): Promise<void | WriterDataResponse> {
+		if (this.queue) {
+			this.queue.stop()
+			delete this.queue
+		}
+		if (typeof texts === 'string') return this.manageWriting(texts)
+
+		this.queue = new Queue(this, texts, queueInterval, loop)
 	}
 
 	/**
@@ -124,6 +149,27 @@ export default class GlitchedWriter {
 
 		// return this.write(array.join(''), { erase: true })
 		return this.write(array.join(''))
+	}
+
+	/**
+	 * Resume last writing order.
+	 * @returns Promise, with writer data result
+	 */
+	async play(): Promise<WriterDataResponse> {
+		if (!this.state.isPaused)
+			return this.getWriterData('ERROR', "The writer isn't paused.")
+		if (this.queue) {
+			this.queue.resume()
+			return this.getWriterData('SUCCESS', 'The queue was resumed')
+		}
+		return this.manageWriting(null)
+	}
+
+	/**
+	 * Pause current writer task.
+	 */
+	pause() {
+		this.state.pause()
 	}
 
 	/**
@@ -168,24 +214,7 @@ export default class GlitchedWriter {
 	// 	)
 	// }
 
-	/**
-	 * Resume last writing order.
-	 * @returns Promise, with writer data result
-	 */
-	async play(): Promise<WriterDataResponse> {
-		return this.manageWriting(null)
-	}
-
-	/**
-	 * Pause current writer task.
-	 */
-	pause() {
-		this.state.pause()
-	}
-
-	private async manageWriting(
-		text: string | null,
-	): Promise<WriterDataResponse> {
+	async manageWriting(text: string | null): Promise<WriterDataResponse> {
 		if (text !== null) this.lastText = text
 
 		// Erasing first
@@ -269,7 +298,7 @@ export default class GlitchedWriter {
 			: this.getWriterData('ERROR', `Writer failed to finish typing.`)
 	}
 
-	private getWriterData(
+	getWriterData(
 		status?: WriterDataResponse['status'],
 		message?: WriterDataResponse['message'],
 		error?: WriterDataResponse['error'],

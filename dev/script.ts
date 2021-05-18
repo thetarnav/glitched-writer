@@ -17,7 +17,7 @@ const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		// ...presets.typewriter,
+		// ...presets.bitbybit,
 		// glyphs: glyphs.numbers,
 		// steps: [8, 10],
 		html: true,
@@ -44,8 +44,8 @@ const writer = new GlitchedWriter(
 	afterFinish,
 )
 
-writer.addCallback('start', () => {
-	console.log('Started Writing...')
+writer.addCallback('start', string => {
+	console.log('Started Writing...', string)
 })
 ;(async function () {
 	// await wait(800)
@@ -85,7 +85,7 @@ writer.addCallback('start', () => {
 // 	inputEl.removeAttribute('disabled')
 // })()
 
-let queueIndex = 0
+// let queueIndex = 0
 const queue = [
 	'This is the only &#163; the <strong>only</strong> the begining',
 	'Something farely long',
@@ -94,17 +94,19 @@ const queue = [
 	'Short String',
 	'Please,\n<i>say &colon; something</i>...',
 ]
-writer.write(queue[0])
+// writer.write(queue[0])
 async function afterFinish(string, data) {
 	// const { done, todo, percent } = data.writer.state.progress
 	// console.log(`${done}/${todo} - ${Math.round(percent * 100)}`)
 	console.log('FINISHED', string)
 
-	await wait(1000)
-	queueIndex++
-	if (queueIndex >= queue.length) queueIndex = 0
-	writer.write(queue[queueIndex])
+	// await wait(1000)
+	// queueIndex++
+	// if (queueIndex >= queue.length) queueIndex = 0
+	// writer.write(queue[queueIndex])
 }
+
+writer.write(queue, 1000, true)
 
 inputEl.addEventListener(
 	'input',

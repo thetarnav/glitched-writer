@@ -42,6 +42,7 @@
 2. **[Usage](#usage)**
    -  [Creating Class Instance](#creating-class-instance)
    -  [Writing](#writing)
+   -  [Queue Writing](#queue-writing)
    -  [Pausing & Playing](#pausing--playing)
    -  [One-Time-Use](#one-time-use)
    -  [On Text Input](#on-text-input)
@@ -141,7 +142,29 @@ await wait(1200) // additional simple promise to wait some time
 await Writer.write('...to Glitch City!')
 ```
 
+### Queue Writing
+
+If you have prepared array of texts to write - in a loop, or one time - you can pass them all to the .write() method and initiate a Queue.
+
+```js
+const phrases = ['First, write this.', 'Then this.', 'And finally this!']
+
+writer.write(phrases, 1000, true)
+
+/**
+ * 1. @param texts - Array of strings to write
+ * 2. @param queueInterval - Time to wait between writing each texts [ms]
+ * 3. @param loop - boolean | Callback | number - What to do when the queue has ended.
+ * - false -> stop;
+ * - true -> continue looping;
+ * - Callback -> stop and fire the callback.
+ * - number -> wait number ms and than continue
+ */
+```
+
 ### Pausing & Playing
+
+You can pause and resume playing at any time.
 
 ```js
 Writer.write('Some very cool header.').then(({ status, message }) => {
@@ -149,14 +172,14 @@ Writer.write('Some very cool header.').then(({ status, message }) => {
 	console.log(`${status}: ${message}`)
 })
 
-setTimeout(() => {
-	Writer.pause() // will stop writing
-}, 1000)
+setTimeout(
+	() => Writer.pause(), // will stop writing
+	1000,
+)
 
 setTimeout(async () => {
-	await Writer.play() // continue writing
-
-	console.log(Writer.string) // will log after finished writing
+	const { string } = await Writer.play() // continue writing
+	console.log('Completed:', string) // will log after finished writing
 }, 2000)
 ```
 
@@ -173,12 +196,14 @@ glitchWrite('Write this and DISAPER!', htmlElement, options, stepCB, finishCB)
 ### On Text Input
 
 Don't be afraid to call write method on top of each oder.
-New will stop the ongoing.
+New will stop the ongoing. But, it's good to debounce the event handler.
 
 ```js
-inputEl.addEventListener('input', () => {
-	Writer.write(inputEl.value)
-})
+import debounce from 'lodash.debounce'
+
+const onInput = debounce(() => writer.write(inputEl.value), 500)
+
+inputEl.addEventListener('input', onInput)
 ```
 
 ### Callbacks | Events
