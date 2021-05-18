@@ -108,8 +108,8 @@ export default class GlitchedWriter {
 	 */
 	async write(
 		texts: string[],
-		queueInterval: number,
-		loop: boolean | Callback | number,
+		queueInterval?: number,
+		loop?: boolean | Callback | number,
 	): Promise<void>
 	async write(
 		texts: string | string[],
@@ -122,6 +122,27 @@ export default class GlitchedWriter {
 		}
 		if (typeof texts === 'string') return this.manageWriting(texts)
 
+		this.queryWrite(texts, queueInterval, loop)
+	}
+
+	/**
+	 * Order Glitched writer to write sequence of texts.
+	 * @param texts - Array of strings to write.
+	 *
+	 * You can also pass selector or a html element.
+	 * Paragraph children content will make the array of texts
+	 * @param queueInterval - Time to wait between writing each texts [ms]
+	 * @param loop - boolean | Callback | number - What to do when the queue has ended.
+	 * - false -> stop;
+	 * - true -> continue looping;
+	 * - Callback -> stop and fire the callback.
+	 * - number -> wait number ms and than continue
+	 */
+	queryWrite(
+		texts: string[] | HTMLElement | Element | string,
+		queueInterval?: number,
+		loop?: boolean | Callback | number,
+	) {
 		this.queue = new Queue(this, texts, queueInterval, loop)
 	}
 

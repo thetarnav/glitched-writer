@@ -17,7 +17,7 @@ const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		...presets.typewriter,
+		...presets.terminal,
 		// glyphs: glyphs.numbers,
 		// steps: [8, 10],
 		html: true,
@@ -107,7 +107,7 @@ async function afterFinish(string, data) {
 	// writer.write(queue[queueIndex])
 }
 
-writer.write(queue, 1000, true)
+writer.queryWrite('.writer-texts', 1000, true)
 
 inputEl.addEventListener(
 	'input',

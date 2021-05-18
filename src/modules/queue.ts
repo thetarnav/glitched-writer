@@ -16,14 +16,33 @@ export default class Queue {
 
 	constructor(
 		writer: GlitchedWriter,
-		texts: string[],
+		texts: string[] | HTMLElement | Element | string,
 		interval: number = 800,
 		loop: boolean | Callback | number = false,
 	) {
 		this.writer = writer
-		this.texts = texts
 		this.interval = interval
 
+		// Setup texts
+		if (Array.isArray(texts)) this.texts = texts
+		else {
+			// If passed html element
+			// get child paragraphs as sequent texts to write
+			let el: Element | null
+			if (typeof texts === 'object') el = texts
+			else el = document.querySelector(texts)
+
+			this.texts = []
+
+			el?.childNodes.forEach(node => {
+				const { tagName, innerHTML } = node as HTMLElement
+				tagName === 'P' &&
+					innerHTML !== undefined &&
+					this.texts.push(innerHTML)
+			})
+		}
+
+		// Setup looping settings
 		if (typeof loop === 'boolean') this.isLooping = loop
 		else if (typeof loop === 'function') this.endCallback = loop
 		else {
@@ -46,6 +65,7 @@ export default class Queue {
 	}
 
 	private async loop() {
+		if (!this.texts.length) return
 		this.index++
 
 		if (this.index >= this.texts.length) {

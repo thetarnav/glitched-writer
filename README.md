@@ -43,6 +43,7 @@
    -  [Creating Class Instance](#creating-class-instance)
    -  [Writing](#writing)
    -  [Queue Writing](#queue-writing)
+   -  [Texts from HTML](<#texts-from-html-(seo-friendly)>)
    -  [Pausing & Playing](#pausing--playing)
    -  [One-Time-Use](#one-time-use)
    -  [On Text Input](#on-text-input)
@@ -162,6 +163,27 @@ writer.write(phrases, 1000, true)
  */
 ```
 
+### Texts from HTML (SEO Friendly)
+
+Instead of using the `string` array, you can place an `div` with your queue as `paragraphs` on the page. Then pass it to the queueWrite function as first param.
+This allows bots and search engines, as well as users with JavaScript disabled, to see your text on the page.
+
+```html
+<div id="phrases">
+	<p>Welcome!</p>
+	<p>to my <b>awesome</b> website</p>
+</div>
+```
+
+```js
+writer.queueWrite('#phrases', queueInterval, loop)
+/**
+ * @param texts
+ * - string[] - Array of strings to write
+ * - html element - the parent element with the paragraphs
+ * - string - query selector pointing to that element
+```
+
 ### Pausing & Playing
 
 You can pause and resume playing at any time.
@@ -196,7 +218,7 @@ glitchWrite('Write this and DISAPER!', htmlElement, options, stepCB, finishCB)
 ### On Text Input
 
 Don't be afraid to call write method on top of each oder.
-New will stop the ongoing. But, it's good to debounce the event handler.
+New will stop the ongoing. But, it's good to `debounce` the event handler.
 
 ```js
 import debounce from 'lodash.debounce'
@@ -230,7 +252,7 @@ writer.removeCallback('start', startCB)
 
 ### Add & Remove
 
-.add(string) & .remove(number) are methods usefull for quick changes to the displayed text.
+`.add(string)` & `.remove(number)` are methods usefull for quick changes to the displayed text.
 
 ```js
 // Let's say current text content is: "Hello World"
@@ -255,7 +277,7 @@ Writer.write('<b>Be sure to click <a href="...">this!</a></b>')
 
 ### Letterize
 
-Splits written text into series of span elements. Then writing letters seperately into these child-elements.
+Splits written text into series of `<span>` elements. Then writing letters seperately into these child-elements.
 
 ```js
 // You need to enable html option.
@@ -273,7 +295,7 @@ Writer.write('Hello there!')
 
 ### Endless animation
 
-Option "endless" let's you run the text animation until you disable that function.
+Option `endless` let's you run the text animation until you disable that function.
 
 This opens the door for some additional effects, like: **Show on hover** (e.g. on secret fields) or **refreshing text** to give it user attention.
 
@@ -343,7 +365,7 @@ Changing text rapidly can cause a lot of layout shift. These are few css tricks 
 
 ### Available imports
 
-List of all things that can be imported from glitched-writer module.
+List of all things that can be imported from `glitched-writer` module.
 
 ```ts
 import GlitchedWriter, { // <-- GlitchedWriter class
