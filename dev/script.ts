@@ -17,7 +17,7 @@ const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		...presets.encrypted,
+		// ...presets.typewriter,
 		// glyphs: glyphs.numbers,
 		// steps: [8, 10],
 		html: true,

@@ -39,29 +39,8 @@ export default class Char {
 		index: number,
 	) {
 		this.writer = writer
+		const { options } = writer
 
-		this.setProps(l, gl, initialGhosts, specialType, index)
-
-		if (writer.options.letterize) {
-			this.els = {
-				ghostsBeforeEl: document.createElement('span'),
-				letterEl: document.createElement('span'),
-				ghostsAfterEl: document.createElement('span'),
-			}
-			this.els.ghostsBeforeEl.className = 'gw-ghosts'
-			this.els.ghostsAfterEl.className = 'gw-ghosts'
-			this.els.letterEl.className = 'gw-letter'
-		}
-	}
-
-	private setProps(
-		l: string,
-		gl: string,
-		initialGhosts: string = '',
-		specialType: LetterItem['type'],
-		index: number,
-	) {
-		const { options } = this.writer
 		this.index = index
 		this.l = l
 		this.gl = gl
@@ -75,17 +54,17 @@ export default class Char {
 
 		this.afterGlitchChance =
 			(options.ghostChance + options.changeChance) / 3.7
-	}
 
-	reset(
-		l: string,
-		gl: string,
-		initialGhosts: string = '',
-		specialType: LetterItem['type'],
-		index: number,
-	) {
-		this.setProps(l, gl, initialGhosts, specialType, index)
-		if (this.els) this.els.letterEl.className = 'gw-letter'
+		if (writer.options.letterize) {
+			this.els = {
+				ghostsBeforeEl: document.createElement('span'),
+				letterEl: document.createElement('span'),
+				ghostsAfterEl: document.createElement('span'),
+			}
+			this.els.ghostsBeforeEl.className = 'gw-ghosts'
+			this.els.ghostsAfterEl.className = 'gw-ghosts'
+			this.els.letterEl.className = 'gw-letter'
+		}
 	}
 
 	get string(): string {

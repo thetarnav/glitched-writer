@@ -9,13 +9,17 @@ import {
 } from '../utils'
 
 export default function setupCharTable(this: GlitchedWriter) {
+	const { charTable, options } = this
+
 	// For "clear" mode char table will be prepared as starting from blank
 	const from =
-		this.options.mode === 'clear' && this.state.finished
-			? ''
-			: this.previousString
+		options.mode === 'clear' && this.state.finished ? '' : this.previousString
 
-	this.options.mode === 'matching'
+	// Clear Char Table -> stop all chars and remove them from char table
+	charTable.forEach(char => (char.stop = true))
+	this.charTable = []
+
+	options.mode === 'matching'
 		? createMatching.call(this, from)
 		: createPrevious.call(this, from)
 }
@@ -72,7 +76,7 @@ function getGoalStringText(this: GlitchedWriter, from: string): LetterItem[] {
 			: textToLetterItems(goalText),
 		diff = Math.max(0, from.length - goalArray.length)
 
-	if (this.options.oneAtATime)
+	if (options.oneAtATime)
 		return goalArray.concat(textToLetterItems(arrayOfTheSame('', diff)))
 
 	const nBefore = Math.ceil(diff / 2),
@@ -91,21 +95,11 @@ function setChar(
 	gl: LetterItem,
 	ghosts?: string,
 ) {
-	const { charTable, options } = this,
-		char: Char | undefined = charTable[i]
+	const { charTable, options } = this
 
-	char
-		? char.reset(l ?? '', gl.value || options.space, ghosts, gl.type, i)
-		: charTable.push(
-				new Char(
-					this,
-					l ?? '',
-					gl.value || options.space,
-					ghosts,
-					gl.type,
-					i,
-				),
-		  )
+	charTable.push(
+		new Char(this, l ?? '', gl.value || options.space, ghosts, gl.type, i),
+	)
 }
 
 function removeExtraChars(charTable: Char[], from: number) {

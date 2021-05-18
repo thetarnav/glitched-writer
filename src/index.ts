@@ -18,6 +18,7 @@ import letterize from './functions/letterize'
 import prepWordsPlaylist from './functions/playlist/words'
 import prepLettersPlaylist from './functions/playlist/letters'
 import Animator from './modules/animator'
+import Queue from './modules/queue'
 
 export default class GlitchedWriter {
 	htmlElement: HTMLWriterElement
@@ -25,6 +26,7 @@ export default class GlitchedWriter {
 	state: State
 	emiter: Emiter
 	animator: Animator
+	queue: Queue
 	charTable: Char[] = []
 
 	goalText: string = ''
@@ -57,6 +59,7 @@ export default class GlitchedWriter {
 		this.emiter = new Emiter(this)
 		if (onFinishCallback) this.emiter.addCallback('finish', onFinishCallback)
 		this.animator = new Animator(this)
+		this.queue = new Queue(this)
 		this.string = this.previousString
 	}
 

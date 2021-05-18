@@ -22,7 +22,6 @@
     "default": "./lib/esm/index.js"
   },
   "scripts": {
-    "start": "nodemon test/index.ts",
     "dev": "parcel dev/index.html --dist-dir dev/dist",
     "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && grunt build",
     "prepublishOnly": "npm run build && npm version patch",
@@ -40,10 +39,8 @@
     "grunt-cli": "^1.4.2",
     "grunt-ts": "^6.0.0-beta.22",
     "grunt-webpack": "^4.0.3",
-    "jsdom": "^16.5.3",
     "load-grunt-tasks": "^5.1.0",
     "lodash.debounce": "^4.0.8",
-    "nodemon": "^2.0.7",
     "parcel": "^2.0.0-beta.2",
     "terser-webpack-plugin": "^5.1.2",
     "ts-node": "^9.1.1",
