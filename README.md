@@ -150,7 +150,7 @@ If you have prepared array of texts to write - in a loop, or one time - you can 
 ```js
 const phrases = ['First, write this.', 'Then this.', 'And finally this!']
 
-writer.write(phrases, 1000, true)
+writer.write(phrases, 1000, true) // or .queueWrite()
 
 /**
  * 1. @param texts - Array of strings to write
@@ -210,9 +210,11 @@ setTimeout(async () => {
 For quick one-time writing.
 
 ```js
-import { glitchWrite } from 'glitched-writer'
+import { write, queueWrite } from 'glitched-writer'
 
-glitchWrite('Write this and DISAPER!', htmlElement, options, stepCB, finishCB)
+write('Write this and BEGONE!', htmlElement, options, stepCB, finishCB)
+
+queueWrite(texts, htmlElement, options, interval, loop, stepCB, finishCB)
 ```
 
 ### On Text Input

@@ -211,18 +211,22 @@ export default class GlitchedWriter {
 	 * save callback in a variable first if you want to remove it later.
 	 * @param type "start" | "step" | "finish"
 	 * @param callback your callback function: (string, writerData) => {}
+	 * @returns GlitchedWriter instance (this)
 	 */
-	addCallback(type: CallbackType, callback: Callback) {
+	addCallback(type: CallbackType, callback: Callback): GlitchedWriter {
 		this.emiter.addCallback(type, callback)
+		return this
 	}
 
 	/**
 	 * Use this to remove added callback
 	 * @param type "start" | "step" | "finish"
 	 * @param callback variable pointing to your function
+	 * @returns GlitchedWriter instance (this)
 	 */
-	removeCallback(type: CallbackType, callback: Callback) {
+	removeCallback(type: CallbackType, callback: Callback): GlitchedWriter {
 		this.emiter.removeCallback(type, callback)
+		return this
 	}
 
 	// private logCharTable() {
@@ -369,7 +373,7 @@ export default class GlitchedWriter {
  * @param onFinishCallback Callback, that will be triggered when each writing finishes. Params passed: string & writer data.
  * @returns Promise, with writer data result
  */
-export async function glitchWrite(
+export async function write(
 	string: string,
 	htmlElement?: HTMLElement | Element | null | string,
 	options?: CustomOptions | PresetName | null,
@@ -379,6 +383,39 @@ export async function glitchWrite(
 	const writer = new GlitchedWriter(htmlElement, options, onFinishCallback)
 	if (onStepCallback) writer.addCallback('step', onStepCallback)
 	return writer.write(string)
+}
+
+/**
+ * Standalone queueWrite function. Used to
+ * @param texts - Array of strings to write.
+ *
+ * You can also pass selector or a html element.
+ * Paragraph children content will make the array of texts
+ * @param htmlElement HTML Element OR a Selector string (eg. '.text')
+ * @param options Options object (eg. { html: true, ... }) OR preset name (eg. 'zalgo').
+ * @param queueInterval - Time to wait between writing each texts [ms]
+ * @param loop - boolean | Callback | number - What to do when the queue has ended.
+ * - false -> stop;
+ * - true -> continue looping;
+ * - Callback -> stop and fire the callback.
+ * - number -> wait number ms and than continue
+ * @param onStepCallback Callback, that will be triggered on every step. Params passed: string & writer data.
+ * @param onFinishCallback Callback, that will be triggered when each writing finishes. Params passed: string & writer data.
+ * @returns created GlitchedWriter instance
+ */
+export function queueWrite(
+	texts: string[] | HTMLElement | Element | string,
+	htmlElement?: HTMLElement | Element | null | string,
+	options?: CustomOptions | PresetName | null,
+	queueInterval?: number,
+	loop?: boolean | Callback | number,
+	onStepCallback?: Callback,
+	onFinishCallback?: Callback,
+): GlitchedWriter {
+	const writer = new GlitchedWriter(htmlElement, options, onFinishCallback)
+	if (onStepCallback) writer.addCallback('step', onStepCallback)
+	writer.queueWrite(texts, queueInterval, loop)
+	return writer
 }
 
 /**
