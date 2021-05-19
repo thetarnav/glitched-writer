@@ -482,7 +482,7 @@ mode?: 'normal' | 'matching' | 'erase' | 'clear', // 'matching'
 
 -  **mode** - Writing mode - decides on how to prepare the Char Table.
 
-   -  'matching' - _Will scan starting and goal string for matching characters and will try to build character map from that._
+   -  'matching' - _Will scan starting and goal string for matching characters and will try to build character map from that. Requires ghosts enabled (>0) to take effect_
    -  'normal' - _Wont do any matching, just converts starting string into character map._
    -  'erase' - _First Erases entire string and then writes your text._
    -  'erase_smart' - _Same as erase, but saves the matching begginging letters_
