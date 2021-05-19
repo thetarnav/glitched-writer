@@ -43,7 +43,6 @@
    -  [Creating Class Instance](#creating-class-instance)
    -  [Writing](#writing)
    -  [Queue Writing](#queue-writing)
-   -  [Texts from HTML](<#texts-from-html-(seo-friendly)>)
    -  [Pausing & Playing](#pausing--playing)
    -  [One-Time-Use](#one-time-use)
    -  [On Text Input](#on-text-input)
@@ -104,14 +103,14 @@ Creating writer class instance:
 
 ```js
 // Calling GlitchedWriter constructor:
-const Writer = new GlitchedWriter(
+const writer = new GlitchedWriter(
 	htmlElement, // Element / Selector string / undefined
 	options, // {...} / Preset name / undefined
 	onFinishCallback, // (string, data) => {} / undefined
 )
 
 // Custom options:
-const Writer = new GlitchedWriter(htmlElement, {
+const writer = new GlitchedWriter(htmlElement, {
 	interval: [10, 70],
 	oneAtATime: true,
 	letterize: true,
@@ -150,10 +149,13 @@ If you have prepared array of texts to write - in a loop, or one time - you can 
 ```js
 const phrases = ['First, write this.', 'Then this.', 'And finally this!']
 
-writer.write(phrases, 1000, true) // or .queueWrite()
+writer.queueWrite(phrases, 1000, true)
 
 /**
- * 1. @param texts - Array of strings to write
+ * 1. @param texts
+ * - string[] - Array of strings to write
+ * - HTMLElement - the parent element with the paragraphs
+ * - string - query selector pointing to that element
  * 2. @param queueInterval - Time to wait between writing each texts [ms]
  * 3. @param loop - boolean | Callback | number - What to do when the queue has ended.
  * - false -> stop;
@@ -163,7 +165,7 @@ writer.write(phrases, 1000, true) // or .queueWrite()
  */
 ```
 
-### Texts from HTML (SEO Friendly)
+#### Texts from HTML (SEO Friendly)
 
 Instead of using the `string` array, you can place an `div` with your queue as `paragraphs` on the page. Then pass it to the queueWrite function as first param.
 This allows bots and search engines, as well as users with JavaScript disabled, to see your text on the page.
@@ -173,15 +175,11 @@ This allows bots and search engines, as well as users with JavaScript disabled, 
 	<p>Welcome!</p>
 	<p>to my <b>awesome</b> website.</p>
 </div>
+<!-- will read as: ['Welcome!', 'to my <b>awesome</b> website.'] -->
 ```
 
 ```js
 writer.queueWrite('#phrases', queueInterval, loop)
-/**
- * @param texts
- * - string[] - Array of strings to write
- * - html element - the parent element with the paragraphs
- * - string - query selector pointing to that element
 ```
 
 ### Pausing & Playing
@@ -254,7 +252,7 @@ writer.removeCallback('start', startCB)
 
 ### Add & Remove
 
-`.add(string)` & `.remove(number)` are methods usefull for quick changes to the displayed text.
+`.add(string)` & `.remove(number)` are methods usefull for quick changes to the previous text.
 
 ```js
 // Let's say current text content is: "Hello World"
@@ -268,7 +266,7 @@ Writer.remove(9)
 
 ### Writing HTML
 
-(**! Potentially dangerous !**) Let's you write text with html tags in it.
+(**! Potentially dangerous !**) Let's you write text with html tags in it. Don't use on user-generated content.
 
 ```js
 // You need to enable html option.
@@ -373,8 +371,9 @@ List of all things that can be imported from `glitched-writer` module.
 import GlitchedWriter, { // <-- GlitchedWriter class
 	CustomOptions, // <-- Options type
 	Callback, // <-- Callbacks type
-	WriterDataResponse, // <-- Type of a response in callbacks
-	glitchWrite, // <-- One time write funcion
+	WriterDataResponse, // <-- Type of a data response in callbacks
+	write, // <-- One time, standalone write function
+	queueWrite, // <-- Standalone queue write function
 	presets, // <-- Object with all prepared presets of options
 	glyphs, // <-- Some glyph sets
 	wait, // <-- Ulitity promise function, that can be used to wait some time

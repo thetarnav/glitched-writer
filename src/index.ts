@@ -95,48 +95,26 @@ export default class GlitchedWriter {
 	 * @param text text, that will get written.
 	 * @returns Promise, with writer data result
 	 */
-	async write(text: string): Promise<WriterDataResponse>
-	/**
-	 * Order Glitched writer to write sequence of texts. In a loop or not.
-	 * @param texts - Array of strings to write
-	 * @param queueInterval - Time to wait between writing each texts [ms]
-	 * @param loop - boolean | Callback | number - What to do when the queue has ended.
-	 * - false -> stop;
-	 * - true -> continue looping;
-	 * - Callback -> stop and fire the callback.
-	 * - number -> wait number ms and than continue
-	 */
-	async write(
-		texts: string[],
-		queueInterval?: number,
-		loop?: boolean | Callback | number,
-	): Promise<void>
-	async write(
-		texts: string | string[],
-		queueInterval?: number,
-		loop?: boolean | Callback | number,
-	): Promise<void | WriterDataResponse> {
+	async write(text: string): Promise<WriterDataResponse> {
 		if (this.queue) {
 			this.queue.stop()
 			delete this.queue
 		}
-		if (typeof texts === 'string') return this.manageWriting(texts)
-
-		this.queueWrite(texts, queueInterval, loop)
+		return this.manageWriting(text)
 	}
 
 	/**
 	 * Order Glitched writer to write sequence of texts.
-	 * @param texts - Array of strings to write.
+	 * @param texts - Array of sequent strings to write.
 	 *
-	 * You can also pass selector or a html element.
-	 * Paragraph children content will make the array of texts
+	 * You can also pass a `query selector` or a `HTMLElement`.
+	 * The content of children `<p>` tags will make the text queue
 	 * @param queueInterval - Time to wait between writing each texts [ms]
 	 * @param loop - boolean | Callback | number - What to do when the queue has ended.
 	 * - false -> stop;
 	 * - true -> continue looping;
-	 * - Callback -> stop and fire the callback.
-	 * - number -> wait number ms and than continue
+	 * - Callback -> fire the callback and stop.
+	 * - number -> wait that many ms and then continue
 	 */
 	queueWrite(
 		texts: string[] | HTMLElement | Element | string,
@@ -389,16 +367,16 @@ export async function write(
  * Standalone queueWrite function. Used to
  * @param texts - Array of strings to write.
  *
- * You can also pass selector or a html element.
- * Paragraph children content will make the array of texts
- * @param htmlElement HTML Element OR a Selector string (eg. '.text')
+ * You can also pass a `selector` or a `HTMLElement`.
+ * The content of children `<p>` tags will make the text queue
+ * @param htmlElement Writer HTML Element OR a Selector string (eg. '.text')
  * @param options Options object (eg. { html: true, ... }) OR preset name (eg. 'zalgo').
  * @param queueInterval - Time to wait between writing each texts [ms]
  * @param loop - boolean | Callback | number - What to do when the queue has ended.
  * - false -> stop;
  * - true -> continue looping;
  * - Callback -> stop and fire the callback.
- * - number -> wait number ms and than continue
+ * - number -> wait number ms and then continue
  * @param onStepCallback Callback, that will be triggered on every step. Params passed: string & writer data.
  * @param onFinishCallback Callback, that will be triggered when each writing finishes. Params passed: string & writer data.
  * @returns created GlitchedWriter instance
