@@ -8,6 +8,7 @@ import {
 	coinFlip,
 	isSpecialChar,
 	LetterItem,
+	animateWithClass,
 } from '../utils'
 
 export default class Char {
@@ -82,11 +83,13 @@ export default class Char {
 
 	private writeToElement() {
 		if (!this.els) return
-		const { ghostsBeforeEl, ghostsAfterEl, letterEl } = this.els
+		const { ghostsBeforeEl, ghostsAfterEl, letterEl, charEl } = this.els
 
 		letterEl.innerHTML = this.l
 		ghostsBeforeEl.textContent = this.ghosts[0].join('')
 		ghostsAfterEl.textContent = this.ghosts[1].join('')
+
+		charEl && animateWithClass(charEl, 'gw-changed')
 	}
 
 	set spanElement(el: HTMLSpanElement) {

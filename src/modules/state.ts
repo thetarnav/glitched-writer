@@ -48,7 +48,8 @@ export default class State {
 		this.isTyping = true
 		this.isPaused = false
 		this.finished = false
-		this.toggleClass(true)
+		this.addClass()
+		this.erasing && this.addClass('gw-erasing')
 		this.maxGhosts = this.writer.options.maxGhosts
 
 		this.writer.animator.run()
@@ -62,20 +63,21 @@ export default class State {
 	pause() {
 		this.isTyping = false
 		this.isPaused = true
-		this.toggleClass(false)
+		this.removeClasses()
 	}
 
 	finish() {
 		this.progress.finish()
 		this.isTyping = false
 		this.finished = true
-		this.toggleClass(false)
+		this.removeClasses()
 	}
 
-	toggleClass(enable: boolean): void {
-		const el = this.writer.htmlElement,
-			className = 'gw-writing'
+	addClass(className: 'gw-writing' | 'gw-erasing' = 'gw-writing') {
+		animateWithClass(this.writer.htmlElement, className)
+	}
 
-		enable ? animateWithClass(el, className) : el.classList.remove(className)
+	removeClasses() {
+		this.writer.htmlElement.classList.remove('gw-writing', 'gw-erasing')
 	}
 }

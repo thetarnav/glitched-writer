@@ -285,10 +285,10 @@ const Writer = new GlitchedWriter(htmlElement, { letterize: true })
 
 Writer.write('Hello there!')
 /**
- * The shape of one character:
- * span.gw-char (and .gw-finished when finish typing)
+ * The shape of one Char:
+ * span.gw-char (+ .gw-finished when compleated | .gw-changed with each change)
  * 	span.gw-ghosts
- * 	span.gw-letter (also .gw-glitched when it is glitched.)
+ * 	span.gw-letter (+ .gw-glitched when is a glitched letter)
  * 	span.gw-ghosts
  */
 ```
@@ -485,7 +485,7 @@ mode?: 'normal' | 'matching' | 'erase' | 'clear', // 'matching'
    -  'matching' - _Will scan starting and goal string for matching characters and will try to build character map from that._
    -  'normal' - _Wont do any matching, just converts starting string into character map._
    -  'erase' - _First Erases entire string and then writes your text._
-   -  'erase*smart' - Same as erase, but saves the matching begginging letters*
+   -  'erase_smart' - _Same as erase, but saves the matching begginging letters_
    -  'clear' - _Instantly deletes entire textContent and then writes your text._
 
 ### Control Options:

@@ -17,7 +17,7 @@ const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		...presets.encrypted,
+		...presets.bitbybit,
 		// glyphs: glyphs.numbers,
 		// steps: [8, 10],
 		html: true,
@@ -32,7 +32,7 @@ const writer = new GlitchedWriter(
 		// 	return l
 		// },
 		// genDelay: ({ index }) => index * 50,
-		oneAtATime: 14,
+		// oneAtATime: 14,
 		// delay: [0, 200],
 	},
 	// { html: true, letterize: true },
