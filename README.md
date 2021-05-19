@@ -517,18 +517,13 @@ fps?: number, // 60
  * @param char - Char for which to generate value
  * @param base - default function generating that value
  */
-```
 
--  **genGlyph** - function that will be used to generate a ghost/glitched char. Can be used to control which and when different characters will be used, instead of it being a random sample from glyphs list. _E.g. numbers "9" to "1" depending on writing progress._
-
-```ts
+// generaing ghost/glitched char
 genGlyph?: (char: Char, base: Function) => string
-```
 
--  **genDelay** - Generate custom delay. e.g. relatively to the char index in written text.
-
-```ts
 genDelay?: (char: Char, base: Function) => number // [ms]
+
+genInterval?: (char: Char, base: Function) => number // [ms]
 ```
 
 ## The End - couple of final words

@@ -85,7 +85,7 @@ export default class Queue {
 		if (this.isStopped || this.writer.state.isPaused) return
 
 		const result = await this.writer.manageWriting(this.texts[this.index])
-		if (!result || this.writer.state.isPaused) return
+		if (result?.status !== 'SUCCESS' || this.writer.state.isPaused) return
 
 		await wait(this.interval)
 

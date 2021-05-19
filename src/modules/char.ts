@@ -80,12 +80,6 @@ export default class Char {
 		)
 	}
 
-	get interval(): number {
-		let { interval } = this.writer.options
-		if (this.specialType === 'whitespace') interval /= 1.8
-		return interval
-	}
-
 	private writeToElement() {
 		if (!this.els) return
 		const { ghostsBeforeEl, ghostsAfterEl, letterEl } = this.els
@@ -111,40 +105,40 @@ export default class Char {
 	}
 
 	async type() {
-		const { writer } = this
+		const { options, state, emiter } = this.writer
 
 		if (this.specialType === 'tag') {
 			this.l = this.gl
-			writer.emiter.call('step')
-			writer.state.progress.increase()
+			emiter.call('step')
+			state.progress.increase()
 			return true
 		}
 
 		const loop = async () => {
-			await wait(this.interval)
+			await wait(options.getInterval(this))
 
 			const lastString = this.string
 			this.step()
 			if (lastString !== this.string) {
-				writer.emiter.call('step')
+				emiter.call('step')
 				this.writeToElement()
 			}
 
-			!writer.options.endless && this.stepsLeft--
+			!options.endless && this.stepsLeft--
 		}
 
-		await wait(writer.options.getDelay(this))
+		await wait(options.getDelay(this))
 
 		await promiseWhile(
 			() =>
-				(!this.finished || writer.options.endless) &&
-				!writer.state.isPaused &&
+				(!this.finished || options.endless) &&
+				!state.isPaused &&
 				!this.stop,
 			loop,
 		)
 
 		if (this.finished) {
-			writer.state.progress.increase()
+			state.progress.increase()
 			this.els?.charEl?.classList.add('gw-finished')
 			this.els?.letterEl.classList.remove('gw-glitched')
 		}

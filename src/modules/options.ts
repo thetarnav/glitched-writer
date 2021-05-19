@@ -108,8 +108,18 @@ export default class Options {
 	get steps(): number {
 		return getRandomFromRange(this.options.steps)
 	}
-	get interval(): number {
-		return getRandomFromRange(this.options.interval)
+
+	getInterval(char: Char): number {
+		const { options, baseGetInterval } = this
+
+		return options.genInterval
+			? options.genInterval(char, baseGetInterval.bind(this, char))
+			: baseGetInterval.call(this, char)
+	}
+	private baseGetInterval(this: Options, char: Char): number {
+		let interval = getRandomFromRange(this.options.interval)
+		if (char.specialType === 'whitespace') interval /= 1.8
+		return interval
 	}
 
 	getDelay(char: Char): number {

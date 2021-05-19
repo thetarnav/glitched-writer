@@ -33,6 +33,7 @@ export type AllCustomOptions = ModifyInterface<
 
 		genGlyph?: (char: Char, base: () => string) => string
 		genDelay?: (char: Char, base: () => number) => number
+		genInterval?: (char: Char, base: () => number) => number
 	}
 >
 
