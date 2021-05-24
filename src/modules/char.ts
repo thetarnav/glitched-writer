@@ -149,25 +149,28 @@ export default class Char {
 	}
 
 	step() {
-		const { writer } = this
+		const {
+			writer: { options, state },
+		} = this
+
 		if (
 			(this.stepsLeft > 0 && this.l !== this.gl) ||
 			(coinFlip(this.afterGlitchChance) &&
 				this.specialType !== 'whitespace') ||
-			writer.options.endless
+			options.endless
 		) {
 			/**
 			 * IS GROWING
 			 */
-			const { ghostChance, changeChance } = writer.options
-
-			if (coinFlip(ghostChance)) {
-				if (writer.state.ghostsInLimit) this.addGhost()
+			// add/remove ghost
+			if (coinFlip(options.ghostChance)) {
+				if (state.ghostsInLimit) this.addGhost()
 				else this.removeGhost()
 			}
-			if (coinFlip(changeChance)) {
+			// glitch letter
+			if (coinFlip(options.changeChance)) {
 				this.els?.letterEl.classList.add('gw-glitched')
-				this.l = writer.options.getGlyph(this)
+				this.l = options.getGlyph(this)
 			}
 		} else if (!this.finished) {
 			/**

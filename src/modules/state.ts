@@ -37,7 +37,7 @@ export default class State {
 
 	constructor(writer: GlitchedWriter) {
 		this.writer = writer
-		this.maxGhosts = this.writer.options.maxGhosts
+		this.maxGhosts = writer.options.maxGhosts
 	}
 
 	get ghostsInLimit(): boolean {
@@ -45,19 +45,16 @@ export default class State {
 	}
 
 	play() {
+		const { writer } = this
 		this.isTyping = true
 		this.isPaused = false
 		this.finished = false
 		this.addClass()
 		this.erasing && this.addClass('gw-erasing')
-		this.maxGhosts = this.writer.options.maxGhosts
+		this.maxGhosts = writer.options.maxGhosts
 
-		this.writer.animator.run()
-		this.writer.emiter.callback(
-			'start',
-			this.writer.goalText,
-			this.writer.writerData,
-		)
+		writer.animator.run()
+		writer.emiter.callback('start', writer.goalText, writer.writerData)
 	}
 
 	pause() {
