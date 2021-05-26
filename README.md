@@ -14,19 +14,19 @@
 
 ### Features:
 
--  Manages text animation of **HTML Element**. Write, pause, play, add, remove and write some more!
+-  Manages text animation of **HTML Element**. Write, queue write, pause, play, and write some more!
 
--  **Highly customizable** behavior. Set of options let you animate the text the way is suits your design.
+-  **Highly customizable** behavior. A nice set of options and presets will let you achieve the effect, that suits your design.
 
 -  Adding Callback functions to fire on writer events (start, step, finish).
 
--  Custom Event **gw-finished** will be dispatched on the HTML Element.
+-  Custom Event **gw-finished** dispaching on the HTML Element.
 
--  For styling purposes writer attatches **gw-writing** class to the HTML Element and **data-gw-string attribute** with current string.
+-  Attatches CSS classes corresponting to the writer state (writing, erasing)
 
--  Handles **html tags** & **html entities** (e.g. \<br/\>, \<a href="#"\>link\</a\>, \&#59;, \&amp;).
+-  Handles **HTML tags & entities** (e.g. `<br/>`, `<a href="#">link</a>`, `&#59;`, `&amp;`).
 
--  Can letterize string it into many **span** elements inside the parent element.
+-  Can **letterize** each character into it's own `<span>` element.
 
 -  Written in **Typescript**.
 
@@ -485,7 +485,7 @@ mode?: 'normal' | 'matching' | 'erase' | 'clear', // 'matching'
    -  'matching' - _Will scan starting and goal string for matching characters and will try to build character map from that. Requires ghosts enabled (>0) to take effect_
    -  'normal' - _Wont do any matching, just converts starting string into character map._
    -  'erase' - _First Erases entire string and then writes your text._
-   -  'erase_smart' - _Same as erase, but saves the matching begginging letters_
+   -  'erase*smart' - \_Same as erase, but saves the matching begginging letters*
    -  'clear' - _Instantly deletes entire textContent and then writes your text._
 
 ### Control Options:

@@ -5,7 +5,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import debounce from 'lodash.debounce'
 
-import GlitchedWriter, { wait, presets, glyphs } from '../src'
+import GlitchedWriter, { wait, presets, glyphs, CustomOptions } from '../src'
 import { clamp } from '../src/utils'
 // import GlitchedWriter, { wait, presets } from '../lib/esm'
 
@@ -13,27 +13,39 @@ const textEl = document.getElementById('glitch_this'),
 	inputEl = document.getElementById('input') as HTMLInputElement,
 	logsEl = document.getElementById('logs')
 
+const pToVal = (p: number, zero: number, hundred: number): number =>
+	p * (hundred - zero) + zero
+
+const genGlyph: CustomOptions['genGlyph'] = (char, base) => {
+		const { stepsLeft: n, gl } = char
+		let l = '_'
+		if (n < 2 && gl !== '') l = base()
+		else if (n < 5) l = '/'
+		return l
+	},
+	genDelay: CustomOptions['genDelay'] = char => {
+		const { index } = char
+		return index * 40
+	},
+	genInterval: CustomOptions['genInterval'] = (char, base) => {
+		let n = base() * 1.5
+		n = pToVal(char.stepsLeft / 8, 20, 120)
+		return n
+	}
+
 const writer = new GlitchedWriter(
 	'#glitch_this',
 	// { ...presets.encrypted, html: true },
 	{
-		...presets.bitbybit,
-		// glyphs: glyphs.numbers,
-		// steps: [8, 10],
+		...presets.neo,
+		glyphs: glyphs.lowercase + glyphs.numbers,
+		steps: [3, 8],
+		fillSpace: false,
 		html: true,
-		// fps: 14,
 		letterize: true,
-		// genGlyph: ({ stepsLeft }) => {
-		// 	let l: string
-		// 	if (stepsLeft > 7) l = '_'
-		// 	else if (stepsLeft > 5) l = '..'
-		// 	else if (stepsLeft >= 3) l = '\\'
-		// 	else l = '#'
-		// 	return l
-		// },
-		// genDelay: ({ index }) => index * 50,
-		// oneAtATime: 14,
-		// delay: [0, 200],
+		genGlyph,
+		genDelay,
+		genInterval,
 	},
 	// { html: true, letterize: true },
 	// 'encrypted',

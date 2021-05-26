@@ -95,13 +95,13 @@ export default class Options {
 	}
 
 	getGlyph(char: Char): string {
-		const { options } = this
+		const { options, baseGetGlyph } = this
 
 		return options.genGlyph
-			? options.genGlyph(char, this.baseGetGlyph)
-			: this.baseGetGlyph()
+			? options.genGlyph(char, baseGetGlyph.bind(this))
+			: baseGetGlyph.call(this)
 	}
-	private baseGetGlyph(): string {
+	private baseGetGlyph(this: Options): string {
 		return getRandom(this.charset) ?? ''
 	}
 
@@ -123,12 +123,12 @@ export default class Options {
 	}
 
 	getDelay(char: Char): number {
-		const { options } = this
+		const { options, baseGetDelay } = this
 		return options.genDelay
-			? options.genDelay(char, this.baseGetDelay)
-			: this.baseGetDelay()
+			? options.genDelay(char, baseGetDelay.bind(this))
+			: baseGetDelay.call(this)
 	}
-	private baseGetDelay(): number {
+	private baseGetDelay(this: Options): number {
 		return getRandomFromRange(this.options.delay)
 	}
 
