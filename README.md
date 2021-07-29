@@ -336,30 +336,28 @@ writer.options.set({
 Changing text rapidly can cause a lot of layout shift. These are few css tricks worth considering when using this package:
 
 ```css
-// 1. "Warn" the browser that the text-content
-// will be changing
+/* 1. Warn the browser that the text content will be changing */
 .gw {
-	will-change: contents;
+   will-change: contents;
 }
 
-// 2. It's good to make the element position absolute or fixed
-// so it wont influence the rest of the layout
+/* 2. It's good to make the element position absolute or fixed
+      so it wont influence the rest of the layout */
 .gw {
-	position: fixed;
+   position: fixed;
 }
 
-// 3. Make the width and height constant,
-// so it doesn't shift while writing
+/* 3. Make the width and height constant,
+      so it doesn't shift while writing */
 .gw {
-	width: 80ch;
-	height: 6rem;
+   width: 80ch;
+   height: 6rem;
 }
 
-// 4. If you can't or don't want to,
-// then you should tell css that it will change,
-// so it can prepare resources to handle it
+/* 4. If you cannot limit the element size,
+      then you should warn browser that it will change */
 .gw {
-	will-change: contents, height, width;
+   will-change: contents, height, width;
 }
 ```
 
