@@ -117,7 +117,7 @@ const writer = new GlitchedWriter(htmlElement, {
 })
 
 // On-finish-callback added:
-const Writer = new GlitchedWriter(htmlElement, {}, (string, writerData) => {
+const writer = new GlitchedWriter(htmlElement, {}, (string, writerData) => {
 	console.log(`Current string: ${string}`)
 	console.log('All the class data:', writerData)
 })
@@ -132,14 +132,14 @@ import { wait } from 'glitched-writer'
 
 // Wrap this in some async function:
 // Or use .then() instead.
-const res = await Writer.write('Welcome')
+const res = await writer.write('Welcome')
 
 console.log(`Finished writing: ${res.string}`)
 console.log('All the writer data:', res)
 
 await wait(1200) // additional simple promise to wait some time
 
-await Writer.write('...to Glitch City!')
+await writer.write('...to Glitch City!')
 ```
 
 ### Queue Writing
@@ -187,18 +187,18 @@ writer.queueWrite('#phrases', queueInterval, loop)
 You can pause and resume playing at any time.
 
 ```js
-Writer.write('Some very cool header.').then(({ status, message }) => {
+writer.write('Some very cool header.').then(({ status, message }) => {
 	// this will run when the writing stops.
 	console.log(`${status}: ${message}`)
 })
 
 setTimeout(
-	() => Writer.pause(), // will stop writing
+	() => writer.pause(), // will stop writing
 	1000,
 )
 
 setTimeout(async () => {
-	const { string } = await Writer.play() // continue writing
+	const { string } = await writer.play() // continue writing
 	console.log('Completed:', string) // will log after finished writing
 }, 2000)
 ```
@@ -257,10 +257,10 @@ writer.removeCallback('start', startCB)
 ```js
 // Let's say current text content is: "Hello World"
 
-Writer.add('!!!')
+writer.add('!!!')
 // -> Hello World!!!
 
-Writer.remove(9)
+writer.remove(9)
 // -> Hello
 ```
 
@@ -270,9 +270,9 @@ Writer.remove(9)
 
 ```js
 // You need to enable html option.
-const Writer = new GlitchedWriter(htmlElement, { html: true })
+const writer = new GlitchedWriter(htmlElement, { html: true })
 
-Writer.write('<b>Be sure to click <a href="...">this!</a></b>')
+writer.write('<b>Be sure to click <a href="...">this!</a></b>')
 ```
 
 ### Letterize
@@ -281,9 +281,9 @@ Splits written text into series of `<span>` elements. Then writing letters seper
 
 ```js
 // You need to enable html option.
-const Writer = new GlitchedWriter(htmlElement, { letterize: true })
+const writer = new GlitchedWriter(htmlElement, { letterize: true })
 
-Writer.write('Hello there!')
+writer.write('Hello there!')
 /**
  * The shape of one Char:
  * span.gw-char (+ .gw-finished when compleated | .gw-changed with each change)
